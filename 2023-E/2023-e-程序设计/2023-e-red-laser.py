@@ -2,17 +2,7 @@ from pyb import Servo  # 导入舵机模块
 import pyb            # 用于延时
 import sensor
 import math
-from enum import Enum
 
-#任务枚举
-class Task(Enum):
-    TASK_EMPTY = 0
-    TASK1_1 = 1
-    TASK1_2 = 2
-    TASK1_3 = 3
-
-#全局变量
-current_task = Task.TASK_EMPTY
 
 class TwoAxisServoControl:
     def __init__(self, servo_x_pin=1, servo_y_pin=2, x_init=0, y_init=-10,
@@ -385,7 +375,7 @@ if __name__ == "__main__":
     sensor.set_framesize(sensor.QVGA)
     sensor.skip_frames(time=2000)
 
-    rectangle_points = None
+    rectangle_points = default_coord()
 
 
 
