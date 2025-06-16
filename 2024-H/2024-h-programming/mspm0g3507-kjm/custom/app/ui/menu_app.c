@@ -7,6 +7,8 @@
 #include "wit_jyxx.h"
 #include "common_include.h"
 
+bool task_running_flag = false;
+
 static action_config_t task1_action_config = {
     .actions = {
 				{ACTION_SPIN_TURN, 0.0f}, 												// 旋转到0度 
@@ -58,41 +60,37 @@ static action_config_t task4_action_config = {
 };
 
 
+static void run_task(u8g2_t *u8g2, const char *task_name, bool *task_flag, action_config_t *task_config) {
+    u8g2_ClearBuffer(u8g2);
+    if (*task_flag == true) {
+        draw_centered_text("There are already running tasks.", 1);
+        u8g2_SendBuffer(u8g2);
+        return;
+    }
+    *task_flag = true;
+    draw_centered_text(task_name, 1);
+    u8g2_SendBuffer(u8g2);
+    jy901s.reset();
+    car_path_init(task_config);
+    enable_periodic_task(EVENT_CAR_STATE_MACHINE);
+}
+
 static void run_task01_cb(void *arg) {
-    u8g2_ClearBuffer(&u8g2);
-    draw_centered_text("Running Task 01", 1);
-    u8g2_SendBuffer(&u8g2);
-		jy901s.reset();
-		car_path_init(&task1_action_config);
-		enable_periodic_task(EVENT_CAR_STATE_MACHINE);
+    run_task(&u8g2, "Running Task 01", &task_running_flag, &task1_action_config);
 }
 
 static void run_task02_cb(void *arg) {
-    u8g2_ClearBuffer(&u8g2);
-    draw_centered_text("Running Task 02", 1);
-    u8g2_SendBuffer(&u8g2);
-		jy901s.reset();
-		car_path_init(&task2_action_config);
-		enable_periodic_task(EVENT_CAR_STATE_MACHINE);
+    run_task(&u8g2, "Running Task 02", &task_running_flag, &task2_action_config);
 }
 
 static void run_task03_cb(void *arg) {
-    u8g2_ClearBuffer(&u8g2);
-    draw_centered_text("Running Task 03", 1);
-    u8g2_SendBuffer(&u8g2);
-		jy901s.reset();
-		car_path_init(&task3_action_config);
-		enable_periodic_task(EVENT_CAR_STATE_MACHINE);
+    run_task(&u8g2, "Running Task 03", &task_running_flag, &task3_action_config);
 }
 
 static void run_task04_cb(void *arg) {
-    u8g2_ClearBuffer(&u8g2);
-    draw_centered_text("Running Task 04", 1);
-    u8g2_SendBuffer(&u8g2);
-		jy901s.reset();
-		car_path_init(&task4_action_config);
-		enable_periodic_task(EVENT_CAR_STATE_MACHINE);
+    run_task(&u8g2, "Running Task 04", &task_running_flag, &task4_action_config);
 }
+
 
 static void view_variables_cb(void *arg) {
 		start_listening_variable_timer();
@@ -113,15 +111,25 @@ static MenuNode task04;
 static MenuNode *run_tasks_children[] = { &task01, &task02, &task03, &task04 };
 static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage};
 
-float test;
+float test_1, test_2;
 
 // 创建变量菜单
-menu_variables_t my_variables[] = {
-    {"SpeedA", &test},
-    {"SpeedB", &test},
-    {"Voltage0", &test},
-		{"Voltage1", &test},
-		{"Voltage2", &test},
+menu_variables_t my_variables_1[] = {
+    {"SpeedKp", &test_1},
+    {"SpeedKi", &test_1},
+    {"SpeedKd", &test_1},
+		{"Voltage1", &test_1},
+		{"Voltage2", &test_1},
+    {NULL, NULL}  // 结束标记
+};
+
+// 创建变量菜单 （可修改）
+menu_variables_t my_variables_2[] = {
+    {"SpeedKp", &test_2},
+    {"SpeedKi", &test_2},
+    {"SpeedKd", &test_2},
+		{"Voltage1", &test_2},
+		{"Voltage2", &test_2},
     {NULL, NULL}  // 结束标记
 };
 
@@ -131,11 +139,15 @@ static void init_all_menu_nodes(void) {
 	init_menu_node(&menu_root,           "Main Menu",        NULL,             MENU_TYPE_NORMAL,        NULL,            4, root_children);          // 根菜单
 	init_menu_node(&menu_run_tasks,      "Run Tasks",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      4, run_tasks_children);     // 一级菜单：运行任务
 	
-	init_variables_view_node(&menu_view_variables, my_variables, 5);
+	init_variables_view_node(&menu_view_variables, my_variables_1, 5);
 	init_menu_node(&menu_view_variables, "View Variables",   view_variables_cb,MENU_TYPE_VARIABLES_VIEW, &menu_root,      0, NULL);                  // 一级菜单：查看变量
 	
+	init_variables_view_node(&set_pid_speed, my_variables_2, 5);	
 	init_menu_node(&set_pid_speed,       "Set Pid Speed",    NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID速度
+
+	init_variables_view_node(&set_pid_mileage, my_variables_2, 5);
 	init_menu_node(&set_pid_mileage,     "Set Pid Mileage",  NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID里程
+	
 	init_menu_node(&task01,              "run Task01",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
 	init_menu_node(&task02,              "run Task02",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
 	init_menu_node(&task03,              "run Task03",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3

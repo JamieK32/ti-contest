@@ -129,10 +129,8 @@ void draw_menu(MenuNode *current_menu) {
     draw_title_bar(current_menu->name);
     
     // 根据菜单类型选择渲染方式
-    if (current_menu->type == MENU_TYPE_VARIABLES_VIEW) {
+    if (current_menu->type == MENU_TYPE_VARIABLES_VIEW || current_menu->type == MENU_TYPE_VARIABLES_MODIFY) {
         draw_variables_content(current_menu);
-		} else if (current_menu->type == MENU_TYPE_VARIABLES_MODIFY) {
-		
 		} else {
         draw_normal_menu_content(current_menu);
     }
@@ -172,7 +170,6 @@ void draw_title_bar(const char* title) {
     u8g2_DrawStr(&u8g2, title_x, 7, title);  // 调整Y位置
 }
 
-// 优化的变量内容显示
 void draw_variables_content(MenuNode *current_menu) {
     if (current_menu->variable_count == 0) {
         draw_empty_message("No Variables");
@@ -186,7 +183,25 @@ void draw_variables_content(MenuNode *current_menu) {
         int variable_index = i + current_menu->window_start_index;
         
         if (current_menu->variables && current_menu->variables[variable_index].name != NULL) {
-            // 选中指示器
+            // 检查是否为选中的变量
+            bool is_selected = (current_menu->selected_var_idx != UNSELECTED && 
+                              variable_index == current_menu->selected_var_idx);
+            
+            // 如果是选中状态，绘制选中背景或边框
+            if (is_selected) {
+                // 方案1：绘制反色背景
+                int bg_width = u8g2_GetDisplayWidth(&u8g2) - 2;
+                u8g2_SetDrawColor(&u8g2, 1);
+                u8g2_DrawBox(&u8g2, 1, y - 9, bg_width, 10);  // 绘制填充矩形
+                u8g2_SetDrawColor(&u8g2, 0);  // 设置为反色绘制文字
+                
+                // 方案2：或者绘制选中边框（注释掉上面的代码，使用下面的代码）
+                // u8g2_DrawFrame(&u8g2, 0, y - 9, u8g2_GetDisplayWidth(&u8g2), 10);
+            } else {
+                u8g2_SetDrawColor(&u8g2, 1);  // 正常颜色绘制
+            }
+            
+            // 当前光标指示器
             if (variable_index == current_menu->current_index) {
                 u8g2_DrawStr(&u8g2, 1, y, ">");
             }
@@ -199,6 +214,11 @@ void draw_variables_content(MenuNode *current_menu) {
             snprintf(val_str, sizeof(val_str), "%.2f", *current_menu->variables[variable_index].val_ptr);
             uint8_t val_width = u8g2_GetStrWidth(&u8g2, val_str);
             u8g2_DrawStr(&u8g2, u8g2_GetDisplayWidth(&u8g2) - val_width - 3, y, val_str);
+            
+            // 恢复默认绘制颜色
+            if (is_selected) {
+                u8g2_SetDrawColor(&u8g2, 1);
+            }
         }
     }
 }
@@ -226,8 +246,9 @@ void draw_normal_menu_content(MenuNode *current_menu) {
         
         // 如果有子菜单，显示箭头指示
         if (current_menu->children[menu_index]->child_count > 0 || 
-            current_menu->children[menu_index]->callback != NULL) {
-            u8g2_DrawStr(&u8g2, u8g2_GetDisplayWidth(&u8g2) - 6, y, ">");
+            current_menu->children[menu_index]->callback != NULL ||
+						current_menu->children[menu_index]->variable_count > 0) {
+            u8g2_DrawStr(&u8g2, u8g2_GetDisplayWidth(&u8g2) - 6, y, "<-");
         }
     }
 }
@@ -247,27 +268,27 @@ void draw_empty_message(const char* message) {
 
 // 简化的滚动指示器
 void draw_scrollbar(MenuNode *current_menu) {
-    uint8_t width = u8g2_GetDisplayWidth(&u8g2);
-    uint8_t height = u8g2_GetDisplayHeight(&u8g2);
-    
-    int total_items = (current_menu->type == MENU_TYPE_VARIABLES_VIEW) ? 
-                      current_menu->variable_count : current_menu->child_count;
-    
-    if (total_items > MAX_INDEX_COUNT) {
-        // 上方有更多内容 - 显示向上箭头
-        if (current_menu->window_start_index > 0) {
-            u8g2_DrawPixel(&u8g2, width - 2, 12);
-            u8g2_DrawPixel(&u8g2, width - 3, 13);
-            u8g2_DrawPixel(&u8g2, width - 1, 13);
-        }
-        
-        // 下方有更多内容 - 显示向下箭头
-        if ((current_menu->window_start_index + MAX_INDEX_COUNT) < total_items) {
-            u8g2_DrawPixel(&u8g2, width - 2, height - 10);
-            u8g2_DrawPixel(&u8g2, width - 3, height - 11);
-            u8g2_DrawPixel(&u8g2, width - 1, height - 11);
-        }
-    }
+		uint8_t width = u8g2_GetDisplayWidth(&u8g2);
+		uint8_t height = u8g2_GetDisplayHeight(&u8g2);
+		
+		int total_items = (current_menu->type == MENU_TYPE_VARIABLES_VIEW || current_menu->type == MENU_TYPE_VARIABLES_MODIFY) ? 
+											current_menu->variable_count : current_menu->child_count;
+		
+		if (total_items > MAX_INDEX_COUNT) {
+				// 上方有更多内容 - 显示向上箭头
+				if (current_menu->window_start_index > 0) {
+						u8g2_DrawPixel(&u8g2, width - 2, 12);
+						u8g2_DrawPixel(&u8g2, width - 3, 13);
+						u8g2_DrawPixel(&u8g2, width - 1, 13);
+				}
+				
+				// 下方有更多内容 - 显示向下箭头
+				if ((current_menu->window_start_index + MAX_INDEX_COUNT) < total_items) {
+						u8g2_DrawPixel(&u8g2, width - 2, height - 10);
+						u8g2_DrawPixel(&u8g2, width - 3, height - 11);
+						u8g2_DrawPixel(&u8g2, width - 1, height - 11);
+				}
+		}
 }
 
 // 简化的状态栏
@@ -277,7 +298,7 @@ void draw_status_bar(MenuNode *current_menu) {
     
     u8g2_SetFont(&u8g2, u8g2_font_4x6_tr);  // 状态栏使用最小字体
     
-    int total_items = (current_menu->type == MENU_TYPE_VARIABLES_VIEW) ? 
+    int total_items = (current_menu->type == MENU_TYPE_VARIABLES_VIEW  || current_menu->type == MENU_TYPE_VARIABLES_MODIFY) ? 
                       current_menu->variable_count : current_menu->child_count;
     
     // 显示位置信息

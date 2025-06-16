@@ -1,5 +1,8 @@
 #include "car_state_machine.h"
 
+//任务运行完成标志位
+extern bool task_running_flag;
+
 // 全局动作队列
 static action_queue_t action_queue = {
     .head = 0,
@@ -129,6 +132,7 @@ void car_state_machine(void) {
             for (int i = 0; i < MOTOR_TYPE_TWO_WHEEL; i++) {
                 car.target_speed[i] = 0;  // 目标速度清零
             }
+						task_running_flag = false;
             return;  // 退出函数，不再加载新动作
         } else {
             action_queue_load_from_config(current_action_config);  // 未达到循环次数限制，继续加载动作

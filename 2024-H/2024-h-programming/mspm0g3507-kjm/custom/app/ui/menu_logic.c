@@ -14,8 +14,11 @@ void create_oled_menu(MenuNode *root) {
 
 void select_next(void)
 {
-		if (current_menu->type == MENU_TYPE_VARIABLES_MODIFY) {
-			
+		if (current_menu->type == MENU_TYPE_VARIABLES_MODIFY && current_menu->selected_var_idx != UNSELECTED) {
+			float num = *current_menu->variables[current_menu->selected_var_idx].val_ptr;
+			float increment = num * 0.08;
+			increment = fmin(100, fmax(0.1, increment));
+			*current_menu->variables[current_menu->selected_var_idx].val_ptr += increment; 
 			return;
 		}
     uint8_t max_count = (current_menu->type == MENU_TYPE_NORMAL) ? 
@@ -30,8 +33,11 @@ void select_next(void)
 
 void select_previous(void)
 {
-	if (current_menu->type == MENU_TYPE_VARIABLES_MODIFY) {
-			
+	if (current_menu->type == MENU_TYPE_VARIABLES_MODIFY && current_menu->selected_var_idx != UNSELECTED) {
+		float num = *current_menu->variables[current_menu->selected_var_idx].val_ptr;
+		float increment = num * 0.08;
+		increment = fmin(100, fmax(0.1, increment));
+		*current_menu->variables[current_menu->selected_var_idx].val_ptr -= increment; 
 		return;
 	}
   if (current_menu->current_index > 0) current_menu->current_index--;
