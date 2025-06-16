@@ -27,14 +27,13 @@ typedef enum {
 typedef struct {
     bool enabled;           // 该电机是否启用 (用于两轮/四轮适配)
     GPTIMER_Regs* timer_instance;   // 定时器实例地址 (明确为 GPTIMER_Regs*)
-
-    // 根据你的 SET_MOTOR_PWM 宏的逻辑，使用两个 CC 通道控制方向和 PWM
-    // 假设 CC0 用于反向 PWM，CC1 用于正向 PWM
+		
+		// L298N INTERFACE
     uint32_t cc_reverse_pwm_index; // 反向 PWM 通道索引 (例如 DL_TIMER_CC_0_INDEX)
     uint32_t cc_forward_pwm_index; // 正向 PWM 通道索引 (例如 DL_TIMER_CC_1_INDEX)
-
-    // 如果需要方向通过 GPIO 控制，可以在这里添加 GPIO 配置
-		
+		// L298N INTERFACE
+	
+		// TB6612 INTERFACE
 		// PWM 输出通道索引 (如果方向由 GPIO 控制，只需要一个 PWM 通道)
 		uint32_t pwm_cc_index;
 	
@@ -45,6 +44,8 @@ typedef struct {
 		// Standby 引脚
 		GPIO_Regs* stby_gpio;  // Standby GPIO 端口
     uint32_t stby_pin; 		 // Standby 引脚
+		// TB6612 INTERFACE
+	
 } MotorConfig;
 
 // 系统级电机参数配置结构体
