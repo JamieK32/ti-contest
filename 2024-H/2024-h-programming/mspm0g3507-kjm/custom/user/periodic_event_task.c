@@ -16,8 +16,8 @@ period_task_t period_tasks[] = {
     { EVENT_MENU_VAR_UPDATE,   IDLE, 	NotifyMenuFromISR, 				 2000 }, // 2000ms (2s)
 		{ EVENT_PERIOD_PRINT,  		 RUN,   debug_task, 							 500  }, // 500ms
 		{ EVENT_ALERT, 						 RUN,  	alert_ticks, 							 10,  }, // 10ms
-		{ EVENT_CAR_STATE_MACHINE, IDLE,   car_state_machine, 				 20,  }, // 20ms
-		{ EVENT_CAR, 				   		 RUN,  car_task, 				         20,  }, // 20ms
+		{ EVENT_CAR_STATE_MACHINE, IDLE,  car_state_machine, 	   		 20,  }, // 20ms
+		{ EVENT_CAR, 				   		 RUN,   car_task, 				         20,  }, // 20ms
 		
 };
 

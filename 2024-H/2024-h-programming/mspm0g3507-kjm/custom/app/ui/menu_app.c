@@ -104,7 +104,6 @@ static MenuNode menu_run_tasks;
 static MenuNode menu_view_variables;
 static MenuNode set_pid_speed;
 static MenuNode set_pid_mileage;
-static MenuNode play_games, play_games1, play_games2, play_games3, play_games4;
 static MenuNode task01;
 static MenuNode task02;
 static MenuNode task03;
@@ -112,21 +111,31 @@ static MenuNode task04;
 
 // 子节点数组
 static MenuNode *run_tasks_children[] = { &task01, &task02, &task03, &task04 };
-static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage, &play_games, &play_games1, &play_games2, &play_games3, &play_games4 };
+static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage};
+
+float test;
+
+// 创建变量菜单
+menu_variables_t my_variables[] = {
+    {"SpeedA", &test},
+    {"SpeedB", &test},
+    {"Voltage0", &test},
+		{"Voltage1", &test},
+		{"Voltage2", &test},
+    {NULL, NULL}  // 结束标记
+};
 
 // 初始化所有节点
 static void init_all_menu_nodes(void) {
 	// 初始化菜单节点，参数格式：节点指针, 名称, 回调函数, 菜单类型, 父节点, 子节点数量, 子节点数组
-	init_menu_node(&menu_root,           "Main Menu",        NULL,             MENU_TYPE_NORMAL,        NULL,            5 + 4, root_children);          // 根菜单
+	init_menu_node(&menu_root,           "Main Menu",        NULL,             MENU_TYPE_NORMAL,        NULL,            4, root_children);          // 根菜单
 	init_menu_node(&menu_run_tasks,      "Run Tasks",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      4, run_tasks_children);     // 一级菜单：运行任务
-	init_menu_node(&menu_view_variables, "View Variables",   view_variables_cb,MENU_TYPE_VARIABLE_VIEW, &menu_root,      0, NULL);                  // 一级菜单：查看变量
-	init_menu_node(&set_pid_speed,       "Set Pid Speed",    NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：设置PID速度
-	init_menu_node(&set_pid_mileage,     "Set Pid Mileage",  NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：设置PID里程
-	init_menu_node(&play_games,          "Play Game",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：玩游戏
-	init_menu_node(&play_games1,          "Play Game1",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：玩游戏
-	init_menu_node(&play_games2,          "Play Game2",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：玩游戏
-	init_menu_node(&play_games3,          "Play Game3",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：玩游戏
-	init_menu_node(&play_games4,          "Play Game4",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      0, NULL);                  // 一级菜单：玩游戏
+	
+	init_variables_view_node(&menu_view_variables, my_variables, 5);
+	init_menu_node(&menu_view_variables, "View Variables",   view_variables_cb,MENU_TYPE_VARIABLES_VIEW, &menu_root,      0, NULL);                  // 一级菜单：查看变量
+	
+	init_menu_node(&set_pid_speed,       "Set Pid Speed",    NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID速度
+	init_menu_node(&set_pid_mileage,     "Set Pid Mileage",  NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID里程
 	init_menu_node(&task01,              "run Task01",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
 	init_menu_node(&task02,              "run Task02",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
 	init_menu_node(&task03,              "run Task03",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3
@@ -136,12 +145,10 @@ static void init_all_menu_nodes(void) {
 
 
 void menu_init_and_create(void) {
-	add_variable("YAW", &jy901s.yaw);
 	init_all_menu_nodes();
   user_button_init(&btn_single_click_callback, &btn_long_press_cb);    
 	create_oled_menu(&menu_root);
 }
-
 
 static inline void btn_single_click_callback(void* btn)
 {

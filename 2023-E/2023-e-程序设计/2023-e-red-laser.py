@@ -377,8 +377,6 @@ if __name__ == "__main__":
 
     rectangle_points = default_coord()
 
-
-
     target_x, target_y = rectangle_points[0]
 
     # target_x, target_y = get_rectangle_center(rectangle_points)
