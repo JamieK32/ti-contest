@@ -5,14 +5,16 @@
 #include "stdio.h"
 
 void show_oled_opening_animation(void);
-void draw_centered_text(const char* text, uint8_t draw_border);
-void draw_menu(MenuNode *current_menu);
-void draw_frame();
-void draw_title_bar(const char* title);
-void draw_variables_content(MenuNode *current_menu);
-void draw_normal_menu_content(MenuNode *current_menu);
-void draw_empty_message(const char* message);
-void draw_scrollbar(MenuNode *current_menu);
-void draw_status_bar(MenuNode *current_menu);
+void draw_centered_text(const char* text);
+
+
+void draw_menu(MenuNode *current_menu);                          
+void draw_enhanced_frame(void);                                  
+void draw_enhanced_title_bar(const char *title, int menu_type);  
+void draw_enhanced_variables_content(MenuNode *current_menu);    
+void draw_enhanced_normal_menu_content(MenuNode *current_menu);   
+void draw_enhanced_scrollbar(MenuNode *current_menu);            
+void draw_enhanced_status_bar(MenuNode *current_menu);           
+void draw_enhanced_empty_message(const char* message);
 
 #endif

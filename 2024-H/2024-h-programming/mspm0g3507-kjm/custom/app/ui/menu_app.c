@@ -63,12 +63,12 @@ static action_config_t task4_action_config = {
 static void run_task(u8g2_t *u8g2, const char *task_name, bool *task_flag, action_config_t *task_config) {
     u8g2_ClearBuffer(u8g2);
     if (*task_flag == true) {
-        draw_centered_text("There are already running tasks.", 1);
+        draw_centered_text("Running Failed");
         u8g2_SendBuffer(u8g2);
         return;
     }
     *task_flag = true;
-    draw_centered_text(task_name, 1);
+    draw_centered_text(task_name);
     u8g2_SendBuffer(u8g2);
     jy901s.reset();
     car_path_init(task_config);
