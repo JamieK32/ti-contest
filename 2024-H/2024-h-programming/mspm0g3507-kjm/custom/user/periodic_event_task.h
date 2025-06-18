@@ -6,7 +6,6 @@
 
 // 定义软件定时器的周期（以 tick 为单位）
 
-#define TIMER_5MS_PERIOD_MS     5
 
 // 定义事件 ID 枚举
 typedef enum {

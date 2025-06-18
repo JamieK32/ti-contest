@@ -2,6 +2,9 @@
 #include "menu_ui.h"
 #include "common_defines.h"
 #include "periodic_event_task.h"
+#include "log_config.h"
+#include "log.h"
+
 
 static TaskHandle_t xOLEDTaskHandle;
 static MenuNode *current_menu;
@@ -92,6 +95,8 @@ void stop_listening_variable_timer(void) {
 	disable_periodic_task(EVENT_MENU_VAR_UPDATE);
 }
 
+extern float test_1;
+
 /**
  * @brief 在中断服务程序中通知指定任务
  * @param taskHandle 要通知的任务句柄
@@ -106,6 +111,7 @@ void NotifyMenuFromISR(void)
     
     // 根据优先级情况决定是否需要任务切换
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+		test_1 += 1;
 }
 
 // 实现初始化函数
