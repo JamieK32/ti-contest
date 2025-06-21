@@ -5,7 +5,6 @@
 #include "ti_msp_dl_config.h"
 #include "uart_debug.h"
 
-
 extern TaskHandle_t uart_tx_task_handle;
 extern QueueHandle_t uart_rx_queue;
 /**
