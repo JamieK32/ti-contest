@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\math;..\custom\math\fusion;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\dmplib\Inc;..\custom\app\imu;..\custom\math\iqmath\_IQNfunctions</IncludePath>
+              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\dmplib\Inc;..\custom\app\imu;..\source\ti\iqmath\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,6 +381,16 @@
         </TargetArmAds>
       </TargetOption>
       <Groups>
+        <Group>
+          <GroupName>document</GroupName>
+          <Files>
+            <File>
+              <FileName>iq_pid.md</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\document\iq_pid.md</FilePath>
+            </File>
+          </Files>
+        </Group>
         <Group>
           <GroupName>include</GroupName>
           <Files>
@@ -514,6 +524,11 @@
               <FileType>1</FileType>
               <FilePath>..\custom\app\controller\car_state_machine.c</FilePath>
             </File>
+            <File>
+              <FileName>iq_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\controller\iq_pid.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -633,21 +648,6 @@
               <FileName>uart_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\hardware\bsp\uart_driver.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>math</GroupName>
-          <Files>
-            <File>
-              <FileName>arm_pid_init_f32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\math\arm_pid_init_f32.c</FilePath>
-            </File>
-            <File>
-              <FileName>arm_pid_reset_f32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\math\arm_pid_reset_f32.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -797,97 +797,97 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>math/iqmath</GroupName>
+          <GroupName>ti/source/iqmath</GroupName>
           <Files>
             <File>
               <FileName>_atoIQN.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_atoIQN.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_atoIQN.c</FilePath>
             </File>
             <File>
               <FileName>_IQNasin_acos.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNasin_acos.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNasin_acos.c</FilePath>
             </File>
             <File>
               <FileName>_IQNatan2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNatan2.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNatan2.c</FilePath>
             </File>
             <File>
               <FileName>_IQNdiv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNdiv.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNdiv.c</FilePath>
             </File>
             <File>
               <FileName>_IQNexp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNexp.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNexp.c</FilePath>
             </File>
             <File>
               <FileName>_IQNfrac.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNfrac.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNfrac.c</FilePath>
             </File>
             <File>
               <FileName>_IQNlog.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNlog.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNlog.c</FilePath>
             </File>
             <File>
               <FileName>_IQNmpy.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNmpy.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNmpy.c</FilePath>
             </File>
             <File>
               <FileName>_IQNmpyIQX.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNmpyIQX.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNmpyIQX.c</FilePath>
             </File>
             <File>
               <FileName>_IQNrepeat.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrepeat.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNrepeat.c</FilePath>
             </File>
             <File>
               <FileName>_IQNrmpy.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrmpy.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNrmpy.c</FilePath>
             </File>
             <File>
               <FileName>_IQNrsmpy.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrsmpy.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNrsmpy.c</FilePath>
             </File>
             <File>
               <FileName>_IQNsin_cos.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNsin_cos.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNsin_cos.c</FilePath>
             </File>
             <File>
               <FileName>_IQNsqrt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNsqrt.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNsqrt.c</FilePath>
             </File>
             <File>
               <FileName>_IQNtables.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtables.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNtables.c</FilePath>
             </File>
             <File>
               <FileName>_IQNtoa.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtoa.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNtoa.c</FilePath>
             </File>
             <File>
               <FileName>_IQNtoF.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtoF.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNtoF.c</FilePath>
             </File>
             <File>
               <FileName>_IQNversion.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNversion.c</FilePath>
+              <FilePath>..\source\ti\iqmath\_IQNfunctions\_IQNversion.c</FilePath>
             </File>
           </Files>
         </Group>

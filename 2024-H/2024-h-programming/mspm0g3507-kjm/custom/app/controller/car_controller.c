@@ -203,13 +203,13 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
 
 
 // 初始化 PID 控制器（仅用于速度环）
-void speed_pid_init(float32_t Kp, float32_t Ki, float32_t Kd) {
-    for (int i = 0; i < motor_count; i++) {
-        car.speed_pid[i].Kp = Kp;
-        car.speed_pid[i].Ki = Ki;
-        car.speed_pid[i].Kd = Kd;
-        arm_pid_init_f32(&car.speed_pid[i], 1); // 1 表示重置 PID 状态
-    }
+void speed_pid_init(float Kp, float Ki, float Kd) {
+//    for (int i = 0; i < motor_count; i++) {
+//        car.speed_pid[i].Kp = Kp;
+//        car.speed_pid[i].Ki = Ki;
+//        car.speed_pid[i].Kd = Kd;
+//        arm_pid_init_f32(&car.speed_pid[i], 1); // 1 表示重置 PID 状态
+//    }
 }
 
 void car_init(void) {
@@ -233,13 +233,13 @@ void update_distance(void) {
 }
 
 void update_speed_pid(void) {
-    float32_t error;  // 速度误差
-    float32_t outputs[MOTOR_TYPE_TWO_WHEEL];
-    for (int i = 0; i < motor_count; i++) {
-        error = car.target_speed[i] - encoder.cmps[i];
-        outputs[i] = arm_pid_f32(&car.speed_pid[i], error);
-        outputs[i] = constrain_float(outputs[i], MIN_PWM_OUTPUT, MAX_PWM_OUTPUT);
-    }
+//    float32_t error;  // 速度误差
+//    float32_t outputs[MOTOR_TYPE_TWO_WHEEL];
+//    for (int i = 0; i < motor_count; i++) {
+//        error = car.target_speed[i] - encoder.cmps[i];
+//        outputs[i] = arm_pid_f32(&car.speed_pid[i], error);
+//        outputs[i] = constrain_float(outputs[i], MIN_PWM_OUTPUT, MAX_PWM_OUTPUT);
+//    }
 }
 
 void update_straight_control(void) {
@@ -285,92 +285,92 @@ void update_straight_control(void) {
  * @brief 更新巡线控制逻辑，根据灰度传感器数据调整左右轮速度
  */
 void update_track_control(void) {
-    float left_speed = TRACK_BASE_SPEED;
-    float right_speed = TRACK_BASE_SPEED;
-    float adjustment = 0.0f;
-    uint8_t track_data[TRACK_NUM];
-    static arm_pid_instance_f32 track_pid = {0};  // PID控制器实例
-    static bool pid_initialized = false;          // PID初始化标志
-    static float last_valid_adjustment = 0.0f;    // 上一次有效的偏差值，用于丢失目标时转向
-    static bool target_lost = false;              // 目标丢失标志
+//    float left_speed = TRACK_BASE_SPEED;
+//    float right_speed = TRACK_BASE_SPEED;
+//    float adjustment = 0.0f;
+//    uint8_t track_data[TRACK_NUM];
+//    static arm_pid_instance_f32 track_pid = {0};  // PID控制器实例
+//    static bool pid_initialized = false;          // PID初始化标志
+//    static float last_valid_adjustment = 0.0f;    // 上一次有效的偏差值，用于丢失目标时转向
+//    static bool target_lost = false;              // 目标丢失标志
 
-    // 初始化PID控制器（仅在第一次调用时初始化）
-    if (!pid_initialized) {
-        track_pid.Kp = TRACK_KP;      // 比例系数
-        track_pid.Ki = 0.0f;          // 积分系数，需调试
-        track_pid.Kd = 0.0f;          // 微分系数，需调试
-        arm_pid_init_f32(&track_pid, 1);  // 1表示重置PID状态
-        pid_initialized = true;
-    }
+//    // 初始化PID控制器（仅在第一次调用时初始化）
+//    if (!pid_initialized) {
+//        track_pid.Kp = TRACK_KP;      // 比例系数
+//        track_pid.Ki = 0.0f;          // 积分系数，需调试
+//        track_pid.Kd = 0.0f;          // 微分系数，需调试
+//        arm_pid_init_f32(&track_pid, 1);  // 1表示重置PID状态
+//        pid_initialized = true;
+//    }
 
-    // 读取灰度传感器数据
-    gray_read_data(track_data);
+//    // 读取灰度传感器数据
+//    gray_read_data(track_data);
 
-    // 计算轨道偏差，假设传感器值为1表示检测到黑线
-    // 中点为 (TRACK_NUM - 1) / 2.0f，例如12路传感器的中点为5.5
-    const float center = (TRACK_NUM - 1) / 2.0f;
-    for (int i = 0; i < TRACK_NUM; i++) {
-        if (track_data[i]) {
-            adjustment += (i - center); // 加权计算偏差，负值表示偏左，正值表示偏右
-        }
-    }
+//    // 计算轨道偏差，假设传感器值为1表示检测到黑线
+//    // 中点为 (TRACK_NUM - 1) / 2.0f，例如12路传感器的中点为5.5
+//    const float center = (TRACK_NUM - 1) / 2.0f;
+//    for (int i = 0; i < TRACK_NUM; i++) {
+//        if (track_data[i]) {
+//            adjustment += (i - center); // 加权计算偏差，负值表示偏左，正值表示偏右
+//        }
+//    }
 
-    // 判断是否丢失目标
-    if (adjustment == 0.0f) {
-        // 偏差为0，可能是丢失目标，检查是否有传感器数据为1
-        bool no_detection = true;
-        for (int i = 0; i < TRACK_NUM; i++) {
-            if (track_data[i]) {
-                no_detection = false;
-                break;
-            }
-        }
-        if (no_detection) {
-            // 确实丢失目标，设置标志并使用上一次有效偏差进行大幅度转向
-            target_lost = true;
-            adjustment = last_valid_adjustment;
-        } else {
-            // 偏差为0但有检测到黑线（可能在中心），不认为是丢失目标
-            target_lost = false;
-            last_valid_adjustment = adjustment;  // 更新上一次有效偏差
-        }
-    } else {
-        // 检测到目标，更新上一次有效偏差并清除丢失标志
-        target_lost = false;
-        last_valid_adjustment = adjustment;
-    }
+//    // 判断是否丢失目标
+//    if (adjustment == 0.0f) {
+//        // 偏差为0，可能是丢失目标，检查是否有传感器数据为1
+//        bool no_detection = true;
+//        for (int i = 0; i < TRACK_NUM; i++) {
+//            if (track_data[i]) {
+//                no_detection = false;
+//                break;
+//            }
+//        }
+//        if (no_detection) {
+//            // 确实丢失目标，设置标志并使用上一次有效偏差进行大幅度转向
+//            target_lost = true;
+//            adjustment = last_valid_adjustment;
+//        } else {
+//            // 偏差为0但有检测到黑线（可能在中心），不认为是丢失目标
+//            target_lost = false;
+//            last_valid_adjustment = adjustment;  // 更新上一次有效偏差
+//        }
+//    } else {
+//        // 检测到目标，更新上一次有效偏差并清除丢失标志
+//        target_lost = false;
+//        last_valid_adjustment = adjustment;
+//    }
 
-    // PID控制逻辑
-    float error = adjustment;  // 当前偏差作为误差
-    float pid_output = arm_pid_f32(&track_pid, error);  // 使用ARM Math PID控制器计算输出
+//    // PID控制逻辑
+//    float error = adjustment;  // 当前偏差作为误差
+////    float pid_output = arm_pid_f32(&track_pid, error);  // 使用ARM Math PID控制器计算输出
 
-    // 根据偏差调整速度
-    if (error != 0.0f || target_lost) {
-        // 计算速度修正量，pid_output 直接作为速度差的一部分
-        // 如果目标丢失，使用更大的修正量进行大幅度转向
-        float correction_limit = target_lost ? MAX_TRACK_CORRECTION * 2.0f : MAX_TRACK_CORRECTION;
-        float speed_correction = constrain_float(pid_output, -correction_limit, correction_limit);
+//    // 根据偏差调整速度
+//    if (error != 0.0f || target_lost) {
+//        // 计算速度修正量，pid_output 直接作为速度差的一部分
+//        // 如果目标丢失，使用更大的修正量进行大幅度转向
+//        float correction_limit = target_lost ? MAX_TRACK_CORRECTION * 2.0f : MAX_TRACK_CORRECTION;
+//        float speed_correction = constrain_float(pid_output, -correction_limit, correction_limit);
 
-        // 根据PID输出直接调整速度
-        // pid_output > 0 表示偏右，需向左转（左轮加速，右轮减速）
-        // pid_output < 0 表示偏左，需向右转（左轮减速，右轮加速）
-        left_speed = TRACK_BASE_SPEED + speed_correction;
-        right_speed = TRACK_BASE_SPEED - speed_correction;
+//        // 根据PID输出直接调整速度
+//        // pid_output > 0 表示偏右，需向左转（左轮加速，右轮减速）
+//        // pid_output < 0 表示偏左，需向右转（左轮减速，右轮加速）
+//        left_speed = TRACK_BASE_SPEED + speed_correction;
+//        right_speed = TRACK_BASE_SPEED - speed_correction;
 
-        // 限制速度范围，防止速度过低或反向
-        // 丢失目标时允许更大的速度差以实现大幅度转向
-        if (target_lost) {
-            left_speed = constrain_float(left_speed, TRACK_BASE_SPEED * 0.3f, TRACK_BASE_SPEED * 2.0f);
-            right_speed = constrain_float(right_speed, TRACK_BASE_SPEED * 0.3f, TRACK_BASE_SPEED * 2.0f);
-        } else {
-            left_speed = constrain_float(left_speed, TRACK_BASE_SPEED * 0.5f, TRACK_BASE_SPEED * 1.5f);
-            right_speed = constrain_float(right_speed, TRACK_BASE_SPEED * 0.5f, TRACK_BASE_SPEED * 1.5f);
-        }
-    }
+//        // 限制速度范围，防止速度过低或反向
+//        // 丢失目标时允许更大的速度差以实现大幅度转向
+//        if (target_lost) {
+//            left_speed = constrain_float(left_speed, TRACK_BASE_SPEED * 0.3f, TRACK_BASE_SPEED * 2.0f);
+//            right_speed = constrain_float(right_speed, TRACK_BASE_SPEED * 0.3f, TRACK_BASE_SPEED * 2.0f);
+//        } else {
+//            left_speed = constrain_float(left_speed, TRACK_BASE_SPEED * 0.5f, TRACK_BASE_SPEED * 1.5f);
+//            right_speed = constrain_float(right_speed, TRACK_BASE_SPEED * 0.5f, TRACK_BASE_SPEED * 1.5f);
+//        }
+//    }
 
-    // 设置目标速度
-    car.target_speed[0] = left_speed;  // 左轮
-    car.target_speed[1] = right_speed; // 右轮
+//    // 设置目标速度
+//    car.target_speed[0] = left_speed;  // 左轮
+//    car.target_speed[1] = right_speed; // 右轮
 }
 
 

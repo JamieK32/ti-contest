@@ -2,7 +2,6 @@
 #define CAR_CONTROLL_H__
 
 #include "motor_app.h"
-#include "arm_math.h"
 
 
 typedef enum {
@@ -29,7 +28,7 @@ typedef struct car_t {
     float target_speed[MOTOR_TYPE_TWO_WHEEL];
     float target_mileage_cm;
     float target_angle;
-    arm_pid_instance_f32 speed_pid[MOTOR_TYPE_TWO_WHEEL];
+
 } car_t;
 
 extern car_t car;
