@@ -38,7 +38,7 @@ static const float TIME_INTERVAL_S = (ENCODER_PERIOD_MS * 0.001f); // 采样周�
 #define TRACK_BASE_SPEED 11.5f		 // 巡线基础速度
 
 // 电机类型
-MotorType type = MOTOR_TYPE_TWO_WHEEL;
+MotorCount motor_count = MOTOR_TYPE_TWO_WHEEL;
 
 // 定义 encoder 结构体实例
 encoder_t encoder = {0};
@@ -74,8 +74,8 @@ float get_yaw(void) {
 void car_task(void) {
     if (car.state == CAR_STATE_STOP) {
 			clear_mileage();
-			for (int i = 0; i < type; i++) {
-				motor_set_pwm(i, 0);
+			for (int i = 0; i < motor_count; i++) {
+
 			}
 			return;
 		} 
@@ -204,7 +204,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
 
 // 初始化 PID 控制器（仅用于速度环）
 void speed_pid_init(float32_t Kp, float32_t Ki, float32_t Kd) {
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         car.speed_pid[i].Kp = Kp;
         car.speed_pid[i].Ki = Ki;
         car.speed_pid[i].Kd = Kd;
@@ -219,7 +219,7 @@ void car_init(void) {
 }
 
 void update_speed(void) {
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         encoder.counts[i] = encoder_manager_read_and_reset(&robot_encoder_manager, i);
         encoder.rpms[i] = encoder.counts[i] * CIRCLE_TO_RPM / PULSE_NUM_PER_CIRCLE;
         encoder.cmps[i] = encoder.rpms[i] * RPM_TO_CMPS;
@@ -227,7 +227,7 @@ void update_speed(void) {
 }
 
 void update_distance(void) {
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         encoder.distance_cm[i] += encoder.cmps[i] * TIME_INTERVAL_S;
     }
 }
@@ -235,11 +235,10 @@ void update_distance(void) {
 void update_speed_pid(void) {
     float32_t error;  // 速度误差
     float32_t outputs[MOTOR_TYPE_TWO_WHEEL];
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         error = car.target_speed[i] - encoder.cmps[i];
         outputs[i] = arm_pid_f32(&car.speed_pid[i], error);
         outputs[i] = constrain_float(outputs[i], MIN_PWM_OUTPUT, MAX_PWM_OUTPUT);
-        motor_set_pwm(i, (int)outputs[i]);
     }
 }
 
@@ -399,15 +398,15 @@ void update_turn_control(void) {
 }
 
 void clear_mileage(void) {
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         encoder.distance_cm[i] = 0;
     }
 }
 
 float get_mileage_cm(void) {
     float output = 0;
-    for (int i = 0; i < type; i++) {
+    for (int i = 0; i < motor_count; i++) {
         output += encoder.distance_cm[i];
     }
-    return output / type;
+    return output / motor_count;
 }

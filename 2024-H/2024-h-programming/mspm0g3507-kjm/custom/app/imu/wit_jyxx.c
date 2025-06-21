@@ -15,22 +15,22 @@ WitImu_TypeDef jy901s = {
 };
 
 static void wit_jyxx_init(void) {
-	NVIC_EnableIRQ(UART_WIT_INST_INT_IRQN);
+	NVIC_EnableIRQ(UART_1_INST_INT_IRQN);
 }
 
 // 发送置偏航角置零命令（只有6轴需要发送九轴陀螺仪是绝对z轴）
 static void Serial_Jy61p_Zero_Yaw(void) {
-		usart_send_bytes(UART_WIT_INST, cmd_unlock, sizeof(cmd_unlock));
+		usart_send_bytes(UART_1_INST, cmd_unlock, sizeof(cmd_unlock));
     delay_ms(200);
-    usart_send_bytes(UART_WIT_INST, cmd_calibration_z, sizeof(cmd_calibration_z));
+    usart_send_bytes(UART_1_INST, cmd_calibration_z, sizeof(cmd_calibration_z));
     delay_ms(3000);
-    usart_send_bytes(UART_WIT_INST, cmd_save, sizeof(cmd_save));
+    usart_send_bytes(UART_1_INST, cmd_save, sizeof(cmd_save));
 }
 
 
-void UART_WIT_INST_IRQHandler(void) {
-		DL_UART_IIDX idx = DL_UART_getPendingInterrupt(UART_WIT_INST);
-		uint8_t uartData = DL_UART_Main_receiveData(UART_WIT_INST);
+void UART_1_INST_IRQHandler(void) {
+		DL_UART_IIDX idx = DL_UART_getPendingInterrupt(UART_1_INST);
+		uint8_t uartData = DL_UART_Main_receiveData(UART_1_INST);
     switch (jy901s.rxState) {
         case WAIT_HEADER1:
             if (uartData == 0x55) {
@@ -67,6 +67,6 @@ void UART_WIT_INST_IRQHandler(void) {
             }
             break;
     }
-		DL_UART_clearInterruptStatus(UART_WIT_INST, idx);
+		DL_UART_clearInterruptStatus(UART_1_INST, idx);
 }
 

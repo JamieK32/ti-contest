@@ -41,8 +41,7 @@
 #include "ti_msp_dl_config.h"
 
 DL_TimerA_backupConfig gMotor_PWM1Backup;
-DL_TimerA_backupConfig gTIMER_delayBackup;
-DL_UART_Main_backupConfig gUART_WITBackup;
+DL_UART_Main_backupConfig gUART_1Backup;
 DL_SPI_backupConfig gSPI_0Backup;
 
 /*
@@ -57,16 +56,13 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_Motor_PWM1_init();
     SYSCFG_DL_Motor_PWM2_init();
-    SYSCFG_DL_TIMER_delay_init();
-    SYSCFG_DL_I2C_0_init();
-    SYSCFG_DL_UART_DEBUG_init();
-    SYSCFG_DL_UART_WIT_init();
+    SYSCFG_DL_UART_0_init();
+    SYSCFG_DL_UART_1_init();
     SYSCFG_DL_SPI_0_init();
     SYSCFG_DL_DMA_init();
     /* Ensure backup structures have no valid state */
 	gMotor_PWM1Backup.backupRdy 	= false;
-	gTIMER_delayBackup.backupRdy 	= false;
-	gUART_WITBackup.backupRdy 	= false;
+	gUART_1Backup.backupRdy 	= false;
 	gSPI_0Backup.backupRdy 	= false;
 
 }
@@ -79,8 +75,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_saveConfiguration(Motor_PWM1_INST, &gMotor_PWM1Backup);
-	retStatus &= DL_TimerA_saveConfiguration(TIMER_delay_INST, &gTIMER_delayBackup);
-	retStatus &= DL_UART_Main_saveConfiguration(UART_WIT_INST, &gUART_WITBackup);
+	retStatus &= DL_UART_Main_saveConfiguration(UART_1_INST, &gUART_1Backup);
 	retStatus &= DL_SPI_saveConfiguration(SPI_0_INST, &gSPI_0Backup);
 
     return retStatus;
@@ -92,8 +87,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_restoreConfiguration(Motor_PWM1_INST, &gMotor_PWM1Backup, false);
-	retStatus &= DL_TimerA_restoreConfiguration(TIMER_delay_INST, &gTIMER_delayBackup, false);
-	retStatus &= DL_UART_Main_restoreConfiguration(UART_WIT_INST, &gUART_WITBackup);
+	retStatus &= DL_UART_Main_restoreConfiguration(UART_1_INST, &gUART_1Backup);
 	retStatus &= DL_SPI_restoreConfiguration(SPI_0_INST, &gSPI_0Backup);
 
     return retStatus;
@@ -105,10 +99,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOB);
     DL_TimerA_reset(Motor_PWM1_INST);
     DL_TimerG_reset(Motor_PWM2_INST);
-    DL_TimerA_reset(TIMER_delay_INST);
-    DL_I2C_reset(I2C_0_INST);
-    DL_UART_Main_reset(UART_DEBUG_INST);
-    DL_UART_Main_reset(UART_WIT_INST);
+    DL_UART_Main_reset(UART_0_INST);
+    DL_UART_Main_reset(UART_1_INST);
     DL_SPI_reset(SPI_0_INST);
 
 
@@ -116,10 +108,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_enablePower(GPIOB);
     DL_TimerA_enablePower(Motor_PWM1_INST);
     DL_TimerG_enablePower(Motor_PWM2_INST);
-    DL_TimerA_enablePower(TIMER_delay_INST);
-    DL_I2C_enablePower(I2C_0_INST);
-    DL_UART_Main_enablePower(UART_DEBUG_INST);
-    DL_UART_Main_enablePower(UART_WIT_INST);
+    DL_UART_Main_enablePower(UART_0_INST);
+    DL_UART_Main_enablePower(UART_1_INST);
     DL_SPI_enablePower(SPI_0_INST);
 
     delay_cycles(POWER_STARTUP_DELAY);
@@ -137,25 +127,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralOutputFunction(GPIO_Motor_PWM2_C1_IOMUX,GPIO_Motor_PWM2_C1_IOMUX_FUNC);
     DL_GPIO_enableOutput(GPIO_Motor_PWM2_C1_PORT, GPIO_Motor_PWM2_C1_PIN);
 
-    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_I2C_0_IOMUX_SDA,
-        GPIO_I2C_0_IOMUX_SDA_FUNC, DL_GPIO_INVERSION_DISABLE,
-        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
-        DL_GPIO_WAKEUP_DISABLE);
-    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_I2C_0_IOMUX_SCL,
-        GPIO_I2C_0_IOMUX_SCL_FUNC, DL_GPIO_INVERSION_DISABLE,
-        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
-        DL_GPIO_WAKEUP_DISABLE);
-    DL_GPIO_enableHiZ(GPIO_I2C_0_IOMUX_SDA);
-    DL_GPIO_enableHiZ(GPIO_I2C_0_IOMUX_SCL);
-
     DL_GPIO_initPeripheralOutputFunction(
-        GPIO_UART_DEBUG_IOMUX_TX, GPIO_UART_DEBUG_IOMUX_TX_FUNC);
+        GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
-        GPIO_UART_DEBUG_IOMUX_RX, GPIO_UART_DEBUG_IOMUX_RX_FUNC);
+        GPIO_UART_0_IOMUX_RX, GPIO_UART_0_IOMUX_RX_FUNC);
     DL_GPIO_initPeripheralOutputFunction(
-        GPIO_UART_WIT_IOMUX_TX, GPIO_UART_WIT_IOMUX_TX_FUNC);
+        GPIO_UART_1_IOMUX_TX, GPIO_UART_1_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
-        GPIO_UART_WIT_IOMUX_RX, GPIO_UART_WIT_IOMUX_RX_FUNC);
+        GPIO_UART_1_IOMUX_RX, GPIO_UART_1_IOMUX_RX_FUNC);
 
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_SPI_0_IOMUX_SCLK, GPIO_SPI_0_IOMUX_SCLK_FUNC);
@@ -164,86 +143,110 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralInputFunction(
         GPIO_SPI_0_IOMUX_POCI, GPIO_SPI_0_IOMUX_POCI_FUNC);
 
+    DL_GPIO_initDigitalOutput(PORTB_LED_R_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTB_LED_G_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTB_LED_B_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTB_OLED_RST_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTB_OLED_DC_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTB_OLED_CS_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_KEY1_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_KEY2_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_KEY3_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_KEY4_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_1_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_2_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_3_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_4_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_5_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_6_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_7_IOMUX);
+
+    DL_GPIO_initDigitalInput(PORTB_ENCODER_8_IOMUX);
+
     DL_GPIO_initDigitalOutput(PORTA_BEEP_IOMUX);
 
-    DL_GPIO_initDigitalOutput(PCA9555_SCL1_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_SCL1_IOMUX);
 
-    DL_GPIO_initDigitalOutput(PCA9555_SDA1_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_SDA1_IOMUX);
 
-    DL_GPIO_initDigitalOutput(OLED_SPI_RST_OLED_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_SCL2_IOMUX);
 
-    DL_GPIO_initDigitalOutput(OLED_SPI_DC_OLED_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_SDA2_IOMUX);
 
-    DL_GPIO_initDigitalOutput(OLED_SPI_CS_OLED_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_HC595_DS_IOMUX);
 
-    DL_GPIO_initDigitalInput(ENCODER_M1_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_HC595_SHCP_IOMUX);
 
-    DL_GPIO_initDigitalInput(ENCODER_M2_IOMUX);
+    DL_GPIO_initDigitalOutput(PORTA_HC595_STCP_IOMUX);
 
-    DL_GPIO_initDigitalInput(ENCODER_M3_IOMUX);
-
-    DL_GPIO_initDigitalInput(ENCODER_M4_IOMUX);
-
-    DL_GPIO_initDigitalInputFeatures(GPIO_KEY_PIN_0_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalInputFeatures(GPIO_KEY_PIN_1_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalInputFeatures(GPIO_KEY_PIN_2_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalInputFeatures(GPIO_KEY_PIN_3_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalInputFeatures(GPIO_KEY_PIN_4_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalOutput(PORTB_HEATER_IOMUX);
-
-    DL_GPIO_initDigitalOutput(PORTB_R_IOMUX);
-
-    DL_GPIO_initDigitalOutput(PORTB_G_IOMUX);
-
-    DL_GPIO_initDigitalOutput(PORTB_B_IOMUX);
-
-    DL_GPIO_clearPins(GPIOA, PORTA_BEEP_PIN |
-		PCA9555_SCL1_PIN |
-		PCA9555_SDA1_PIN);
-    DL_GPIO_enableOutput(GPIOA, PORTA_BEEP_PIN |
-		PCA9555_SCL1_PIN |
-		PCA9555_SDA1_PIN);
-    DL_GPIO_clearPins(GPIOB, OLED_SPI_RST_OLED_PIN |
-		OLED_SPI_DC_OLED_PIN |
-		OLED_SPI_CS_OLED_PIN |
-		PORTB_HEATER_PIN |
-		PORTB_R_PIN |
-		PORTB_G_PIN |
-		PORTB_B_PIN);
-    DL_GPIO_enableOutput(GPIOB, OLED_SPI_RST_OLED_PIN |
-		OLED_SPI_DC_OLED_PIN |
-		OLED_SPI_CS_OLED_PIN |
-		PORTB_HEATER_PIN |
-		PORTB_R_PIN |
-		PORTB_G_PIN |
-		PORTB_B_PIN);
-    DL_GPIO_setLowerPinsPolarity(GPIOB, DL_GPIO_PIN_4_EDGE_RISE_FALL |
+    DL_GPIO_clearPins(PORTA_PORT, PORTA_BEEP_PIN |
+		PORTA_SCL1_PIN |
+		PORTA_SDA1_PIN |
+		PORTA_SCL2_PIN |
+		PORTA_SDA2_PIN |
+		PORTA_HC595_DS_PIN |
+		PORTA_HC595_SHCP_PIN |
+		PORTA_HC595_STCP_PIN);
+    DL_GPIO_enableOutput(PORTA_PORT, PORTA_BEEP_PIN |
+		PORTA_SCL1_PIN |
+		PORTA_SDA1_PIN |
+		PORTA_SCL2_PIN |
+		PORTA_SDA2_PIN |
+		PORTA_HC595_DS_PIN |
+		PORTA_HC595_SHCP_PIN |
+		PORTA_HC595_STCP_PIN);
+    DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_R_PIN |
+		PORTB_LED_G_PIN |
+		PORTB_LED_B_PIN |
+		PORTB_OLED_RST_PIN |
+		PORTB_OLED_DC_PIN |
+		PORTB_OLED_CS_PIN);
+    DL_GPIO_enableOutput(PORTB_PORT, PORTB_LED_R_PIN |
+		PORTB_LED_G_PIN |
+		PORTB_LED_B_PIN |
+		PORTB_OLED_RST_PIN |
+		PORTB_OLED_DC_PIN |
+		PORTB_OLED_CS_PIN);
+    DL_GPIO_setLowerPinsPolarity(PORTB_PORT, DL_GPIO_PIN_4_EDGE_RISE_FALL |
 		DL_GPIO_PIN_5_EDGE_RISE_FALL |
 		DL_GPIO_PIN_6_EDGE_RISE_FALL |
-		DL_GPIO_PIN_7_EDGE_RISE_FALL);
-    DL_GPIO_clearInterruptStatus(GPIOB, ENCODER_M1_PIN |
-		ENCODER_M2_PIN |
-		ENCODER_M3_PIN |
-		ENCODER_M4_PIN);
-    DL_GPIO_enableInterrupt(GPIOB, ENCODER_M1_PIN |
-		ENCODER_M2_PIN |
-		ENCODER_M3_PIN |
-		ENCODER_M4_PIN);
+		DL_GPIO_PIN_7_EDGE_RISE_FALL |
+		DL_GPIO_PIN_13_EDGE_RISE_FALL);
+    DL_GPIO_setUpperPinsPolarity(PORTB_PORT, DL_GPIO_PIN_19_EDGE_RISE_FALL |
+		DL_GPIO_PIN_18_EDGE_RISE_FALL |
+		DL_GPIO_PIN_23_EDGE_RISE_FALL);
+    DL_GPIO_clearInterruptStatus(PORTB_PORT, PORTB_ENCODER_1_PIN |
+		PORTB_ENCODER_2_PIN |
+		PORTB_ENCODER_3_PIN |
+		PORTB_ENCODER_4_PIN |
+		PORTB_ENCODER_5_PIN |
+		PORTB_ENCODER_6_PIN |
+		PORTB_ENCODER_7_PIN |
+		PORTB_ENCODER_8_PIN);
+    DL_GPIO_enableInterrupt(PORTB_PORT, PORTB_ENCODER_1_PIN |
+		PORTB_ENCODER_2_PIN |
+		PORTB_ENCODER_3_PIN |
+		PORTB_ENCODER_4_PIN |
+		PORTB_ENCODER_5_PIN |
+		PORTB_ENCODER_6_PIN |
+		PORTB_ENCODER_7_PIN |
+		PORTB_ENCODER_8_PIN);
 
 }
 
@@ -375,79 +378,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_Motor_PWM2_init(void) {
 
 
 
-/*
- * Timer clock configuration to be sourced by BUSCLK /  (10000000 Hz)
- * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   101010.101010101 Hz = 10000000 Hz / (8 * (98 + 1))
- */
-static const DL_TimerA_ClockConfig gTIMER_delayClockConfig = {
-    .clockSel    = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
-    .prescale    = 98U,
-};
-
-/*
- * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
- * TIMER_delay_INST_LOAD_VALUE = (0.01ms * 101010.101010101 Hz) - 1
- */
-static const DL_TimerA_TimerConfig gTIMER_delayTimerConfig = {
-    .period     = TIMER_delay_INST_LOAD_VALUE,
-    .timerMode  = DL_TIMER_TIMER_MODE_ONE_SHOT,
-    .startTimer = DL_TIMER_STOP,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_TIMER_delay_init(void) {
-
-    DL_TimerA_setClockConfig(TIMER_delay_INST,
-        (DL_TimerA_ClockConfig *) &gTIMER_delayClockConfig);
-
-    DL_TimerA_initTimerMode(TIMER_delay_INST,
-        (DL_TimerA_TimerConfig *) &gTIMER_delayTimerConfig);
-    DL_TimerA_enableInterrupt(TIMER_delay_INST , DL_TIMERA_INTERRUPT_ZERO_EVENT);
-    DL_TimerA_enableClock(TIMER_delay_INST);
-
-
-
-
-
-}
-
-
-static const DL_I2C_ClockConfig gI2C_0ClockConfig = {
-    .clockSel = DL_I2C_CLOCK_BUSCLK,
-    .divideRatio = DL_I2C_CLOCK_DIVIDE_1,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_I2C_0_init(void) {
-
-    DL_I2C_setClockConfig(I2C_0_INST,
-        (DL_I2C_ClockConfig *) &gI2C_0ClockConfig);
-    DL_I2C_setAnalogGlitchFilterPulseWidth(I2C_0_INST,
-        DL_I2C_ANALOG_GLITCH_FILTER_WIDTH_50NS);
-    DL_I2C_enableAnalogGlitchFilter(I2C_0_INST);
-
-    /* Configure Controller Mode */
-    DL_I2C_resetControllerTransfer(I2C_0_INST);
-    /* Set frequency to 800000 Hz*/
-    DL_I2C_setTimerPeriod(I2C_0_INST, 4);
-    DL_I2C_setControllerTXFIFOThreshold(I2C_0_INST, DL_I2C_TX_FIFO_LEVEL_EMPTY);
-    DL_I2C_setControllerRXFIFOThreshold(I2C_0_INST, DL_I2C_RX_FIFO_LEVEL_BYTES_1);
-    DL_I2C_enableControllerClockStretching(I2C_0_INST);
-
-
-    /* Enable module */
-    DL_I2C_enableController(I2C_0_INST);
-
-
-}
-
-
-static const DL_UART_Main_ClockConfig gUART_DEBUGClockConfig = {
+static const DL_UART_Main_ClockConfig gUART_0ClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
     .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
 };
 
-static const DL_UART_Main_Config gUART_DEBUGConfig = {
+static const DL_UART_Main_Config gUART_0Config = {
     .mode        = DL_UART_MAIN_MODE_NORMAL,
     .direction   = DL_UART_MAIN_DIRECTION_TX_RX,
     .flowControl = DL_UART_MAIN_FLOW_CONTROL_NONE,
@@ -456,42 +392,42 @@ static const DL_UART_Main_Config gUART_DEBUGConfig = {
     .stopBits    = DL_UART_MAIN_STOP_BITS_ONE
 };
 
-SYSCONFIG_WEAK void SYSCFG_DL_UART_DEBUG_init(void)
+SYSCONFIG_WEAK void SYSCFG_DL_UART_0_init(void)
 {
-    DL_UART_Main_setClockConfig(UART_DEBUG_INST, (DL_UART_Main_ClockConfig *) &gUART_DEBUGClockConfig);
+    DL_UART_Main_setClockConfig(UART_0_INST, (DL_UART_Main_ClockConfig *) &gUART_0ClockConfig);
 
-    DL_UART_Main_init(UART_DEBUG_INST, (DL_UART_Main_Config *) &gUART_DEBUGConfig);
+    DL_UART_Main_init(UART_0_INST, (DL_UART_Main_Config *) &gUART_0Config);
     /*
      * Configure baud rate by setting oversampling and baud rate divisors.
      *  Target baud rate: 115200
      *  Actual baud rate: 115190.78
      */
-    DL_UART_Main_setOversampling(UART_DEBUG_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(UART_DEBUG_INST, UART_DEBUG_IBRD_40_MHZ_115200_BAUD, UART_DEBUG_FBRD_40_MHZ_115200_BAUD);
+    DL_UART_Main_setOversampling(UART_0_INST, DL_UART_OVERSAMPLING_RATE_16X);
+    DL_UART_Main_setBaudRateDivisor(UART_0_INST, UART_0_IBRD_40_MHZ_115200_BAUD, UART_0_FBRD_40_MHZ_115200_BAUD);
 
 
     /* Configure Interrupts */
-    DL_UART_Main_enableInterrupt(UART_DEBUG_INST,
+    DL_UART_Main_enableInterrupt(UART_0_INST,
                                  DL_UART_MAIN_INTERRUPT_DMA_DONE_TX |
                                  DL_UART_MAIN_INTERRUPT_EOT_DONE |
                                  DL_UART_MAIN_INTERRUPT_RX);
 
     /* Configure DMA Transmit Event */
-    DL_UART_Main_enableDMATransmitEvent(UART_DEBUG_INST);
+    DL_UART_Main_enableDMATransmitEvent(UART_0_INST);
     /* Configure FIFOs */
-    DL_UART_Main_enableFIFOs(UART_DEBUG_INST);
-    DL_UART_Main_setRXFIFOThreshold(UART_DEBUG_INST, DL_UART_RX_FIFO_LEVEL_ONE_ENTRY);
-    DL_UART_Main_setTXFIFOThreshold(UART_DEBUG_INST, DL_UART_TX_FIFO_LEVEL_ONE_ENTRY);
+    DL_UART_Main_enableFIFOs(UART_0_INST);
+    DL_UART_Main_setRXFIFOThreshold(UART_0_INST, DL_UART_RX_FIFO_LEVEL_ONE_ENTRY);
+    DL_UART_Main_setTXFIFOThreshold(UART_0_INST, DL_UART_TX_FIFO_LEVEL_ONE_ENTRY);
 
-    DL_UART_Main_enable(UART_DEBUG_INST);
+    DL_UART_Main_enable(UART_0_INST);
 }
 
-static const DL_UART_Main_ClockConfig gUART_WITClockConfig = {
+static const DL_UART_Main_ClockConfig gUART_1ClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
     .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
 };
 
-static const DL_UART_Main_Config gUART_WITConfig = {
+static const DL_UART_Main_Config gUART_1Config = {
     .mode        = DL_UART_MAIN_MODE_NORMAL,
     .direction   = DL_UART_MAIN_DIRECTION_TX_RX,
     .flowControl = DL_UART_MAIN_FLOW_CONTROL_NONE,
@@ -500,28 +436,28 @@ static const DL_UART_Main_Config gUART_WITConfig = {
     .stopBits    = DL_UART_MAIN_STOP_BITS_ONE
 };
 
-SYSCONFIG_WEAK void SYSCFG_DL_UART_WIT_init(void)
+SYSCONFIG_WEAK void SYSCFG_DL_UART_1_init(void)
 {
-    DL_UART_Main_setClockConfig(UART_WIT_INST, (DL_UART_Main_ClockConfig *) &gUART_WITClockConfig);
+    DL_UART_Main_setClockConfig(UART_1_INST, (DL_UART_Main_ClockConfig *) &gUART_1ClockConfig);
 
-    DL_UART_Main_init(UART_WIT_INST, (DL_UART_Main_Config *) &gUART_WITConfig);
+    DL_UART_Main_init(UART_1_INST, (DL_UART_Main_Config *) &gUART_1Config);
     /*
      * Configure baud rate by setting oversampling and baud rate divisors.
-     *  Target baud rate: 9600
-     *  Actual baud rate: 9600.1
+     *  Target baud rate: 115200
+     *  Actual baud rate: 115190.78
      */
-    DL_UART_Main_setOversampling(UART_WIT_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(UART_WIT_INST, UART_WIT_IBRD_80_MHZ_9600_BAUD, UART_WIT_FBRD_80_MHZ_9600_BAUD);
+    DL_UART_Main_setOversampling(UART_1_INST, DL_UART_OVERSAMPLING_RATE_16X);
+    DL_UART_Main_setBaudRateDivisor(UART_1_INST, UART_1_IBRD_80_MHZ_115200_BAUD, UART_1_FBRD_80_MHZ_115200_BAUD);
 
 
     /* Configure Interrupts */
-    DL_UART_Main_enableInterrupt(UART_WIT_INST,
+    DL_UART_Main_enableInterrupt(UART_1_INST,
                                  DL_UART_MAIN_INTERRUPT_RX);
     /* Setting the Interrupt Priority */
-    NVIC_SetPriority(UART_WIT_INST_INT_IRQN, 2);
+    NVIC_SetPriority(UART_1_INST_INT_IRQN, 2);
 
 
-    DL_UART_Main_enable(UART_WIT_INST);
+    DL_UART_Main_enable(UART_1_INST);
 }
 
 static const DL_SPI_Config gSPI_0_config = {
@@ -563,7 +499,7 @@ static const DL_DMA_Config gDMA_CH0Config = {
     .srcIncrement   = DL_DMA_ADDR_INCREMENT,
     .destWidth      = DL_DMA_WIDTH_BYTE,
     .srcWidth       = DL_DMA_WIDTH_BYTE,
-    .trigger        = UART_DEBUG_INST_DMA_TRIGGER,
+    .trigger        = UART_0_INST_DMA_TRIGGER,
     .triggerType    = DL_DMA_TRIGGER_TYPE_EXTERNAL,
 };
 

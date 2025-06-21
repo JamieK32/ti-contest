@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\math;..\custom\math\fusion;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\dmplib\Inc;..\custom\app\imu</IncludePath>
+              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\math;..\custom\math\fusion;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\dmplib\Inc;..\custom\app\imu;..\custom\math\iqmath\_IQNfunctions</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -433,6 +433,11 @@
               <FileName>wit_jyxx_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\tests\wit_jyxx_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\tests\motor_test.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -609,6 +614,11 @@
               <FileType>1</FileType>
               <FilePath>..\custom\hardware\drivers\rgb_led.c</FilePath>
             </File>
+            <File>
+              <FileName>_74hc595.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\_74hc595.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -783,6 +793,101 @@
               <FileName>u8g2_fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\third_party\u8g2\csrc\u8g2_fonts.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>math/iqmath</GroupName>
+          <Files>
+            <File>
+              <FileName>_atoIQN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_atoIQN.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNasin_acos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNasin_acos.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNatan2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNatan2.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNdiv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNdiv.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNexp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNexp.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNfrac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNfrac.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNlog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNlog.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNmpy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNmpy.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNmpyIQX.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNmpyIQX.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNrepeat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrepeat.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNrmpy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrmpy.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNrsmpy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNrsmpy.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNsin_cos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNsin_cos.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNsqrt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNsqrt.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNtables.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtables.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNtoa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtoa.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNtoF.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNtoF.c</FilePath>
+            </File>
+            <File>
+              <FileName>_IQNversion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\math\iqmath\_IQNfunctions\_IQNversion.c</FilePath>
             </File>
           </Files>
         </Group>

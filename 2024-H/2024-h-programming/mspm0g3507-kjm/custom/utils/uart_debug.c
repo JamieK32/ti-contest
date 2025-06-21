@@ -16,7 +16,7 @@ void debug_uart_rx_task(void *param);
  * @brief 初始化 UART 相关的 FreeRTOS 资源
  */
 void debug_uart_init(void) {
-		NVIC_EnableIRQ(UART_DEBUG_INST_INT_IRQN);
+		NVIC_EnableIRQ(UART_0_INST_INT_IRQN);
     uart_rx_queue = xQueueCreate(UART_RX_QUEUE_SIZE, sizeof(uint8_t));
     uart_tx_queue = xQueueCreate(UART_TX_QUEUE_SIZE, sizeof(uart_tx_packet_t)); // 修改队列元素类型为 uart_tx_packet_t
     xTaskCreate(debug_uart_rx_task, "UART_RX", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &uart_rx_task_handle);
@@ -29,7 +29,7 @@ void debug_uart_init(void) {
  * @param byte 要发送的字节
  */
 void debug_uart_send_byte(uint8_t byte) {
-    UART_DEBUG_INST->TXDATA = byte;
+    UART_0_INST->TXDATA = byte;
 }
 
 /**
@@ -42,7 +42,7 @@ void debug_uart_send_bytes(const uint8_t *data, size_t length) {
     // 设置源地址
     DL_DMA_setSrcAddr(DMA, DMA_CH0_CHAN_ID, (uint32_t)(data));
     // 设置目标地址
-    DL_DMA_setDestAddr(DMA, DMA_CH0_CHAN_ID, (uint32_t)(&UART_DEBUG_INST->TXDATA));
+    DL_DMA_setDestAddr(DMA, DMA_CH0_CHAN_ID, (uint32_t)(&UART_0_INST->TXDATA));
     // 设置要搬运的字节数
     DL_DMA_setTransferSize(DMA, DMA_CH0_CHAN_ID, length);
     // 使能 DMA 通道

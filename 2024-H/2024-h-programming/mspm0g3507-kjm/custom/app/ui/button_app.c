@@ -10,7 +10,7 @@
 
 struct Button buttons[BUTTON_NUM]; //5个按键
 
-uint8_t button_ids[BUTTON_NUM] = {BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT, BUTTON_MIDDLE};
+uint8_t button_ids[BUTTON_NUM] = {BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT};
 
 static TimerHandle_t xButtonTimer = NULL; // 软件定时器句柄
 
@@ -18,19 +18,16 @@ static inline uint8_t read_button_GPIO(uint8_t button_id) {
 	switch(button_id)
 	{
 		case BUTTON_UP:
-			return DL_GPIO_readPins(GPIO_KEY_PORT, GPIO_KEY_PIN_0_PIN) == 0 ? 0 : 1;
+			return DL_GPIO_readPins(PORTB_PORT, PORTB_KEY1_PIN) == 0 ? 0 : 1;
 			break;
 		case BUTTON_DOWN:
-			return DL_GPIO_readPins(GPIO_KEY_PORT, GPIO_KEY_PIN_1_PIN) == 0 ? 0 : 1;
+			return DL_GPIO_readPins(PORTB_PORT, PORTB_KEY2_PIN) == 0 ? 0 : 1;
 			break;
 		case BUTTON_LEFT:
-			return DL_GPIO_readPins(GPIO_KEY_PORT, GPIO_KEY_PIN_2_PIN) == 0 ? 0 : 1;
+			return DL_GPIO_readPins(PORTB_PORT, PORTB_KEY3_PIN) == 0 ? 0 : 1;
 			break;
 		case BUTTON_RIGHT:
-			return DL_GPIO_readPins(GPIO_KEY_PORT, GPIO_KEY_PIN_3_PIN) == 0 ? 0 : 1;
-			break;
-		case BUTTON_MIDDLE:
-			return DL_GPIO_readPins(GPIO_KEY_PORT, GPIO_KEY_PIN_4_PIN) == 0 ? 0 : 1;
+			return DL_GPIO_readPins(PORTB_PORT, PORTB_KEY4_PIN) == 0 ? 0 : 1;
 			break;
 		default:
 			return 0;

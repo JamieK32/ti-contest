@@ -11,13 +11,13 @@ extern QueueHandle_t uart_rx_queue;
 /**
  * @brief UART 中断处理函数
  */
-void UART_DEBUG_INST_IRQHandler(void) {
+void UART_0_INST_IRQHandler(void) {
     uint8_t uart_data;
-    DL_UART_IIDX idx = DL_UART_getPendingInterrupt(UART_DEBUG_INST);
+    DL_UART_IIDX idx = DL_UART_getPendingInterrupt(UART_0_INST);
 
     switch (idx) {
         case DL_UART_IIDX_RX: // 如果是接收中断
-            uart_data = DL_UART_Main_receiveData(UART_DEBUG_INST);
+            uart_data = DL_UART_Main_receiveData(UART_0_INST);
             // 将接收到的数据放入队列
             xQueueSendFromISR(uart_rx_queue, &uart_data, NULL);
             break;
@@ -35,6 +35,6 @@ void UART_DEBUG_INST_IRQHandler(void) {
             break;
     }
 
-    DL_UART_clearInterruptStatus(UART_DEBUG_INST, idx);
+    DL_UART_clearInterruptStatus(UART_0_INST, idx);
 		portYIELD_FROM_ISR(uart_tx_task_handle);
 }

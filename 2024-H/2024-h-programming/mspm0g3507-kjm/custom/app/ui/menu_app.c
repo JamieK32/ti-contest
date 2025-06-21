@@ -172,8 +172,6 @@ static inline void btn_single_click_callback(void* btn)
 			enter_current(); 
     } else if (button == &buttons[BUTTON_RIGHT]) {
 			return_previous();
-    } else if (button == &buttons[BUTTON_MIDDLE]) {
-
     }
     NotifyMenuFromISR();
 }

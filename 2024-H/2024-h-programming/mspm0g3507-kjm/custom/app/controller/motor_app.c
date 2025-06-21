@@ -3,10 +3,9 @@
 extern motorHardWareInterface l298n_interface; // 具体的 L298N 实现接口
 extern motorHardWareInterface tb6612_interface;
 
-// 定义外部可访问的配置结构体实例
-// 在应用层初始化时填充这些配置
-MotorSystemConfig g_motor_system_config = {
-    .motor_type = MOTOR_TYPE_TWO_WHEEL, // 默认两轮
+/*
+MotorSystemConfig l298n_cfg = {
+    .motor_count = MOTOR_TYPE_TWO_WHEEL, // 默认两轮
     .max_pwm_value = 3000, // 默认最大 PWM 值
 
     .motors = {
@@ -26,16 +25,51 @@ MotorSystemConfig g_motor_system_config = {
         },
     }
 };
+*/
+
+MotorSystemConfig tb6612_cfg = {
+	.motor_count = MOTOR_TYPE_FOUR_WHEEL,
+	.max_pwm_value = 3000,
+	
+	.motors = {
+		[MOTOR_FRONT_LEFT] = {
+				.enabled = true, // 默认启用
+				.timer_instance = (GPTIMER_Regs*) Motor_PWM1_INST, // 定时器实例指针
+				.pwm_cc_index = DL_TIMER_CC_0_INDEX,
+				.polarity = false
+		},
+		
+		[MOTOR_FRONT_RIGHT] = {
+				.enabled = true, // 默认启用
+				.timer_instance = (GPTIMER_Regs*) Motor_PWM1_INST,
+				.pwm_cc_index = DL_TIMER_CC_1_INDEX,
+				.polarity = true
+		},
+	
+		[MOTOR_BACK_LEFT] = {
+				.enabled = true, // 默认启用
+				.timer_instance = (GPTIMER_Regs*) Motor_PWM2_INST,
+				.pwm_cc_index = DL_TIMER_CC_0_INDEX,
+				.polarity = true
+		},
+		[MOTOR_BACK_RIGHT] = {
+				.enabled = true, // 默认启用
+				.timer_instance = (GPTIMER_Regs*) Motor_PWM2_INST,
+				.pwm_cc_index = DL_TIMER_CC_1_INDEX,
+				.polarity = false
+		},
+	}
+};
 
 
 void motor_init(void) {
-	l298n_interface.enable_all_motor(&g_motor_system_config);
+	tb6612_interface.enable_all_motor(&tb6612_cfg);
 }
 
-void motor_set_pwm(MotorID id, int pwm) {
-	l298n_interface.set_pwms(&g_motor_system_config, id, pwm);
+void motor_set_pwms(int *pwms) {
+	tb6612_interface.set_pwms(&tb6612_cfg, pwms);
 }
 
 void motor_stop(void) {
-	l298n_interface.enable_all_motor(&g_motor_system_config);
+	tb6612_interface.disable_all_motor(&tb6612_cfg);
 }

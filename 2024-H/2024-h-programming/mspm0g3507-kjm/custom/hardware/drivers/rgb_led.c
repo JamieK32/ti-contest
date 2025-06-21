@@ -13,9 +13,9 @@ void led_off(void) {
 }
 
 void led_set_rgb(uint8_t R, uint8_t G, uint8_t B) {
-	R == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_R_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_R_PIN);
-	G == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_G_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_G_PIN);
-	B == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_B_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_B_PIN);
+	R == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_R_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_LED_R_PIN);
+	G == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_G_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_LED_G_PIN);
+	B == 0 ? DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_B_PIN) : DL_GPIO_setPins(PORTB_PORT, PORTB_LED_B_PIN);
 }
 
 void led_set_color(Color color) {

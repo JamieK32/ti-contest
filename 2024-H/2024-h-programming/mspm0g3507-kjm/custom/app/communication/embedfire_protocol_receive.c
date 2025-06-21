@@ -31,7 +31,7 @@ void protocol_register_rx_callbacks(const ProtocolRxCallbacks* callbacks) {
     }
 }
 void embedfire_protocol_receive_init(void) {
-	NVIC_EnableIRQ(UART_DEBUG_INST_INT_IRQN);
+	NVIC_EnableIRQ(UART_0_INST_INT_IRQN);
 }
 
 /**

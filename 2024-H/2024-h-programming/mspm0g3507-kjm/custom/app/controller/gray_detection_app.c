@@ -4,12 +4,12 @@
 #include "log.h"
 
 static sw_i2c_t pca9555_i2c = {
-	  .sclPort = PCA9555_PORT,
-    .sdaPort = PCA9555_PORT,
-    .sclPin = PCA9555_SCL1_PIN,
-    .sdaPin = PCA9555_SDA1_PIN,
-    .sclIOMUX = PCA9555_SCL1_IOMUX,
-    .sdaIOMUX = PCA9555_SDA1_IOMUX,
+	  .sclPort = PORTA_PORT,
+    .sdaPort = PORTA_PORT,
+    .sclPin = PORTA_SCL1_PIN,
+    .sdaPin = PORTA_SDA1_PIN,
+    .sclIOMUX = PORTA_SCL1_IOMUX,
+    .sdaIOMUX = PORTA_SDA1_IOMUX,
 };
 
 void gray_detection_init(void) {

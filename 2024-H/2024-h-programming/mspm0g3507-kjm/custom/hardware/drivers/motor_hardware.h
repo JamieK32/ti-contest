@@ -20,7 +20,7 @@ typedef enum {
 typedef enum {
     MOTOR_TYPE_TWO_WHEEL = 2,
     MOTOR_TYPE_FOUR_WHEEL = 4
-} MotorType;
+} MotorCount;
 
 // 电机配置结构体
 // 包含每个电机所需的硬件信息
@@ -33,24 +33,17 @@ typedef struct {
     uint32_t cc_forward_pwm_index; // 正向 PWM 通道索引 (例如 DL_TIMER_CC_1_INDEX)
 		// L298N INTERFACE
 	
-		// TB6612 INTERFACE
+		// TB6612 + 74hc595 INTERFACE
 		// PWM 输出通道索引 (如果方向由 GPIO 控制，只需要一个 PWM 通道)
 		uint32_t pwm_cc_index;
-	
-		GPIO_Regs* dir_gpio;
-    uint32_t dir_pin1;
-    uint32_t dir_pin2;
-	
-		// Standby 引脚
-		GPIO_Regs* stby_gpio;  // Standby GPIO 端口
-    uint32_t stby_pin; 		 // Standby 引脚
-		// TB6612 INTERFACE
+		bool polarity;
+		// TB6612 + 74hc595 INTERFACE
 	
 } MotorConfig;
 
 // 系统级电机参数配置结构体
 typedef struct {
-    MotorType motor_type;       // 电机系统类型 (两轮或四轮)
+    MotorCount motor_count;       // 电机系统类型 (两轮或四轮)
     int max_pwm_value;          // 最大 PWM 值 (PWM 值是 uint32_t，但这里用 int 方便限幅处理正负)
     MotorConfig motors[NUM_MOTORS]; // 每个电机的配置
 } MotorSystemConfig;
@@ -59,7 +52,7 @@ typedef struct {
 typedef struct motorHardWareInterface {
     void (*enable_all_motor)(const MotorSystemConfig* config);
     void (*disable_all_motor)(const MotorSystemConfig* config);
-    void (*set_pwms)(const MotorSystemConfig* sys_config, uint8_t, int); // 原有的按电机编号设置 PWM
+    void (*set_pwms)(const MotorSystemConfig* sys_config, int*); // 原有的按电机编号设置 PWM
 } motorHardWareInterface;
 
 extern motorHardWareInterface l298n_interface; // 具体的 L298N 实现接口
@@ -77,8 +70,6 @@ static inline int amplitude_limit(int speed, int limit) {
     } else {
         return speed;
     }
-    // 如果要使用浮点运算版本并链接数学库，需要包含 <math.h>
-    // return (int)fmin(fmax((float)speed, (float)-limit), (float)limit);
 }
 
 

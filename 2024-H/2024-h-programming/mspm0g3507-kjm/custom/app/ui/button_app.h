@@ -3,14 +3,13 @@
 
 #include "multi_button.h"
 
-#define BUTTON_NUM 5
+#define BUTTON_NUM 4
 
 typedef enum {
 	BUTTON_UP = 0,
 	BUTTON_DOWN,
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
-	BUTTON_MIDDLE
 } BUTTON_ID;
 
 void user_button_init(BtnCallback single_click_cb, BtnCallback long_press_cb);
