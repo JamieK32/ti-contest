@@ -42,6 +42,7 @@ void angle_pid_init(void) {
 	PID_SetOutputLimit(&anglePid, 40.0, -40.0); 
 }
 
+/* ------------ 循迹 PID ------------ */
 void track_pid_init(void) {
     PID_Init(&trackPid, PID_TYPE_POSITION);
     PID_SetParams(&trackPid, 8, 0, 0);

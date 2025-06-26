@@ -382,9 +382,6 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>document</GroupName>
-        </Group>
-        <Group>
           <GroupName>include</GroupName>
           <Files>
             <File>
