@@ -47,7 +47,7 @@ static action_config_t task3_action_config = {
 // 默认动作配置表，用户可直接修改此表定义动作序列和循环模式
 static action_config_t task4_action_config = {
     .actions = {
-        {ACTION_SPIN_TURN, -35.0f},                       // 旋转到-45度
+        {ACTION_SPIN_TURN, -35.0f},                       // 旋转到-35度
         {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT}, // 通过直行修正的方式直到黑线停下 
         {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},       // 通过循迹修正的方式直到白线停下
         {ACTION_SPIN_TURN, -145.0f},                      // 旋转到-145度
@@ -112,11 +112,12 @@ static MenuNode *run_tasks_children[] = { &task01, &task02, &task03, &task04 };
 static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage};
 
 float test_1, test_2;
+extern float gray_byte;
 
 // 创建变量菜单
 menu_variables_t my_variables_1[] = {
-    {"SpeedKp", &test_1},
-    {"SpeedKi", &test_1},
+    {"angle", &jy901s.yaw},
+    {"grayByte", &gray_byte},
     {"SpeedKd", &test_1},
 		{"Voltage1", &test_1},
 		{"Voltage2", &test_1},

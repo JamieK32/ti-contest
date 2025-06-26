@@ -75,6 +75,7 @@ void vOLEDTask(void *pvParameters)
 		draw_menu(current_menu);
     for ( ; ; ) {
       ulTaskNotifyTake(pdTRUE, portMAX_DELAY); // 等待通知、收到自动清0
+			if (current_menu->type != MENU_TYPE_VARIABLES_VIEW) stop_listening_variable_timer();
       draw_menu(current_menu);
 			execute_callback();
     }

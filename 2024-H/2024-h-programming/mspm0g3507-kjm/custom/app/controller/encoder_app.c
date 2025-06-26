@@ -116,20 +116,20 @@ void encoder_application_init(void) {
         // Encoder 2
         {
             .pin1_gpio_handle = PORTB_PORT, 
-            .pin1_bitmask = PORTB_ENCODER_5_PIN,
-            .pin1_handle = (void*)(uintptr_t)PORTB_ENCODER_5_IIDX,
+            .pin1_bitmask = PORTB_ENCODER_6_PIN,
+            .pin1_handle = (void*)(uintptr_t)PORTB_ENCODER_6_IIDX,
             .pin2_gpio_handle = PORTB_PORT, 
-            .pin2_bitmask = PORTB_ENCODER_6_PIN,
-            .pin2_handle = (void*)(uintptr_t)PORTB_ENCODER_6_IIDX
+            .pin2_bitmask = PORTB_ENCODER_5_PIN,
+            .pin2_handle = (void*)(uintptr_t)PORTB_ENCODER_5_IIDX
         },
         // Encoder 3
         {
             .pin1_gpio_handle = PORTB_PORT, 
-            .pin1_bitmask = PORTB_ENCODER_7_PIN,
-            .pin1_handle = (void*)(uintptr_t)PORTB_ENCODER_7_IIDX,
+            .pin1_bitmask = PORTB_ENCODER_8_PIN,
+            .pin1_handle = (void*)(uintptr_t)PORTB_ENCODER_8_IIDX,
             .pin2_gpio_handle = PORTB_PORT, 
-            .pin2_bitmask = PORTB_ENCODER_8_PIN,
-            .pin2_handle = (void*)(uintptr_t)PORTB_ENCODER_8_IIDX
+            .pin2_bitmask = PORTB_ENCODER_7_PIN,
+            .pin2_handle = (void*)(uintptr_t)PORTB_ENCODER_7_IIDX
         },
     };
     

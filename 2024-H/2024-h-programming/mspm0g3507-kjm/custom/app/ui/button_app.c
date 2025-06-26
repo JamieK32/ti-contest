@@ -2,17 +2,9 @@
 #include "multi_button.h"
 #include "ti_msp_dl_config.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-
-#include "log.h"
-
-struct Button buttons[BUTTON_NUM]; //5个按键
+struct Button buttons[BUTTON_NUM]; //4个按键
 
 uint8_t button_ids[BUTTON_NUM] = {BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT};
-
-static TimerHandle_t xButtonTimer = NULL; // 软件定时器句柄
 
 static inline uint8_t read_button_GPIO(uint8_t button_id) {
 	switch(button_id)

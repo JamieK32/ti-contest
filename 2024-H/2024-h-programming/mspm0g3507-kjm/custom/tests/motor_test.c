@@ -11,7 +11,7 @@
 void motor_task(void *arg) {
 		motor_init();
 		encoder_application_init();
-		int pwms[4] = {1000, 1000, 1000, 1000};
+		int pwms[4] = {-1000, -1000, -1000, -1000};
 		motor_set_pwms(pwms);
 		int a = 0, b = 0, c = 0, d = 0;
     for ( ; ; )  {

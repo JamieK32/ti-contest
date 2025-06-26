@@ -28,5 +28,6 @@
 #include "car_controller.h"
 #include "car_state_machine.h"
 #include "wit_jyxx.h"
+#include "car_debug.h"
 
 #endif // COMMON_H

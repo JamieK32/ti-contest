@@ -4,6 +4,8 @@
 #include "pca9555.h"
 
 void gray_detection_init(void);
-void gray_read_data(uint8_t *gray_datas);
+float gray_read_data(void);
+
+extern sw_i2c_t pca9555_i2c;
 
 #endif 
