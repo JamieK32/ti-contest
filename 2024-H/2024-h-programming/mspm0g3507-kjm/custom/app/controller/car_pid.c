@@ -32,7 +32,7 @@ void mileage_pid_init(void) {
 void straight_pid_init(void) {
 	PID_Init(&straightPid, PID_TYPE_POSITION);    
 	PID_SetParams(&straightPid, 4.0, 0.0, 0.0);  
-	PID_SetOutputLimit(&straightPid, 20.0, -20.0); 
+	PID_SetOutputLimit(&straightPid, 15.0, -15.0); 
 }
 
 /* ------------ 角度 PID ------------ */

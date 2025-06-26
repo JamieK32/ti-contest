@@ -7,7 +7,7 @@
 #include "alert.h"
 #include "car_pid.h"
 #include "car_debug.h"
-
+#include "_74hc595.h"
 
 #define USE_ANGLE_SENSOR 1
 #define DISTANCE_THRESHOLD_CM 1
@@ -42,8 +42,6 @@ float get_yaw(void) {
 
 void car_task(void) {
     if (car.state == CAR_STATE_STOP) {
-			clear_mileage();
-			car_stop();
 			return;
 		} 
 		update_encoder();
@@ -66,11 +64,11 @@ bool car_move_cm(float mileage, CAR_STATES move_state) {
     if (car.state != move_state) {
         car.state = move_state;
         car.target_mileage_cm = mileage;
-        clear_mileage();
+        car_reset();
     }
     float current_mileage = get_mileage_cm();
     if (fabsf(car.target_mileage_cm - current_mileage) <= DISTANCE_THRESHOLD_CM) {
-				car_stop();
+				car_reset();
         car.state = CAR_STATE_STOP;
         return true; 
     }
@@ -86,11 +84,12 @@ bool spin_turn(float angle) {
     if (car.state != CAR_STATE_TURN) {
         car.state = CAR_STATE_TURN;
         car.target_angle = angle;
+				car_reset();
     }
     float current_angle = get_yaw();
     float angle_error = calculate_angle_error(car.target_angle, current_angle);
     if (fabsf(angle_error) <= ANGLE_THRESHOLD_DEG) {
-				car_stop();
+				car_reset();
         car.state = CAR_STATE_STOP;
         return true;
     }
@@ -108,7 +107,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
     if (car.state == CAR_STATE_STOP) {
         car.state = move_state;
 				if (car.state == CAR_STATE_GO_STRAIGHT) {
-					clear_mileage();
+					car_reset();
 					car.target_mileage_cm = 0xFF; //随便给一个距离
 				}
     }
@@ -251,12 +250,6 @@ void update_turn_control(void) {
 		#endif 
 }
 
-void clear_mileage(void) {
-    for (int i = 0; i < motor_count; i++) {
-        encoder.distance_cm[i] = 0;
-    }
-}
-
 float get_mileage_cm(void) {
     float output = 0;
     for (int i = 0; i < motor_count; i++) {
@@ -265,13 +258,15 @@ float get_mileage_cm(void) {
     return output / motor_count;
 }
 
-void car_stop(void) {
+void car_reset(void) {
 	int pwms[motor_count];
 	for (int i = 0; i < motor_count; i++) {
 		car.target_speed[i] = 0;
 		pwms[i] = 0;
 		PID_Reset(&speedPid[i]);
+		encoder.distance_cm[i] = 0;
 	}
+	car.target_mileage_cm = 0;
 	PID_Reset(&mileagePid);
 	PID_Reset(&straightPid);
 	PID_Reset(&anglePid);

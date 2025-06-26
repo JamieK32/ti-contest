@@ -43,7 +43,6 @@ void car_init(void);
 void update_encoder(void);
 void update_speed_pid(void);
 float get_mileage_cm(void);
-void clear_mileage(void);
 
 bool car_move_cm(float mileage, CAR_STATES move_state);
 bool spin_turn(float angle);
@@ -52,7 +51,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES state);
 void update_straight_control(void);
 void update_turn_control(void);
 void update_track_control(void);
-void car_stop(void);
+void car_reset(void);
 
 extern encoder_t encoder;
 

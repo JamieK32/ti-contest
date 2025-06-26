@@ -129,9 +129,7 @@ void car_state_machine(void) {
         if (current_loop_count >= current_action_config->loop_count) {
             current_action_config->is_loop_enabled = false;  // 达到循环次数限制，禁用循环
             car.state = CAR_STATE_STOP;  // 确保小车进入停止状态
-            for (int i = 0; i < MOTOR_TYPE_TWO_WHEEL; i++) {
-                car.target_speed[i] = 0;  // 目标速度清零
-            }
+						car_reset();
 						task_running_flag = false;
             return;  // 退出函数，不再加载新动作
         } else {
