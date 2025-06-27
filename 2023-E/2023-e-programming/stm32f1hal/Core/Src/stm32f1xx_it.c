@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "openmv.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -197,6 +198,60 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+
+uint8_t uart_rx_data;                        // 单字节接收数据
+uint8_t uart_rx_buffer[UART_BUFFER_SIZE];    // 接收缓冲区
+volatile uint8_t uart_rx_index = 0;          // 当前缓冲区索引
+volatile uint8_t uart_data_ready = 0;        // 数据接收完成标志
+
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+
+  // 判断是否为接收中断
+  if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE) != RESET)
+  {
+    // 读取接收到的单字节数据
+    uart_rx_data = (uint8_t)(huart1.Instance->DR & 0xFF);
+
+    // 检查是否超出缓冲区大小
+    if (uart_rx_index < UART_BUFFER_SIZE - 1)
+    {
+      // 将数据保存到缓冲区中
+      uart_rx_buffer[uart_rx_index++] = uart_rx_data;
+
+      // 判断 JSON 是否以 '}' 结尾
+      if (uart_rx_data == '}') 
+      {
+        // 检查是否以 '{' 开头
+        if (uart_rx_buffer[0] == '{') 
+        {
+          uart_rx_buffer[uart_rx_index] = '\0';  // 添加字符串结束符
+          uart_data_ready = 1;                  // 标志接收完成
+          uart_rx_index = 0;                    // 重置索引，准备接收下一条数据
+        }
+        else
+        {
+          // 如果不是以 '{' 开头，重置接收状态
+          uart_rx_index = 0;
+        }
+      }
+    }
+    else
+    {
+      // 缓冲区溢出，直接重置缓冲区
+      uart_rx_index = 0;
+    }
+  }
+
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
+
 
 /* USER CODE BEGIN 1 */
 

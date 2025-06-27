@@ -19,12 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ui.h"
 #include "Servo.h"
+#include "openmv.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +58,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+static uint32_t current_time;
+static uint32_t last_time;
 /* USER CODE END 0 */
 
 /**
@@ -89,19 +92,30 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	Servo_Init();
 	Servo_Reset();
-//	menu_init_and_create();
+	menu_init_and_create();
+	uint8_t uart_rx_buffer[1]; 
+	HAL_UART_Receive_IT(&huart1, uart_rx_buffer, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//		button_ticks();
-//		oled_menu_tick();
-//		HAL_Delay(20);
+		button_ticks();
+		oled_menu_tick();
+		process_received_data();
+		
+		current_time = HAL_GetTick();		
+		if (current_time - last_time >= 1000) {
+			start_listening_variable_timer();
+			last_time = current_time;
+		}
+		
+		HAL_Delay(20);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

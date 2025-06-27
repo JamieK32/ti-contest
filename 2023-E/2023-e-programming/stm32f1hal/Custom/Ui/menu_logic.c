@@ -82,11 +82,11 @@ void oled_menu_tick(void)
 }
 
 void stop_listening_variable_timer(void) {
-
+	menu_update_pending = false;
 }
 
 void start_listening_variable_timer(void) {
-
+	menu_update_pending = true;
 }
 
 void execute_callback(void) {

@@ -1,5 +1,7 @@
 #include "ui.h"
 
+
+
 static void run_task01_cb(void *arg) {
 	draw_centered_text("Running Failed");
 }
@@ -37,12 +39,13 @@ static MenuNode *run_tasks_children[] = { &task01, &task02, &task03, &task04 };
 static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage};
 
 float test_1, test_2;
-extern float gray_byte;
+extern float x_value;
+extern float y_value;
 
 // 创建变量菜单
 menu_variables_t my_variables_1[] = {
-    {"angle", &test_1},
-    {"grayByte", &test_1},
+    {"x_value", &x_value},
+    {"y_value", &y_value},
     {"SpeedKd", &test_1},
 		{"Voltage1", &test_1},
 		{"Voltage2", &test_1},

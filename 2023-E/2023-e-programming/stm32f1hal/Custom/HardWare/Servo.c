@@ -14,6 +14,15 @@ void Servo_Init(void) {
 /**
  * @brief 设置X轴舵机的角度
  * @param AngleX: 要设置的X轴角度
+  STM32F1的TIM2时钟是72MHz
+	实际计数频率 = 72MHz ÷ (35+1) = 72MHz ÷ 36 = 2MHz
+	PWM周期 = (39999+1) ÷ 2MHz = 40000 ÷ 2,000,000 = 0.02秒 = 20ms ✓
+	每个计数值的时间 = 1 ÷ 2MHz = 0.5μs
+	标准舵机脉宽：
+
+	0° → 1ms → 1000μs ÷ 0.5μs = 2000个计数值
+	90° → 1.5ms → 1500μs ÷ 0.5μs = 3000个计数值
+	180° → 2ms → 2000μs ÷ 0.5μs = 4000个计数值
  */
 void Servo_SetAngleX(float AngleX)
 {
@@ -21,7 +30,7 @@ void Servo_SetAngleX(float AngleX)
     AngleX = (AngleX > MAX_ANGLE_X) ? MAX_ANGLE_X : ((AngleX < MIN_ANGLE_X) ? MIN_ANGLE_X : AngleX);
 
     // 将角度值转换为PWM占空比
-    uint32_t pulse = (uint32_t)((AngleX / 180.0f) * 100.0f + 100.0f);
+    uint32_t pulse = (uint32_t)((AngleX / 180.0f) * 2000.0f + 2000.0f);
 
     // 设置对应PWM信号
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse);
@@ -40,7 +49,7 @@ void Servo_SetAngleY(float AngleY)
     AngleY = (AngleY > MAX_ANGLE_Y) ? MAX_ANGLE_Y : ((AngleY < MIN_ANGLE_Y) ? MIN_ANGLE_Y : AngleY);
 
     // 将角度值转换为PWM占空比
-    uint32_t pulse = (uint32_t)((AngleY / 180.0f) * 100.0f + 100.0f);
+    uint32_t pulse = (uint32_t)((AngleY / 180.0f) * 2000.0f + 2000.0f);
 
     // 设置对应PWM信号
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, pulse);
