@@ -143,6 +143,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
             car.state = CAR_STATE_STOP; // 检测到黑色，停止小车
 						set_alert_count(1);
 						start_alert();
+						car_reset();
             return true;                // 达到目标条件
         } else {
             return false; // 未检测到黑色（全白），继续移动
@@ -156,6 +157,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
                 white_detection_count = 0;  // 重置计数器
 								set_alert_count(1);
 								start_alert();
+								car_reset();
                 return true;                // 达到目标条件
             }
         } else {
