@@ -71,18 +71,10 @@ void oled_menu_tick(void)
     // 检查是否有待更新的显示
     if (menu_update_pending) {
         menu_update_pending = false;
-        
-        if (current_menu->type != MENU_TYPE_VARIABLES_VIEW) {
-            stop_listening_variable_timer();
-        }
-        
         draw_menu(current_menu);
         execute_callback();
+			 
     }
-}
-
-void stop_listening_variable_timer(void) {
-	menu_update_pending = false;
 }
 
 void start_listening_variable_timer(void) {

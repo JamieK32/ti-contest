@@ -58,7 +58,6 @@ void execute_callback(void);
 void update_variables(void);
 void create_listening_variable_timer(void);
 void start_listening_variable_timer(void);
-void stop_listening_variable_timer(void);
 void notify_menu_update(void);
 void init_menu_node(MenuNode *node, const char *name, MenuCallback callback, MenuType type, 
 										MenuNode *parent, uint8_t child_count, MenuNode **children);

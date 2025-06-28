@@ -58,8 +58,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint32_t current_time;
-static uint32_t last_time;
+
 /* USER CODE END 0 */
 
 /**
@@ -107,14 +106,7 @@ int main(void)
   {
 		button_ticks();
 		oled_menu_tick();
-		process_received_data();
-		
-		current_time = HAL_GetTick();		
-		if (current_time - last_time >= 1000) {
-			start_listening_variable_timer();
-			last_time = current_time;
-		}
-		
+		process_received_data();	
 		HAL_Delay(20);
     /* USER CODE END WHILE */
 
