@@ -27,6 +27,7 @@
 #include "ui.h"
 #include "Servo.h"
 #include "openmv.h"
+#include "ServoPid.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,24 +37,49 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+typedef struct {
+	const char *task_name;
+	int execution_time;
+	void (*func)(void);
+	bool enable;
+	uint32_t last_time;
+} periodic_task_t;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define MAX_TASK 10
+#define RUN true
+#define IDLE false
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+periodic_task_t tasks[MAX_TASK] = {
+	{"OLED_TICK", 	20,   oled_menu_tick,				 RUN },
+	{"BUTTON_TICK", 20,   button_ticks, 				 RUN },
+	{"OPENMV_TASK", 20,   process_received_data, RUN },
+	{"PID_CONTROL", 20,   servo_pid_control, 		 RUN },
+	{"VIEW_VAR", 		2000,	view_var_task, 				 IDLE},
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+void enable_task(const char* task_name, bool enable) {
+    for (int i = 0; i < MAX_TASK; i++) {
+        if (strcmp(tasks[i].task_name, task_name) == 0) {
+            tasks[i].enable = enable;
+            return; 
+        }
+    }
+}
 
+void view_var_task(void) {
+	notify_menu_update();
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,20 +122,25 @@ int main(void)
 	Servo_Init();
 	Servo_Reset();
 	menu_init_and_create();
-	uint8_t uart_rx_buffer[1]; 
-	HAL_UART_Receive_IT(&huart1, uart_rx_buffer, 1);
-  /* USER CODE END 2 */
+	
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+	
+	/* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		button_ticks();
-		oled_menu_tick();
-		process_received_data();	
-		HAL_Delay(20);
+		uint32_t current_time = HAL_GetTick();
+		for (int i = 0; i < MAX_TASK; i++) {
+			if (tasks[i].enable == IDLE) continue;
+			if (current_time - tasks[i].last_time >= tasks[i].execution_time && current_time != 0) 
+			{
+				tasks[i].last_time = current_time;
+				tasks[i].func();
+			}
+		}
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

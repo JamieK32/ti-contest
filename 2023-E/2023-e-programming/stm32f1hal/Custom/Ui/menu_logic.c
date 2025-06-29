@@ -73,12 +73,18 @@ void oled_menu_tick(void)
         menu_update_pending = false;
         draw_menu(current_menu);
         execute_callback();
-			 
+				if (current_menu->type != MENU_TYPE_VARIABLES_VIEW) {
+					stop_listening_variable_timer();
+				}
     }
 }
 
 void start_listening_variable_timer(void) {
-	menu_update_pending = true;
+	enable_task("VIEW_VAR", true);
+}
+
+void stop_listening_variable_timer(void) {
+	enable_task("VIEW_VAR", false);
 }
 
 void execute_callback(void) {

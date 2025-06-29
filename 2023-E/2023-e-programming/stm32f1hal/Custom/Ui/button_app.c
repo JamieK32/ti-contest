@@ -4,7 +4,7 @@ struct Button buttons[BUTTON_NUM]; //4个按键
 
 uint8_t button_ids[BUTTON_NUM] = {BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT};
 
-static inline uint8_t read_button_GPIO(uint8_t button_id) {
+static uint8_t read_button_GPIO(uint8_t button_id) {
 	switch(button_id)
 	{
 		case BUTTON_UP:

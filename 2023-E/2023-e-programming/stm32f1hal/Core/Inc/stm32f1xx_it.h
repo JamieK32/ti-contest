@@ -27,7 +27,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "openmv.h"
+#include "stdint.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -57,7 +58,8 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void USART1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+extern uint8_t uart_rx_buffer[UART_BUFFER_SIZE];   
+extern volatile uint8_t uart_data_ready; 
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

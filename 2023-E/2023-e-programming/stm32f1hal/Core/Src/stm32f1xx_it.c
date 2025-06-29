@@ -202,7 +202,7 @@ void SysTick_Handler(void)
 
 uint8_t uart_rx_data;                        // 单字节接收数据
 uint8_t uart_rx_buffer[UART_BUFFER_SIZE];    // 接收缓冲区
-volatile uint8_t uart_rx_index = 0;          // 当前缓冲区索引
+volatile int uart_rx_index = 0;          // 当前缓冲区索引
 volatile uint8_t uart_data_ready = 0;        // 数据接收完成标志
 
 void USART1_IRQHandler(void)
@@ -254,5 +254,10 @@ void USART1_IRQHandler(void)
 
 
 /* USER CODE BEGIN 1 */
-
+//重定向printf到串口1
+int putchar(int ch)
+{
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
 /* USER CODE END 1 */

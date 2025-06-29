@@ -28,6 +28,7 @@
 "stm32f1hal\multi_button.o"
 "stm32f1hal\oled_driver.o"
 "stm32f1hal\servo.o"
+"stm32f1hal\servopid.o"
 "stm32f1hal\pid.o"
 "stm32f1hal\cjson.o"
 "stm32f1hal\openmv.o"

@@ -1,6 +1,11 @@
 import pyb
 import sensor
 import math
+import ujson
+
+class CAM_STATE:
+    TASK1 = 1
+    TASK2 = 2
 
 
 def find_laser_point(img, red_threshold=(20, 100, 10, 127, 0, 30)):
@@ -14,7 +19,7 @@ def find_laser_point(img, red_threshold=(20, 100, 10, 127, 0, 30)):
         return largest_blob.cx(), largest_blob.cy()
     return None
 
-def draw_rectangle_with_path(img, points, color=(255, 0, 0)):
+def draw_rectangle_with_path(img, points, color=(0, 0, 255)):
     """
     根据给定的四个点绘制矩形，并返回沿着矩形边缘的离散坐标点（间隔10），首尾相连
 
@@ -171,28 +176,56 @@ def default_coord():
     ]
     return rectangle_points
 
-class UartDriver:
-    def __init__(self, baud=115200):
-        # 初始化 UART1（对应 P9/TX 和 P10/RX）
-        self.uart = pyb.UART(1, baud)
-        self.start_flag = False  # 标志是否处于命令捕获状态
-        self.cmd = ""            # 缓存当前命令
+def parse_uart_cmd(uart):
+    """
+    从 UART 接收并解析命令数据。
+    检查是否有指令，比如 "TASK1"，并返回对应的命令。
+    参数:
+    uart: UART 对象，用于串口通信
+    返回:
+    str: 接收到的命令字符串（如 "TASK1"），如果没有有效命令返回 None
+    """
+    if uart.any():  # 检查 UART 是否有数据
+        try:
+            # 从 UART 中读取数据
+            data = uart.readline()
+            if data is not None:
+                # 解码数据为 UTF-8 字符串，去除换行符
+                command = data.decode('utf-8').strip()
+                return command
+        except Exception as e:
+            print("UART解析错误: ", e)
+    return None
 
 
 if __name__ == "__main__":
-
     # 实例化 UART 驱动
-    uart_driver = UartDriver()
-
+    uart_driver = pyb.UART(1, 115200)
     # 初始化摄像头
     sensor.reset()
     sensor.set_pixformat(sensor.RGB565)
     sensor.set_framesize(sensor.QVGA)
     sensor.skip_frames(time=2000)
-
+    # 获取默认矩形坐标
+    points = default_coord()
     while True:
+        # 截取图像
         img = sensor.snapshot()
-
-        pyb.delay(30)  # 适当延时，避免控制频率过高
-
-
+        # 绘制默认的矩形框
+        draw_rectangle_with_path(img, points)
+        # 调用封装的 UART 命令解析函数
+        command = parse_uart_cmd(uart_driver)
+        if command == "TASK0":
+            center_x, center_y = get_rectangle_center(points)
+            data = {"x" : center_x,
+                    "y" : center_y}
+            json_data = ujson.dumps(data)
+            uart_driver.write(json_data + '\n')
+        elif command == "TASK1":
+            # 生成矩形边缘点路径
+            path_points = draw_rectangle_with_path(img, points)
+            # 将点数据打包为 JSON 格式
+            json_data = ujson.dumps({"path_points": path_points})
+            # 通过 UART 发送 JSON 数据
+            uart_driver.write(json_data + '\n')
+        pyb.delay(20)  # 合适的延时，避免过高的帧率

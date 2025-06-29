@@ -28,6 +28,8 @@ stm32f1hal\button_app.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 stm32f1hal\button_app.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 stm32f1hal\button_app.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 stm32f1hal\button_app.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+stm32f1hal\button_app.o: ../Core/Inc/main.h
+stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
@@ -38,7 +40,6 @@ stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
 stm32f1hal\button_app.o: ..\Custom\Ui\button_app.h
 stm32f1hal\button_app.o: ..\Custom\Ui\multi_button.h
 stm32f1hal\button_app.o: ..\Custom\Ui\menu_app.h
-stm32f1hal\button_app.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 stm32f1hal\button_app.o: ..\Custom\Ui\menu_logic.h
 stm32f1hal\button_app.o: ..\Custom\Ui\ui.h
 stm32f1hal\button_app.o: ..\Custom\Ui\oled_driver.h

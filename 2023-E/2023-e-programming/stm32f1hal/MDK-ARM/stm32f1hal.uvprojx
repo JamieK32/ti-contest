@@ -708,6 +708,11 @@
               <FilePath>..\Custom\HardWare\Servo.c</FilePath>
             </File>
             <File>
+              <FileName>ServoPid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\ServoPid.c</FilePath>
+            </File>
+            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Custom\HardWare\pid.c</FilePath>

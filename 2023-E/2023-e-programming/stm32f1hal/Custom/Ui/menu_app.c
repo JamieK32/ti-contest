@@ -20,7 +20,7 @@ static void run_task04_cb(void *arg) {
 
 
 static void view_variables_cb(void *arg) {
-		start_listening_variable_timer();
+	start_listening_variable_timer();
 }
 
 // 菜单节点定义和初始化示例
