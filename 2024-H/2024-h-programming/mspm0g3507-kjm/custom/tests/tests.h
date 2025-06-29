@@ -7,5 +7,7 @@ void gd_task_create(void);
 void wit_task_create(void);
 // 电机单独测试
 void motor_task_create(void);
+// mpu6050测试
+void mpu_task_create(void);
 
 #endif

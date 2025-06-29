@@ -29,5 +29,7 @@
 #include "car_state_machine.h"
 #include "wit_jyxx.h"
 #include "car_debug.h"
+#include "mpuiic.h" 
+#include "inv_mpu.h"
 
 #endif // COMMON_H
