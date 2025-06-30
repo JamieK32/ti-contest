@@ -113,6 +113,24 @@ extern "C" {
 #define GPIO_Motor_PWM2_C1_IOMUX_FUNC                IOMUX_PINCM47_PF_TIMG8_CCP1
 #define GPIO_Motor_PWM2_C1_IDX                               DL_TIMER_CC_1_INDEX
 
+/* Defines for BEEP_PWM */
+#define BEEP_PWM_INST                                                      TIMG7
+#define BEEP_PWM_INST_IRQHandler                                TIMG7_IRQHandler
+#define BEEP_PWM_INST_INT_IRQN                                  (TIMG7_INT_IRQn)
+#define BEEP_PWM_INST_CLK_FREQ                                             32768
+/* GPIO defines for channel 0 */
+#define GPIO_BEEP_PWM_C0_PORT                                              GPIOA
+#define GPIO_BEEP_PWM_C0_PIN                                      DL_GPIO_PIN_23
+#define GPIO_BEEP_PWM_C0_IOMUX                                   (IOMUX_PINCM53)
+#define GPIO_BEEP_PWM_C0_IOMUX_FUNC                  IOMUX_PINCM53_PF_TIMG7_CCP0
+#define GPIO_BEEP_PWM_C0_IDX                                 DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 1 */
+#define GPIO_BEEP_PWM_C1_PORT                                              GPIOA
+#define GPIO_BEEP_PWM_C1_PIN                                      DL_GPIO_PIN_27
+#define GPIO_BEEP_PWM_C1_IOMUX                                   (IOMUX_PINCM60)
+#define GPIO_BEEP_PWM_C1_IOMUX_FUNC                  IOMUX_PINCM60_PF_TIMG7_CCP1
+#define GPIO_BEEP_PWM_C1_IDX                                 DL_TIMER_CC_1_INDEX
+
 
 
 /* Defines for UART_0 */
@@ -246,9 +264,6 @@ extern "C" {
 /* Port definition for Pin Group PORTA */
 #define PORTA_PORT                                                       (GPIOA)
 
-/* Defines for BEEP: GPIOA.27 with pinCMx 60 on package pin 31 */
-#define PORTA_BEEP_PIN                                          (DL_GPIO_PIN_27)
-#define PORTA_BEEP_IOMUX                                         (IOMUX_PINCM60)
 /* Defines for SCL1: GPIOA.12 with pinCMx 34 on package pin 5 */
 #define PORTA_SCL1_PIN                                          (DL_GPIO_PIN_12)
 #define PORTA_SCL1_IOMUX                                         (IOMUX_PINCM34)
@@ -279,6 +294,7 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 void SYSCFG_DL_Motor_PWM1_init(void);
 void SYSCFG_DL_Motor_PWM2_init(void);
+void SYSCFG_DL_BEEP_PWM_init(void);
 void SYSCFG_DL_UART_0_init(void);
 void SYSCFG_DL_UART_1_init(void);
 void SYSCFG_DL_SPI_0_init(void);

@@ -41,6 +41,7 @@
 #include "ti_msp_dl_config.h"
 
 DL_TimerA_backupConfig gMotor_PWM1Backup;
+DL_TimerG_backupConfig gBEEP_PWMBackup;
 DL_UART_Main_backupConfig gUART_1Backup;
 DL_SPI_backupConfig gSPI_0Backup;
 
@@ -56,12 +57,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_Motor_PWM1_init();
     SYSCFG_DL_Motor_PWM2_init();
+    SYSCFG_DL_BEEP_PWM_init();
     SYSCFG_DL_UART_0_init();
     SYSCFG_DL_UART_1_init();
     SYSCFG_DL_SPI_0_init();
     SYSCFG_DL_DMA_init();
     /* Ensure backup structures have no valid state */
 	gMotor_PWM1Backup.backupRdy 	= false;
+	gBEEP_PWMBackup.backupRdy 	= false;
 	gUART_1Backup.backupRdy 	= false;
 	gSPI_0Backup.backupRdy 	= false;
 
@@ -75,6 +78,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_saveConfiguration(Motor_PWM1_INST, &gMotor_PWM1Backup);
+	retStatus &= DL_TimerG_saveConfiguration(BEEP_PWM_INST, &gBEEP_PWMBackup);
 	retStatus &= DL_UART_Main_saveConfiguration(UART_1_INST, &gUART_1Backup);
 	retStatus &= DL_SPI_saveConfiguration(SPI_0_INST, &gSPI_0Backup);
 
@@ -87,6 +91,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_restoreConfiguration(Motor_PWM1_INST, &gMotor_PWM1Backup, false);
+	retStatus &= DL_TimerG_restoreConfiguration(BEEP_PWM_INST, &gBEEP_PWMBackup, false);
 	retStatus &= DL_UART_Main_restoreConfiguration(UART_1_INST, &gUART_1Backup);
 	retStatus &= DL_SPI_restoreConfiguration(SPI_0_INST, &gSPI_0Backup);
 
@@ -99,6 +104,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOB);
     DL_TimerA_reset(Motor_PWM1_INST);
     DL_TimerG_reset(Motor_PWM2_INST);
+    DL_TimerG_reset(BEEP_PWM_INST);
     DL_UART_Main_reset(UART_0_INST);
     DL_UART_Main_reset(UART_1_INST);
     DL_SPI_reset(SPI_0_INST);
@@ -108,6 +114,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_enablePower(GPIOB);
     DL_TimerA_enablePower(Motor_PWM1_INST);
     DL_TimerG_enablePower(Motor_PWM2_INST);
+    DL_TimerG_enablePower(BEEP_PWM_INST);
     DL_UART_Main_enablePower(UART_0_INST);
     DL_UART_Main_enablePower(UART_1_INST);
     DL_SPI_enablePower(SPI_0_INST);
@@ -126,6 +133,10 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_enableOutput(GPIO_Motor_PWM2_C0_PORT, GPIO_Motor_PWM2_C0_PIN);
     DL_GPIO_initPeripheralOutputFunction(GPIO_Motor_PWM2_C1_IOMUX,GPIO_Motor_PWM2_C1_IOMUX_FUNC);
     DL_GPIO_enableOutput(GPIO_Motor_PWM2_C1_PORT, GPIO_Motor_PWM2_C1_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_BEEP_PWM_C0_IOMUX,GPIO_BEEP_PWM_C0_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_BEEP_PWM_C0_PORT, GPIO_BEEP_PWM_C0_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_BEEP_PWM_C1_IOMUX,GPIO_BEEP_PWM_C1_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_BEEP_PWM_C1_PORT, GPIO_BEEP_PWM_C1_PIN);
 
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
@@ -179,8 +190,6 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 
     DL_GPIO_initDigitalInput(PORTB_ENCODER_8_IOMUX);
 
-    DL_GPIO_initDigitalOutput(PORTA_BEEP_IOMUX);
-
     DL_GPIO_initDigitalOutput(PORTA_SCL1_IOMUX);
 
     DL_GPIO_initDigitalOutput(PORTA_SDA1_IOMUX);
@@ -195,16 +204,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 
     DL_GPIO_initDigitalOutput(PORTA_HC595_STCP_IOMUX);
 
-    DL_GPIO_clearPins(PORTA_PORT, PORTA_BEEP_PIN |
-		PORTA_SCL1_PIN |
+    DL_GPIO_clearPins(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
 		PORTA_HC595_DS_PIN |
 		PORTA_HC595_SHCP_PIN |
 		PORTA_HC595_STCP_PIN);
-    DL_GPIO_enableOutput(PORTA_PORT, PORTA_BEEP_PIN |
-		PORTA_SCL1_PIN |
+    DL_GPIO_enableOutput(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
@@ -372,6 +379,53 @@ SYSCONFIG_WEAK void SYSCFG_DL_Motor_PWM2_init(void) {
 
     
     DL_TimerG_setCCPDirection(Motor_PWM2_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
+
+
+}
+/*
+ * Timer clock configuration to be sourced by  / 1 (32768 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   32768 Hz = 32768 Hz / (1 * (0 + 1))
+ */
+static const DL_TimerG_ClockConfig gBEEP_PWMClockConfig = {
+    .clockSel = DL_TIMER_CLOCK_LFCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
+    .prescale = 0U
+};
+
+static const DL_TimerG_PWMConfig gBEEP_PWMConfig = {
+    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
+    .period = 1000,
+    .startTimer = DL_TIMER_START,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_BEEP_PWM_init(void) {
+
+    DL_TimerG_setClockConfig(
+        BEEP_PWM_INST, (DL_TimerG_ClockConfig *) &gBEEP_PWMClockConfig);
+
+    DL_TimerG_initPWMMode(
+        BEEP_PWM_INST, (DL_TimerG_PWMConfig *) &gBEEP_PWMConfig);
+
+    DL_TimerG_setCaptureCompareOutCtl(BEEP_PWM_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
+
+    DL_TimerG_setCaptCompUpdateMethod(BEEP_PWM_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
+    DL_TimerG_setCaptureCompareValue(BEEP_PWM_INST, 1000, DL_TIMER_CC_0_INDEX);
+
+    DL_TimerG_setCaptureCompareOutCtl(BEEP_PWM_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERG_CAPTURE_COMPARE_1_INDEX);
+
+    DL_TimerG_setCaptCompUpdateMethod(BEEP_PWM_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERG_CAPTURE_COMPARE_1_INDEX);
+    DL_TimerG_setCaptureCompareValue(BEEP_PWM_INST, 1000, DL_TIMER_CC_1_INDEX);
+
+    DL_TimerG_enableClock(BEEP_PWM_INST);
+
+
+    
+    DL_TimerG_setCCPDirection(BEEP_PWM_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
 
 
 }
