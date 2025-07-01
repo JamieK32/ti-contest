@@ -2,23 +2,33 @@
 #include "pid.h"
 #include "Servo.h"
 #include "openmv.h"
+#include "stdbool.h"
 
-PID_Controller_t x_controller;
-PID_Controller_t y_controller;
+PID_Controller_t x_pid;
+PID_Controller_t y_pid;
 
-int target_x = 0;
-int target_y = 0;
+static bool pid_start_flag = false;
 
 void servo_pid_init(void) {
-	PID_Init(&x_controller, PID_TYPE_POSITION);
-	PID_SetParams(&x_controller, 0, 0, 0);
-	PID_Init(&y_controller, PID_TYPE_POSITION);
-	PID_SetParams(&y_controller, 0, 0, 0);
+	PID_Init(&x_pid,PID_TYPE_POSITION);
+	PID_SetParams(&x_pid,0.03,0.000,0);
+	PID_SetDeadzone(&x_pid, 1);
+	PID_Init(&y_pid,PID_TYPE_POSITION);
+	PID_SetParams(&y_pid,0.03,0.000,0);
+	PID_SetDeadzone(&y_pid, 1);
 }
 
 void servo_pid_control(void) {
-	float x_output = PID_Calculate(target_x, x_value, &x_controller);
-	float y_output = PID_Calculate(target_y, y_value, &y_controller);
+	if (!pid_start_flag) return;
+	float x_output = PID_Calculate(0, err_x, &x_pid);
+	float y_output = PID_Calculate(0, err_y, &y_pid);
 	Servo_MoveIncrement(x_output, y_output);
 }
 
+void start_servo_pid_control(void) {
+	pid_start_flag = true;
+}
+
+void stop_servo_pid_control(void) {
+	pid_start_flag = false;
+}

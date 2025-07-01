@@ -1,26 +1,23 @@
 #ifndef OPENMV_H__
 #define OPENMV_H__
 
-#define UART_BUFFER_SIZE 1024      
+#define UART_BUFFER_SIZE 2048      
 #define MAX_POINTS 100 
 #define DIMENSIONS 2 
+#define MAX_PATH_POINTS 500
+#define MAX_EDGE_POINTS 100
+#define DEFAULT_STEP 5
 
-typedef enum {
-	CAM_STATE_NONE,
-	RECEIVE_XY,
-	RECEIVE_PATH_POINTS,
-	RECEIVE_CENTER_POINT
-} CAM_STATE; 
 
-void parse_openmv_data(const char *data);
+
+void openmv_init(void);
+void parse_openmv_data(void);
 void process_received_data(void);
 
-extern float x_value; //当前激光点的X坐标
-extern float y_value; //当前激光点的y坐标
-extern float center_point_x;
-extern float center_point_y;
-extern int points_array[MAX_POINTS][DIMENSIONS]; //方框路径坐标
-extern int num_points;	//方框路径数量
+extern float err_x;
+extern float err_y;
+
+
 
 
 #endif 

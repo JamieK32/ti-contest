@@ -58,7 +58,7 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void USART1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-extern uint8_t uart_rx_buffer[UART_BUFFER_SIZE];   
+extern char uart_rx_buffer[UART_BUFFER_SIZE];  
 extern volatile uint8_t uart_data_ready; 
 /* USER CODE END EFP */
 

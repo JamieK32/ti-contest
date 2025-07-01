@@ -4,14 +4,14 @@
 #include "stm32f1xx_hal.h"
 
 // 舵机角度范围定义（以度为单位）
-#define MIN_ANGLE_X    -90.0f
-#define MAX_ANGLE_X     45.0f
-#define MIN_ANGLE_Y    -30.0f
+#define MIN_ANGLE_X    -180.0f
+#define MAX_ANGLE_X     180.0f
+#define MIN_ANGLE_Y    	30.0f
 #define MAX_ANGLE_Y     180.0f
 
 // 初始位置定义
-#define INIT_ANGLE_X     30.0f
-#define INIT_ANGLE_Y  	 90.0f
+#define INIT_ANGLE_X     85.0f
+#define INIT_ANGLE_Y  	 70.0f
 
 #ifdef __cplusplus
 extern "C" {

@@ -8,10 +8,10 @@ static uint8_t read_button_GPIO(uint8_t button_id) {
 	switch(button_id)
 	{
 		case BUTTON_UP:
-			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10) == 1 ? 0 : 1;
+			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11) == 1 ? 0 : 1;
 			break;
 		case BUTTON_DOWN:
-			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11) == 1 ? 0 : 1;
+			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10) == 1 ? 0 : 1;
 			break;
 		case BUTTON_LEFT:
 			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 1 ? 0 : 1;

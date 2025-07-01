@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -59,7 +60,7 @@ typedef struct {
 periodic_task_t tasks[MAX_TASK] = {
 	{"OLED_TICK", 	20,   oled_menu_tick,				 RUN },
 	{"BUTTON_TICK", 20,   button_ticks, 				 RUN },
-	{"OPENMV_TASK", 20,   process_received_data, RUN },
+	{"OPENMV_TASK", 1,    process_received_data, RUN },
 	{"PID_CONTROL", 20,   servo_pid_control, 		 RUN },
 	{"VIEW_VAR", 		2000,	view_var_task, 				 IDLE},
 };
@@ -118,14 +119,14 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+	openmv_init();
 	Servo_Init();
 	Servo_Reset();
+	servo_pid_init();
 	menu_init_and_create();
-	
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
-	
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */

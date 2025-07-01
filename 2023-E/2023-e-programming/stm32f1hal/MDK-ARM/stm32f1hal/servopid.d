@@ -1,7 +1,7 @@
 stm32f1hal\servopid.o: ..\Custom\HardWare\ServoPid.c
 stm32f1hal\servopid.o: ..\Custom\HardWare\ServoPid.h
 stm32f1hal\servopid.o: ..\Custom\HardWare\pid.h
-stm32f1hal\servopid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+stm32f1hal\servopid.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 stm32f1hal\servopid.o: ..\Custom\HardWare\Servo.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 stm32f1hal\servopid.o: ../Core/Inc/stm32f1xx_hal_conf.h
@@ -16,7 +16,7 @@ stm32f1hal\servopid.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 stm32f1hal\servopid.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-stm32f1hal\servopid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+stm32f1hal\servopid.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h
@@ -26,8 +26,10 @@ stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 stm32f1hal\servopid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 stm32f1hal\servopid.o: ..\Custom\HardWare\openmv.h
+stm32f1hal\servopid.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

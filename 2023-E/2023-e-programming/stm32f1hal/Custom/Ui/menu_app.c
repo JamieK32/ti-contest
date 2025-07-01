@@ -1,17 +1,24 @@
 #include "ui.h"
-
-
+#include "openmv.h"
+#include "ServoPid.h"
 
 static void run_task01_cb(void *arg) {
-	draw_centered_text("Running Failed");
+	draw_centered_text("Receive Center");
+	printf("QUESTION1");
+	start_servo_pid_control();
 }
 
 static void run_task02_cb(void *arg) {
-	draw_centered_text("Running Failed");
+	draw_centered_text("Receive Path");
+	printf("QUESTION2");
+	start_servo_pid_control();
+	
 }
 
 static void run_task03_cb(void *arg) {
-	draw_centered_text("Running Failed");
+	draw_centered_text("Run Task");
+	printf("QUESTION3");
+	start_servo_pid_control();
 }
 
 static void run_task04_cb(void *arg) {
@@ -39,16 +46,14 @@ static MenuNode *run_tasks_children[] = { &task01, &task02, &task03, &task04 };
 static MenuNode *root_children[] = { &menu_run_tasks, &menu_view_variables, &set_pid_speed, &set_pid_mileage};
 
 float test_1, test_2;
-extern float x_value;
-extern float y_value;
 
 // 创建变量菜单
 menu_variables_t my_variables_1[] = {
-    {"x_value", &x_value},
-    {"y_value", &y_value},
-    {"SpeedKd", &test_1},
-		{"Voltage1", &test_1},
-		{"Voltage2", &test_1},
+    {"x_value", &err_x},
+    {"y_value", &err_y},
+    {"test_1", &test_1},
+		{"test_1", &test_1},
+		{"test_1", &test_1},
     {NULL, NULL}  // 结束标记
 };
 
@@ -68,7 +73,7 @@ static void init_all_menu_nodes(void) {
 	init_menu_node(&menu_root,           "Main Menu",        NULL,             MENU_TYPE_NORMAL,        NULL,            4, root_children);          // 根菜单
 	init_menu_node(&menu_run_tasks,      "Run Tasks",        NULL,             MENU_TYPE_NORMAL,        &menu_root,      4, run_tasks_children);     // 一级菜单：运行任务
 	
-	init_variables_view_node(&menu_view_variables, my_variables_1, 5);
+	init_variables_view_node(&menu_view_variables, my_variables_1, 4);
 	init_menu_node(&menu_view_variables, "View Variables",   view_variables_cb,MENU_TYPE_VARIABLES_VIEW, &menu_root,      0, NULL);                  // 一级菜单：查看变量
 	
 	init_variables_view_node(&set_pid_speed, my_variables_2, 5);	
@@ -77,10 +82,10 @@ static void init_all_menu_nodes(void) {
 	init_variables_view_node(&set_pid_mileage, my_variables_2, 5);
 	init_menu_node(&set_pid_mileage,     "Set Pid Mileage",  NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID里程
 	
-	init_menu_node(&task01,              "run Task01",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
-	init_menu_node(&task02,              "run Task02",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
-	init_menu_node(&task03,              "run Task03",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3
-	init_menu_node(&task04,              "run Task04",       run_task04_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务4
+	init_menu_node(&task01,              "Receive Center",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
+	init_menu_node(&task02,              "Receive Path",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
+	init_menu_node(&task03,              "run Task01",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3
+	init_menu_node(&task04,              "run Task02",       run_task04_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务4
 }
 
 
