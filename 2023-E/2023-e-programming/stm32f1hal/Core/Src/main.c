@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "tim.h"
 #include "usart.h"
@@ -29,6 +30,7 @@
 #include "Servo.h"
 #include "openmv.h"
 #include "ServoPid.h"
+#include "uart_dma.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,13 +58,16 @@ typedef struct {
 
 /* Private variables ---------------------------------------------------------*/
 
+
 /* USER CODE BEGIN PV */
 periodic_task_t tasks[MAX_TASK] = {
 	{"OLED_TICK", 	20,   oled_menu_tick,				 RUN },
 	{"BUTTON_TICK", 20,   button_ticks, 				 RUN },
+	{"UART_DMA", 	  1, 	  UART_Process_DMA_Data, RUN },
 	{"OPENMV_TASK", 1,    process_received_data, RUN },
-	{"PID_CONTROL", 5,    servo_pid_control, 		 RUN },
+	{"PID_CONTROL", 20,    servo_pid_control, 		 RUN },
 	{"VIEW_VAR", 		2000,	view_var_task, 				 IDLE},
+
 };
 /* USER CODE END PV */
 
@@ -117,11 +122,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 	openmv_init();
+	UART_DMA_Init();
 	Servo_Init();
 	Servo_Reset();
 	servo_pid_init();
@@ -142,6 +149,7 @@ int main(void)
 			}
 		}
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

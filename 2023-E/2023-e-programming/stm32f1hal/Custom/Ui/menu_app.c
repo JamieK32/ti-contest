@@ -2,27 +2,37 @@
 #include "openmv.h"
 #include "ServoPid.h"
 
+static char temp_buffer[100];
+static uint8_t temp = 0;
+
 static void run_task01_cb(void *arg) {
-	draw_centered_text("Receive Center");
-	printf("QUESTION1");
-	start_servo_pid_control();
+	if (temp < 4 ) {
+		snprintf(temp_buffer, sizeof(temp_buffer), "Find Rect %d", temp);
+		draw_centered_text(temp_buffer);
+		printf("QUESTION0");
+		temp += 1;
+	} else {
+		draw_centered_text("Please Reset");
+	}
 }
 
 static void run_task02_cb(void *arg) {
-	draw_centered_text("Receive Path");
-	printf("QUESTION2");
+	draw_centered_text("Receive Center");
+	printf("QUESTION1");
 	start_servo_pid_control();
 	
 }
 
 static void run_task03_cb(void *arg) {
-	draw_centered_text("Run Task");
-	printf("QUESTION3");
+	draw_centered_text("Receive Path");
+	printf("QUESTION2");
 	start_servo_pid_control();
 }
 
 static void run_task04_cb(void *arg) {
-	draw_centered_text("Running Failed");
+	draw_centered_text("Reset");
+	printf("RESET");
+	temp = 0;
 }
 
 
@@ -82,10 +92,10 @@ static void init_all_menu_nodes(void) {
 	init_variables_view_node(&set_pid_mileage, my_variables_2, 5);
 	init_menu_node(&set_pid_mileage,     "Set Pid Mileage",  NULL,             MENU_TYPE_VARIABLES_MODIFY,        &menu_root,      0, NULL);                  // 一级菜单：设置PID里程
 	
-	init_menu_node(&task01,              "Receive Center",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
-	init_menu_node(&task02,              "Receive Path",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
-	init_menu_node(&task03,              "run Task01",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3
-	init_menu_node(&task04,              "run Task02",       run_task04_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务4
+	init_menu_node(&task01,              "Find Rect",       run_task01_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务1
+	init_menu_node(&task02,              "Receive Center",       run_task02_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务2
+	init_menu_node(&task03,              "Receive Path",       run_task03_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务3
+	init_menu_node(&task04,              "Reset",       run_task04_cb,    MENU_TYPE_NORMAL,        &menu_run_tasks, 0, NULL);                // 二级菜单：任务4
 }
 
 

@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "openmv.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,10 +44,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-char uart_rx_data;                    
-char uart_rx_buffer[UART_BUFFER_SIZE];   
-volatile int uart_rx_index = 0;        
-volatile uint8_t uart_data_ready = 0;   
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,7 +57,7 @@ volatile uint8_t uart_data_ready = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern UART_HandleTypeDef huart1;
+extern DMA_HandleTypeDef hdma_usart1_rx;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -204,42 +201,18 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles USART1 global interrupt.
+  * @brief This function handles DMA1 channel5 global interrupt.
   */
-void USART1_IRQHandler(void)
+void DMA1_Channel5_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART1_IRQn 0 */
-  
-  if (USART1->SR & USART_SR_RXNE)
-  {
-    uart_rx_data = (uint8_t)(USART1->DR & 0xFF);
-    
-    if (uart_rx_index < (UART_BUFFER_SIZE - 1))
-    {
-      uart_rx_buffer[uart_rx_index++] = uart_rx_data;
-      
-      if (uart_rx_data == '}')
-      {
-        if (uart_rx_buffer[0] == '{')
-        {
-          uart_rx_buffer[uart_rx_index] = '\0';
-          uart_data_ready = 1;                 
-        }
-				uart_rx_index = 0;
-      }
-    }
-    else
-    {
-      uart_rx_index = 0;
-    }
-  }
-  
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
-  /* USER CODE END USART1_IRQn 1 */
-}
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
 
+  /* USER CODE END DMA1_Channel5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 

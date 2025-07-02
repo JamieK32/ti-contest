@@ -33,3 +33,4 @@ stm32f1hal\stm32f1xx_it.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..
 stm32f1hal\stm32f1xx_it.o: ../Core/Inc/stm32f1xx_it.h
 stm32f1hal\stm32f1xx_it.o: ../Custom/HardWare/openmv.h
 stm32f1hal\stm32f1xx_it.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+stm32f1hal\stm32f1xx_it.o: ../Core/Inc/usart.h

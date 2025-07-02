@@ -30,6 +30,7 @@ stm32f1hal\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 stm32f1hal\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 stm32f1hal\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 stm32f1hal\main.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+stm32f1hal\main.o: ../Core/Inc/dma.h
 stm32f1hal\main.o: ../Core/Inc/i2c.h
 stm32f1hal\main.o: ../Core/Inc/tim.h
 stm32f1hal\main.o: ../Core/Inc/usart.h
@@ -52,3 +53,4 @@ stm32f1hal\main.o: ../Custom/Ui/menu_ui.h
 stm32f1hal\main.o: ../Custom/HardWare/Servo.h
 stm32f1hal\main.o: ../Custom/HardWare/openmv.h
 stm32f1hal\main.o: ../Custom/HardWare/ServoPid.h
+stm32f1hal\main.o: ../Custom/HardWare/uart_dma.h

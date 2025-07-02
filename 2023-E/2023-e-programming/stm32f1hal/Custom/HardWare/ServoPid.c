@@ -11,12 +11,10 @@ static bool pid_start_flag = false;
 
 void servo_pid_init(void) {
 	PID_Init(&x_pid,PID_TYPE_POSITION);
-	PID_SetParams(&x_pid,0.0019,0.0,0);
-	PID_SetOutputLimit(&x_pid, 5, -5);
+	PID_SetParams(&x_pid,0.023,0.0,0.15);
 
 	PID_Init(&y_pid,PID_TYPE_POSITION);
-	PID_SetParams(&y_pid,0.0019,0.0,0);
-	PID_SetOutputLimit(&y_pid, 5, -5);
+	PID_SetParams(&y_pid,0.023,0.0,0.15);
 }
 
 void servo_pid_control(void) {

@@ -8,6 +8,7 @@
 #include "ServoPid.h"
 #include "main.h"
 #include "usart.h"
+#include "uart_dma.h"
 
 float err_x = 0;
 float err_y = 0;
@@ -28,7 +29,7 @@ void parse_xy(char *json_data, float *x, float *y) {
 }
 
 void parse_openmv_data(void) {
-	parse_xy(uart_rx_buffer, &err_x, &err_y);
+	parse_xy((char *)uart_rx_buffer, &err_x, &err_y);
 }
 
 void process_received_data(void) {

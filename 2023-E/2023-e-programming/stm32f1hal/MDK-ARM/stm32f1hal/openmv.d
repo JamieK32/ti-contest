@@ -38,3 +38,4 @@ stm32f1hal\openmv.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 stm32f1hal\openmv.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 stm32f1hal\openmv.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 stm32f1hal\openmv.o: ../Core/Inc/usart.h
+stm32f1hal\openmv.o: ..\Custom\HardWare\uart_dma.h
