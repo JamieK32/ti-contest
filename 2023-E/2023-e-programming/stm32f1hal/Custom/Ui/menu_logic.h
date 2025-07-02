@@ -5,7 +5,7 @@
 
 #define MAX_CHILD 10                // 当前节点最多的孩子数量
 #define MENU_LINE_HEIGHT 13         // 屏幕行高
-#define SHOW_OPENING_ANIMATION 1 	  // 是否显示开场动画 1 / 0
+#define SHOW_OPENING_ANIMATION 0 	  // 是否显示开场动画 1 / 0
 #define MAX_INDEX_COUNT 4     		  // 一次可以显示的最大窗口数量
 #define LONG_PRESS_INTERVAL 100  		// 按键长按的频率 越少越快
 #define UNSELECTED -1

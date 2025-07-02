@@ -61,7 +61,7 @@ periodic_task_t tasks[MAX_TASK] = {
 	{"OLED_TICK", 	20,   oled_menu_tick,				 RUN },
 	{"BUTTON_TICK", 20,   button_ticks, 				 RUN },
 	{"OPENMV_TASK", 1,    process_received_data, RUN },
-	{"PID_CONTROL", 20,   servo_pid_control, 		 RUN },
+	{"PID_CONTROL", 5,    servo_pid_control, 		 RUN },
 	{"VIEW_VAR", 		2000,	view_var_task, 				 IDLE},
 };
 /* USER CODE END PV */
