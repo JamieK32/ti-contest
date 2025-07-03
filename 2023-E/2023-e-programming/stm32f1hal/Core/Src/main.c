@@ -65,8 +65,7 @@ periodic_task_t tasks[MAX_TASK] = {
 	{"BUTTON_TICK", 20,   button_ticks, 				 RUN },
 	{"UART_DMA", 	  1, 	  UART_Process_DMA_Data, RUN },
 	{"OPENMV_TASK", 1,    process_received_data, RUN },
-	{"PID_CONTROL", 20,    servo_pid_control, 		 RUN },
-	{"VIEW_VAR", 		2000,	view_var_task, 				 IDLE},
+	{"PID_CONTROL", 20,   servo_pid_control, 		 RUN },
 
 };
 /* USER CODE END PV */
@@ -83,9 +82,6 @@ void enable_task(const char* task_name, bool enable) {
     }
 }
 
-void view_var_task(void) {
-	notify_menu_update();
-}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -132,6 +128,7 @@ int main(void)
 	Servo_Init();
 	Servo_Reset();
 	servo_pid_init();
+
 	menu_init_and_create();
   /* USER CODE END 2 */
 

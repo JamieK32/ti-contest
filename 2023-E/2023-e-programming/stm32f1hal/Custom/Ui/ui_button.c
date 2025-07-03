@@ -4,7 +4,7 @@ struct Button buttons[BUTTON_NUM]; //4个按键
 
 uint8_t button_ids[BUTTON_NUM] = {BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT};
 
-static uint8_t read_button_GPIO(uint8_t button_id) {
+uint8_t read_button_GPIO(uint8_t button_id) {
 	switch(button_id)
 	{
 		case BUTTON_UP:
@@ -19,10 +19,8 @@ static uint8_t read_button_GPIO(uint8_t button_id) {
 		case BUTTON_RIGHT:
 			return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13) == 1 ? 0 : 1;
 			break;
-		default:
-			return 0;
-			break;
 	}
+	return 0;
 }
 
 void user_button_init(BtnCallback single_click_cb, BtnCallback long_press_cb)

@@ -38,10 +38,10 @@ stm32f1hal\menu_ui.o: ../Custom/Ui/u8g2/u8g2.h
 stm32f1hal\menu_ui.o: ../Custom/Ui/u8g2/u8x8.h
 stm32f1hal\menu_ui.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 stm32f1hal\menu_ui.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
-stm32f1hal\menu_ui.o: ..\Custom\Ui\button_app.h
-stm32f1hal\menu_ui.o: ..\Custom\Ui\multi_button.h
-stm32f1hal\menu_ui.o: ..\Custom\Ui\menu_app.h
-stm32f1hal\menu_ui.o: ..\Custom\Ui\menu_logic.h
+stm32f1hal\menu_ui.o: ..\Custom\Ui\ui_app.h
+stm32f1hal\menu_ui.o: ..\Custom\Ui\ui_logic.h
 stm32f1hal\menu_ui.o: ..\Custom\Ui\ui.h
+stm32f1hal\menu_ui.o: ..\Custom\Ui\multi_button.h
+stm32f1hal\menu_ui.o: ..\Custom\Ui\ui_button.h
 stm32f1hal\menu_ui.o: ..\Custom\Ui\oled_driver.h
 stm32f1hal\menu_ui.o: ..\Custom\Ui\menu_ui.h

@@ -1,12 +1,8 @@
 #ifndef MENU_UI_H__
 #define MENU_UI_H__
 
-#include "menu_logic.h"
+#include "ui.h"
 #include "stdio.h"
-
-void show_oled_opening_animation(void);
-void draw_centered_text(const char* text);
-
 
 void draw_menu(MenuNode *current_menu);                          
 void draw_enhanced_frame(void);                                  
