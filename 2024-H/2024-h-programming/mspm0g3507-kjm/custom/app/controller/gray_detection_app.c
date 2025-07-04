@@ -1,7 +1,7 @@
 
 #include "pca9555.h"
 #include "gray_detection_app.h"
-#include "log_config.h"
+//#include "log_config.h"
 #include "log.h"
 
 sw_i2c_t pca9555_i2c = {

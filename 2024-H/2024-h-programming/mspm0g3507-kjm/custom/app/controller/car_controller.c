@@ -1,6 +1,6 @@
 #include "car_controller.h"
 #include "encoder_app.h"
-#include "log_config.h"
+//#include "log_config.h"
 #include "log.h"
 #include "wit_jyxx.h"
 #include "gray_detection_app.h"

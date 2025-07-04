@@ -1,5 +1,5 @@
 #include "serialplot_protocol.h"
-#include "log_config.h"
+//#include "log_config.h"
 #include "log.h"
 
 void serialplot_send_multi_data(size_t num_channels, ...) {

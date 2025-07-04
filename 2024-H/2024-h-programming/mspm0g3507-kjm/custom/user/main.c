@@ -1,7 +1,6 @@
-
 #include "common_include.h"
 
-#include "log_config.h" // 日志配置
+//#include "log_config.h" // 日志配置
 #include "log.h"
 
 void system_init(void) 

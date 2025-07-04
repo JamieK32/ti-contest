@@ -1,6 +1,6 @@
 #include "periodic_event_task.h"
 #include "common_include.h"
-#include "log_config.h"
+//#include "log_config.h"
 #include "log.h"
 #include "systick.h"  // 包含system_time_get_ms()
 
