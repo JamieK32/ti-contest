@@ -15,8 +15,8 @@ void debug_task(void) {
 // {ID, RUNNING_FLAG, task_handler, period_ms}
 period_task_t period_tasks[] = {
     { EVENT_KEY_STATE_UPDATE,  RUN, 	button_ticks, 		 				 20   }, // 20ms (20个tick)
-    { EVENT_MENU_VAR_UPDATE,   IDLE, 	NotifyMenuFromISR, 				 2000 }, // 2000ms (2000个tick)
-		{ EVENT_PERIOD_PRINT,  		 IDLE,   debug_task, 							 500  }, // 500ms (500个tick)
+    { EVENT_MENU_VAR_UPDATE,   RUN, 	oled_menu_tick, 				 	 20 }, // 2000ms (2000个tick)
+		{ EVENT_PERIOD_PRINT,  		 IDLE,  debug_task, 							 500  }, // 500ms (500个tick)
 		{ EVENT_ALERT, 						 RUN,  	alert_ticks, 							 10,  }, // 10ms (10个tick)
 		{ EVENT_CAR_STATE_MACHINE, IDLE,  car_state_machine, 	   		 20,  }, // 20ms (20个tick)
 		{ EVENT_CAR, 				   		 RUN,   car_task, 				         20,  }, // 20ms (20个tick)
@@ -120,7 +120,7 @@ void create_periodic_event_task(void) {
     BaseType_t xReturn = xTaskCreate(
         PeriodicEventTask,
         "PeriodicEventTask",
-        configMINIMAL_STACK_SIZE * 4,
+        configMINIMAL_STACK_SIZE * 8,
         NULL,
         tskIDLE_PRIORITY + 2,
         &PeriodicEventTaskHandle);

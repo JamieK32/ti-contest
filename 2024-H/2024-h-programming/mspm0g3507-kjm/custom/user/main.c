@@ -10,6 +10,7 @@ static TaskHandle_t init_task_handle = NULL;
 void system_init(void) 
 {
     SYSCFG_DL_init();
+		beep_init();
 #if DEBUG_MODE
 		debug_uart_init();
 #endif
@@ -57,7 +58,7 @@ static void create_init_task(void)
 
 void test_task_init_and_create(void) 
 {
-	mpu_task_create();
+	motor_task_create();
 }
 
 int main(void) 

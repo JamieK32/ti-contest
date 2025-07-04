@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -329,7 +329,7 @@
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
+            <v6Lang>4</v6Lang>
             <v6LangP>5</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
@@ -540,24 +540,39 @@
           <GroupName>app/ui</GroupName>
           <Files>
             <File>
-              <FileName>button_app.c</FileName>
+              <FileName>multi_button.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\ui\button_app.c</FilePath>
+              <FilePath>..\custom\app\ui\multi_button.c</FilePath>
             </File>
             <File>
-              <FileName>menu_app.c</FileName>
+              <FileName>oled_driver.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\ui\menu_app.c</FilePath>
+              <FilePath>..\custom\app\ui\oled_driver.c</FilePath>
             </File>
             <File>
-              <FileName>menu_logic.c</FileName>
+              <FileName>ui_animation.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\ui\menu_logic.c</FilePath>
+              <FilePath>..\custom\app\ui\ui_animation.c</FilePath>
             </File>
             <File>
-              <FileName>menu_ui.c</FileName>
+              <FileName>ui_app.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\ui\menu_ui.c</FilePath>
+              <FilePath>..\custom\app\ui\ui_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\ui\ui_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_drawing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\ui\ui_drawing.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_logic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\ui\ui_logic.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -623,16 +638,6 @@
               <FileName>motor_tb6612.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\hardware\drivers\motor_tb6612.c</FilePath>
-            </File>
-            <File>
-              <FileName>multi_button.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\hardware\drivers\multi_button.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\hardware\drivers\oled_driver.c</FilePath>
             </File>
             <File>
               <FileName>pca9555.c</FileName>

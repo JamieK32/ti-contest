@@ -41,6 +41,7 @@
 #define ti_msp_dl_config_h
 
 #define CONFIG_MSPM0G350X
+#define CONFIG_MSPM0G3507
 
 #if defined(__ti_version__) || defined(__TI_COMPILER_VERSION__)
 #define SYSCONFIG_WEAK __attribute__((weak))
@@ -135,6 +136,7 @@ extern "C" {
 
 /* Defines for UART_0 */
 #define UART_0_INST                                                        UART0
+#define UART_0_INST_FREQUENCY                                           40000000
 #define UART_0_INST_IRQHandler                                  UART0_IRQHandler
 #define UART_0_INST_INT_IRQN                                      UART0_INT_IRQn
 #define GPIO_UART_0_RX_PORT                                                GPIOA
@@ -150,6 +152,7 @@ extern "C" {
 #define UART_0_FBRD_40_MHZ_115200_BAUD                                      (45)
 /* Defines for UART_1 */
 #define UART_1_INST                                                        UART3
+#define UART_1_INST_FREQUENCY                                           80000000
 #define UART_1_INST_IRQHandler                                  UART3_IRQHandler
 #define UART_1_INST_INT_IRQN                                      UART3_INT_IRQn
 #define GPIO_UART_1_RX_PORT                                                GPIOB
@@ -190,7 +193,6 @@ extern "C" {
 /* Defines for DMA_CH0 */
 #define DMA_CH0_CHAN_ID                                                      (0)
 #define UART_0_INST_DMA_TRIGGER                              (DMA_UART0_TX_TRIG)
-
 
 
 /* Port definition for Pin Group PORTB */

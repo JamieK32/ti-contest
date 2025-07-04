@@ -1,6 +1,8 @@
 #include "log.h"
+#include "common_defines.h"
 
 static void log_print(int level, const char *format, va_list args) {
+		#if DEBUG_MODE
     if (level <= MODULE_LOG_LEVEL) {
         const char *level_tag = "";
         switch (level) {
@@ -22,6 +24,7 @@ static void log_print(int level, const char *format, va_list args) {
         vsnprintf(buffer, sizeof(buffer), format, args);
         debug_uart_printf("%s %s\r\n", level_tag, buffer);
     }
+		#endif
 }
 
 void LOG_I(const char *format, ...) {
