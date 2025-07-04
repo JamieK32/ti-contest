@@ -3,7 +3,7 @@
 #define LOG_H
 
 #include <stdarg.h>
-#include "uart_debug.h"
+#include "uart_driver.h"
 
 // 日志级别定义（数值越小，优先级越高）
 #define LOG_LEVEL_EMPTY 4
@@ -34,18 +34,16 @@
 #define log_i(format, ...) LOG_I(format, ##__VA_ARGS__)
 #define log_w(format, ...) LOG_W(format, ##__VA_ARGS__)
 #define log_e(format, ...) LOG_E(format, ##__VA_ARGS__)
-#define log_hex(data, len) LOG_HEX(data, len)
 #else
 #define log_i(format, ...) do {} while (0)
 #define log_w(format, ...) do {} while (0)
 #define log_e(format, ...) do {} while (0)
-#define log_hex(data, len) do {} while (0)
 #endif
 
 // 函数声明
 void LOG_I(const char *format, ...);
 void LOG_W(const char *format, ...);
 void LOG_E(const char *format, ...);
-void LOG_HEX(const unsigned char *data, int len);
+
 
 #endif // LOG_H

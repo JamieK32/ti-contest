@@ -1,5 +1,6 @@
 #include "log.h"
 #include "common_defines.h"
+#include "uart_debug.h"
 
 static void log_print(int level, const char *format, va_list args) {
 		#if DEBUG_MODE
@@ -46,19 +47,4 @@ void LOG_E(const char *format, ...) {
     va_start(args, format);
     log_print(LOG_LEVEL_ERROR, format, args);
     va_end(args);
-}
-
-void LOG_HEX(const unsigned char *data, int len) {
-    if (LOG_LEVEL_INFO <= MODULE_LOG_LEVEL) {
-        debug_uart_printf("%s HEX Data (%d bytes):\r\n", LOG_TAG_INFO, len);
-        for (int i = 0; i < len; i++) {
-            debug_uart_printf("%02X ", data[i]);
-            if ((i + 1) % 16 == 0) {
-                debug_uart_printf("\r\n");
-            }
-        }
-        if (len % 16 != 0) {
-            debug_uart_printf("\r\n");
-        }
-    }
 }

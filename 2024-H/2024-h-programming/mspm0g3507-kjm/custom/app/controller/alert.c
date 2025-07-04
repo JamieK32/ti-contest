@@ -1,12 +1,11 @@
 #include "alert.h"
-#include "freertos.h"
-#include "task.h"
+#include "systick.h"
 
 static Color current_color = COLOR_GREEN;
 static uint8_t alert_count = 0;
 static uint8_t alert_enable = 0;
 static uint16_t alert_time = 300;
-static TickType_t last_tick_time = 0;
+static uint32_t last_tick_time = 0;
 static uint8_t current_state = 0;
 static uint8_t completed_cycles = 0;
 
@@ -39,7 +38,7 @@ void start_alert(void) {
         alert_enable = 1;
         completed_cycles = 0; // 重置已完成的循环次数
         current_state = 0; // 初始状态为关
-        last_tick_time = xTaskGetTickCount(); // 初始化计时器，以便立即开始第一个间隔
+        last_tick_time = system_time_get_ms(); // 初始化计时器，以便立即开始第一个间隔
     }
 }
 
@@ -55,9 +54,9 @@ void stop_alert(void) {
 void alert_ticks(void) {
 	if (!alert_enable) return;
 
-	TickType_t current_tick_time = xTaskGetTickCount();
+	uint32_t current_tick_time = system_time_get_ms();
 	// 检查时间间隔是否到达
-	if (current_tick_time - last_tick_time >= pdMS_TO_TICKS(alert_time)) {
+	if (current_tick_time - last_tick_time >= alert_time) {
 		// 时间间隔到了，切换状态
 		last_tick_time = current_tick_time; // 更新上次时间
 		

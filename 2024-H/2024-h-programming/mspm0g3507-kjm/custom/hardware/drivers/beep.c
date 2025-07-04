@@ -1,7 +1,5 @@
 #include "beep.h"
 #include "ti_msp_dl_config.h"
-#include "freertos.h"
-#include "task.h"
 #include "delay.h"
 
 #define LFCLK_FREQ 32768
@@ -66,7 +64,7 @@ static void play_sound(uint16_t frq) {
 void play_note(uint8_t note_index, uint32_t duration_ms) {
     if(note_index < sizeof(MusicalNote)/sizeof(MusicalNote[0])) {
         play_sound(MusicalNote[note_index]);
-        vTaskDelay(pdMS_TO_TICKS(duration_ms));
+				delay_ms(duration_ms);
         beep_off(); // 播放完成后关闭
     } else {
 				beep_off();

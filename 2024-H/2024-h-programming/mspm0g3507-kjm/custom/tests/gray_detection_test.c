@@ -6,7 +6,7 @@
 
 static uint8_t gray_datas[12];
 
-void gd_task(void *arg) {
+void gd_test(void) {
 		gray_detection_init();
     for ( ; ; )  {
 				gray_read_data();
@@ -22,7 +22,3 @@ void gd_task(void *arg) {
     }
 }
 
-
-void gd_task_create(void) {
-    xTaskCreate(gd_task, "gd_task", configMINIMAL_STACK_SIZE * 2, NULL, tskIDLE_PRIORITY + 1, NULL);
-}

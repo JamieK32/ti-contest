@@ -5,7 +5,7 @@
 
 
 
-void wit_task(void *arg) {
+void wit_test(void) {
 		jy901s.init();
 		jy901s.reset();
     for ( ; ; )  {
@@ -15,6 +15,3 @@ void wit_task(void *arg) {
 }
 
 
-void wit_task_create(void) {
-    xTaskCreate(wit_task, "wit_task", configMINIMAL_STACK_SIZE * 2, NULL, tskIDLE_PRIORITY + 1, NULL);
-}

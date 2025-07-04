@@ -2,8 +2,6 @@
 #define UI_H__
 
 #include "ti_msp_dl_config.h"
-#include "FreeRTOS.h"
-#include "task.h"
 
 #include "stdio.h"
 #include <stdint.h>
@@ -13,12 +11,13 @@
 #include "u8g2.h"
 #include "ui_button.h"
 #include "oled_driver.h"
+#include "systick.h"
 
 /* =============================================================================
  * 配置相关宏
  * ============================================================================= */
 #ifndef UI_GET_TICK
-#define UI_GET_TICK() xTaskGetTickCount()  // 替换为你的时间函数
+#define UI_GET_TICK() system_time_get_ms()  // 替换为你的时间函数
 #endif
 
 #ifndef VIEW_VAR_TIME_INTERVAL  

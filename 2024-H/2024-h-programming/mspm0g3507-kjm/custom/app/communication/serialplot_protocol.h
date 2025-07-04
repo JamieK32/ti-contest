@@ -7,9 +7,6 @@
 #include <string.h>
 #include <stdio.h>
 
-// 包含你的 UART 驱动头文件
-#include "uart_debug.h"
-
 // 定义一个宏，用于指定格式化浮点数的小数位数
 // 根据你的需求调整
 #define SERIALPLOT_FLOAT_PRECISION 2

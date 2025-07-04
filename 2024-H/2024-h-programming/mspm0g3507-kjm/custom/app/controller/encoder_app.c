@@ -2,8 +2,6 @@
 
 #include "encoder.h"
 #include "ti_msp_dl_config.h" // 包含您的 Sysconfig 生成的头文件
-#include "FreeRTOS.h"
-#include "task.h"
 #include "log.h"
 #include "encoder_app.h"
 
@@ -82,14 +80,6 @@ void GROUP1_IRQHandler(void)
     }
 }
 
-// 封装 FreeRTOS 临界区函数
-void freertos_enter_critical(void) {
-    taskENTER_CRITICAL();
-}
-
-void freertos_exit_critical(void) {
-    taskEXIT_CRITICAL();
-}
 
 // 编码器应用程序初始化
 void encoder_application_init(void) {
@@ -140,8 +130,8 @@ void encoder_application_init(void) {
         NUM_ROBOT_ENCODERS,
         mspm0_gpio_read,         // GPIO 读取函数
         mspm0_attach_interrupt,  // 中断挂载函数
-        freertos_enter_critical, // FreeRTOS 临界区函数
-        freertos_exit_critical   // FreeRTOS 临界区函数
+        NULL, 
+        NULL  
     );
     
     // 启用相关的 GPIO 中断向量

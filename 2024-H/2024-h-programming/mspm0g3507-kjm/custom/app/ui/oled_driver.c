@@ -5,8 +5,6 @@
  *      Author: Unicorn_Li
  */
 #include "oled_driver.h"
-#include "freertos.h"
-#include "task.h"
 
 u8g2_t u8g2;
 
@@ -33,9 +31,9 @@ void oled_spi_hardware_init(void)
     // 复位 OLED
     OLED_RST_Clr();
     // 使用 FreeRTOS 延时，避免阻塞整个系统
-    vTaskDelay(pdMS_TO_TICKS(10));
+    delay_ms(10);
     OLED_RST_Set();
-    vTaskDelay(pdMS_TO_TICKS(10));
+		delay_ms(10);
 
     // 拉高 CS (根据硬件连接和时序要求调整)
     OLED_CS_Set();
@@ -95,7 +93,7 @@ uint8_t u8g2_gpio_and_delay_mspm0(U8X8_UNUSED u8x8_t *u8x8,
     {
         case U8X8_MSG_DELAY_MILLI:
             // 毫秒延时，使用 FreeRTOS 的 vTaskDelay
-            vTaskDelay(pdMS_TO_TICKS(arg_int));
+            delay_ms(arg_int);
             break;
         case U8X8_MSG_DELAY_I2C:
             // 微秒延时，使用你的 delay_us 函数

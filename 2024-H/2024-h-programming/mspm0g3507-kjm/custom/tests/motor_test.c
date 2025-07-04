@@ -1,6 +1,4 @@
 #include "_74hc595.h"
-#include "freertos.h"
-#include "task.h"
 #include "delay.h"
 #include "motor_app.h"
 #include "encoder_app.h"
@@ -8,7 +6,7 @@
 #include "log_config.h"
 #include "log.h"
 
-void motor_task(void *arg) {
+void motor_test(void) {
 		motor_init();
 		encoder_application_init();
 		int pwms[4] = {1000, 1000, 1000, 1000};
@@ -25,6 +23,3 @@ void motor_task(void *arg) {
 }
 
 
-void motor_task_create(void) {
-    xTaskCreate(motor_task, "motor_task", configMINIMAL_STACK_SIZE * 2, NULL, tskIDLE_PRIORITY + 1, NULL);
-}

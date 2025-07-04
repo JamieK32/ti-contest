@@ -46,5 +46,5 @@ void serialplot_send_multi_data(size_t num_channels, ...) {
         // 在 snprintf 循环中增加检查，避免这种情况
         log_e("Serialplot buffer full, no space for newline!\n"); // 使用log宏进行错误提示
     }
-    debug_uart_send_bytes((uint8_t*)buffer, offset);
+    usart_send_bytes(UART_0_INST, (uint8_t*)buffer, offset);
 }
