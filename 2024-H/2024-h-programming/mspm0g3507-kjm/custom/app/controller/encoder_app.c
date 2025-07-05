@@ -58,26 +58,22 @@ bool mspm0_attach_interrupt(void *pin_handle, void (*isr_handler)(void *arg), vo
 }
 
 // 简化的 GPIO 中断服务程序
-void GROUP1_IRQHandler(void)
-{
-    // 检查是否是 GPIOB 的中断
-    if (DL_Interrupt_getStatusGroup(DL_INTERRUPT_GROUP_1, PORTB_INT_IIDX)) {
-        
-        // 遍历所有编码器引脚，处理中断
-        for (uint8_t i = 0; i < NUM_ENCODER_PINS; i++) {
-            if (DL_GPIO_getEnabledInterruptStatus(PORTB_PORT, encoder_pins[i].pin_mask)) {
-                // 清除对应引脚的中断标志
-                DL_GPIO_clearInterruptStatus(PORTB_PORT, encoder_pins[i].pin_mask);
-                
-                // 获取对应的编码器实例
-                uint8_t map_index = (uint8_t)(uintptr_t)encoder_pins[i].iidx;
-                if (map_index < MAX_GPIO_IIDX_IN_USE && 
-                    interrupt_iidx_to_encoder_instance[map_index] != NULL) {
-                    encoder_update(interrupt_iidx_to_encoder_instance[map_index]);
-                }
-            }
-        }
-    }
+void encoder_group1_irq_handler(void)
+{       
+		// 遍历所有编码器引脚，处理中断
+		for (uint8_t i = 0; i < NUM_ENCODER_PINS; i++) {
+				if (DL_GPIO_getEnabledInterruptStatus(PORTB_PORT, encoder_pins[i].pin_mask)) {
+						// 清除对应引脚的中断标志
+						DL_GPIO_clearInterruptStatus(PORTB_PORT, encoder_pins[i].pin_mask);
+						
+						// 获取对应的编码器实例
+						uint8_t map_index = (uint8_t)(uintptr_t)encoder_pins[i].iidx;
+						if (map_index < MAX_GPIO_IIDX_IN_USE && 
+								interrupt_iidx_to_encoder_instance[map_index] != NULL) {
+								encoder_update(interrupt_iidx_to_encoder_instance[map_index]);
+						}
+				}
+		}   
 }
 
 

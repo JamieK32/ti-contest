@@ -38,7 +38,7 @@ void start_alert(void) {
         alert_enable = 1;
         completed_cycles = 0; // 重置已完成的循环次数
         current_state = 0; // 初始状态为关
-        last_tick_time = system_time_get_ms(); // 初始化计时器，以便立即开始第一个间隔
+        last_tick_time = get_ms(); // 初始化计时器，以便立即开始第一个间隔
     }
 }
 
@@ -54,7 +54,7 @@ void stop_alert(void) {
 void alert_ticks(void) {
 	if (!alert_enable) return;
 
-	uint32_t current_tick_time = system_time_get_ms();
+	uint32_t current_tick_time = get_ms();
 	// 检查时间间隔是否到达
 	if (current_tick_time - last_tick_time >= alert_time) {
 		// 时间间隔到了，切换状态

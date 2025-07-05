@@ -7,10 +7,7 @@ void system_init(void)
 {
     SYSCFG_DL_init();
 		beep_init();
-		system_time_init();
-		#if DEBUG_MODE
-		debug_uart_init();
-		#endif
+		systick_init();
 }
 
 void main_task_init(void) 
@@ -24,7 +21,7 @@ void main_task_init(void)
 
 void test_task(void) 
 {
-	motor_test();
+
 }
 
 int main(void) 
@@ -39,9 +36,9 @@ int main(void)
 #else
 		main_task_init();
 #endif
+
     while (1) {
         periodic_event_task_process(); // 处理所有任务
-        delay_ms(1);       // 1ms延时
     }
 
     return 0;

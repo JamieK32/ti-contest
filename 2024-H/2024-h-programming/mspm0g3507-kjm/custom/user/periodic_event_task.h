@@ -3,9 +3,6 @@
 
 #include <stdint.h>
 
-// 定义软件定时器的周期（以 tick 为单位）
-#define ACTUAL_LOOP_PERIOD_MS 1
-
 // 定义事件 ID 枚举
 typedef enum {
     EVENT_NONE = 0,

@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\dmplib\Inc;..\custom\app\imu;..\custom\app\imu\DmpLib</IncludePath>
+              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\imu\wit_gyro;..\custom\app\imu\mpu6050_dmplib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -567,27 +567,32 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>app/imu</GroupName>
+          <GroupName>app/imu/dmplib</GroupName>
           <Files>
-            <File>
-              <FileName>wit_jyxx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\app\imu\wit_jyxx.c</FilePath>
-            </File>
             <File>
               <FileName>inv_mpu.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\imu\DmpLib\inv_mpu.c</FilePath>
+              <FilePath>..\custom\app\imu\mpu6050_dmplib\inv_mpu.c</FilePath>
             </File>
             <File>
               <FileName>inv_mpu_dmp_motion_driver.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\imu\DmpLib\inv_mpu_dmp_motion_driver.c</FilePath>
+              <FilePath>..\custom\app\imu\mpu6050_dmplib\inv_mpu_dmp_motion_driver.c</FilePath>
             </File>
             <File>
               <FileName>mpuiic.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\app\imu\DmpLib\mpuiic.c</FilePath>
+              <FilePath>..\custom\app\imu\mpu6050_dmplib\mpuiic.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>app/imu/wit_gyro</GroupName>
+          <Files>
+            <File>
+              <FileName>wit_jyxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\imu\wit_gyro\wit_jyxx.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -598,11 +603,6 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\utils\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart_debug.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\custom\utils\uart_debug.c</FilePath>
             </File>
             <File>
               <FileName>log.c</FileName>

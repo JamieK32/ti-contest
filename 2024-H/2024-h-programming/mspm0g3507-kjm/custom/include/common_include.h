@@ -26,6 +26,5 @@
 #include "inv_mpu.h"
 #include "ui.h"
 #include "systick.h"
-#include "uart_debug.h"
 
 #endif // COMMON_H

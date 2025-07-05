@@ -11,5 +11,6 @@ typedef struct {
 extern encoder_manager_t robot_encoder_manager;
 
 void encoder_application_init(void);
+void encoder_group1_irq_handler(void);
 
 #endif

@@ -175,6 +175,7 @@ void car_init(void) {
     motor_init();
 		car_pid_init();
 		car_debug_init();
+		car_reset();
 }
 
 void update_encoder(void) {

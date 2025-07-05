@@ -1,6 +1,5 @@
 #include "log.h"
 #include "common_defines.h"
-#include "uart_debug.h"
 
 static void log_print(int level, const char *format, va_list args) {
 		#if DEBUG_MODE
@@ -23,7 +22,7 @@ static void log_print(int level, const char *format, va_list args) {
 
         char buffer[MAX_LOG_SIZE];
         vsnprintf(buffer, sizeof(buffer), format, args);
-        debug_uart_printf("%s %s\r\n", level_tag, buffer);
+        usart_printf(UART_0_INST, "%s %s\r\n", level_tag, buffer);
     }
 		#endif
 }

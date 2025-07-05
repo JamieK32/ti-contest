@@ -17,7 +17,7 @@
  * 配置相关宏
  * ============================================================================= */
 #ifndef UI_GET_TICK
-#define UI_GET_TICK() system_time_get_ms()  // 替换为你的时间函数
+#define UI_GET_TICK() get_ms()  // 替换为你的时间函数
 #endif
 
 #ifndef VIEW_VAR_TIME_INTERVAL  

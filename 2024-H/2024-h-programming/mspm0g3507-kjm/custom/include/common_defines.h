@@ -14,11 +14,4 @@
 #define PULSE_NUM_PER_CIRCLE       1470           // 轮胎一圈的编码器计数
 
 
-#define MAX_TX_BUFFER_SIZE 256 										//最大TX缓冲区大小
-#define MAX_RX_BUFFER_SIZE MAX_TX_BUFFER_SIZE			//最大RX缓冲区大小
-
-#define UART_RX_QUEUE_SIZE MAX_TX_BUFFER_SIZE			//最大接收队列大小
-#define UART_TX_QUEUE_SIZE 2											//最大发送队列大小（一个队列占MAX_TX_BUFFER_SIZE）
-
-
 #endif // common_defines_H

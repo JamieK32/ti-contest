@@ -287,6 +287,12 @@ extern "C" {
 /* Defines for HC595_STCP: GPIOA.14 with pinCMx 36 on package pin 7 */
 #define PORTA_HC595_STCP_PIN                                    (DL_GPIO_PIN_14)
 #define PORTA_HC595_STCP_IOMUX                                   (IOMUX_PINCM36)
+/* Defines for SCL3: GPIOA.29 with pinCMx 4 on package pin 36 */
+#define PORTA_SCL3_PIN                                          (DL_GPIO_PIN_29)
+#define PORTA_SCL3_IOMUX                                          (IOMUX_PINCM4)
+/* Defines for SDA3: GPIOA.30 with pinCMx 5 on package pin 37 */
+#define PORTA_SDA3_PIN                                          (DL_GPIO_PIN_30)
+#define PORTA_SDA3_IOMUX                                          (IOMUX_PINCM5)
 
 /* clang-format on */
 

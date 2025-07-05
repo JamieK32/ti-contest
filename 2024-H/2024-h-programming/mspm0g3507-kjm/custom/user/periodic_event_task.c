@@ -2,7 +2,7 @@
 #include "common_include.h"
 //#include "log_config.h"
 #include "log.h"
-#include "systick.h"  // 包含system_time_get_ms()
+#include "systick.h"  // 包含get_ms()
 
 void debug_task(void) {
     debug_speed_pid();
@@ -26,7 +26,7 @@ period_task_t period_tasks[] = {
  * @brief 初始化周期性任务调度器
  */
 void create_periodic_event_task(void) {
-    uint32_t current_time = system_time_get_ms();
+    uint32_t current_time = get_ms();
     
     // 初始化所有任务的上次执行时间
     for (int i = 0; i < PERIOD_TASKS_COUNT; i++) {
@@ -41,7 +41,7 @@ void create_periodic_event_task(void) {
  * @note 在主循环中调用
  */
 void periodic_event_task_process(void) {
-    uint32_t current_time = system_time_get_ms();
+    uint32_t current_time = get_ms();
     
     // 遍历所有任务
     for (int i = 0; i < PERIOD_TASKS_COUNT; i++) {
@@ -71,7 +71,7 @@ void enable_periodic_task(EVENT_IDS event_id) {
     for (int i = 0; i < PERIOD_TASKS_COUNT; i++) {
         if (period_tasks[i].id == event_id) {
             period_tasks[i].is_running = RUN;
-            period_tasks[i].last_run_time_ms = system_time_get_ms();  // 重置执行时间
+            period_tasks[i].last_run_time_ms = get_ms();  // 重置执行时间
             log_i("Task %d enabled", event_id);
             break;
         }

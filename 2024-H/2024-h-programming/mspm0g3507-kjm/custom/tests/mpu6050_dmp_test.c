@@ -12,7 +12,7 @@ void mpu_test(void) {
     for ( ; ; )  {
 			float pitch, yaw, roll; 
 			mpu_dmp_get_data(&pitch, &roll, &yaw);
-			now_time = system_time_get_ms();
+			now_time = get_ms();
 			if (now_time - lastime >= 1000) {
 				lastime = now_time;
 				log_i("pitch = %.2f, roll = %.2f, yaw = %.2f", pitch, roll, yaw);
