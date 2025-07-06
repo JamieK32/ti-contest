@@ -1,13 +1,23 @@
-from maix import camera, display, image, uart
+from maix import camera, display, image, uart, pinmap
 import math
 
 def on_received(serial : uart.UART, data : bytes):
-    print("received:", data)
-    # send back
-    serial.write(data)
-    print("sent", data)
+    try:
+        # 转换为字符串并去除首尾空白字符
+        received_str = data.decode('utf-8').strip()
+        print(f"received: '{received_str}'")
+        
+        # 可选：回发确认
+        # serial.write(data)
+        # print(f"sent back: '{received_str}'")
+        
+    except UnicodeDecodeError:
+        # 如果解码失败，显示原始字节
+        print(f"received (raw bytes): {data}")
+        print(f"received (hex): {data.hex()}")
 
-device = "/dev/ttyS0"
+device = "/dev/serial0"
+
 serial0 = uart.UART(device, 115200)
 serial0.set_received_callback(on_received)
 
@@ -17,7 +27,8 @@ disp = display.Display()
 
 area_threshold = 4
 pixels_threshold = 4
-thresholds = [(0, 100, 19, 113, -28, 27)]
+thresholds = [(0, 100, 37, 113, 0, 20)]
+
 CENTER_X, CENTER_Y = 240, 240
 
 rectangle_1 = [
@@ -26,31 +37,6 @@ rectangle_1 = [
     [415, 409],
     [118, 412],
 ]
-
-class SimpleFilter:
-    def __init__(self):
-        self.last_x = 0
-        self.last_y = 0
-        self.initialized = False
-    
-    def update(self, x, y):
-        if not self.initialized:
-            self.last_x = x
-            self.last_y = y
-            self.initialized = True
-            return x, y
-        
-        # 简单的2点平均滤波
-        new_x = int((x + self.last_x) / 2)
-        new_y = int((y + self.last_y) / 2)
-        
-        self.last_x = x
-        self.last_y = y
-        
-        return new_x, new_y
-
-# 创建简单滤波器（替换卡尔曼滤波器）
-simple_filter = SimpleFilter()
 
 def lightweight_filter(blobs):
     if not blobs:
@@ -142,11 +128,10 @@ while 1:
     if best_blob:
         raw_cx, raw_cy = best_blob.cx(), best_blob.cy()
         
-        # 应用简单滤波（替换卡尔曼滤波）
-        filtered_cx, filtered_cy = simple_filter.update(raw_cx, raw_cy)
+
         
-        img.draw_cross(filtered_cx, filtered_cy, color=image.COLOR_RED, size=10, thickness=2)
-        img.draw_circle(filtered_cx, filtered_cy, 5, color=image.COLOR_GREEN, thickness=2)
+        img.draw_cross(raw_cx, raw_cy, color=image.COLOR_RED, size=10, thickness=2)
+        img.draw_circle(raw_cx, raw_cy, 5, color=image.COLOR_GREEN, thickness=2)
         
   
     

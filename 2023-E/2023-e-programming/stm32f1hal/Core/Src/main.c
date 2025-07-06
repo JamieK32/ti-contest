@@ -58,7 +58,6 @@ typedef struct {
 
 /* Private variables ---------------------------------------------------------*/
 
-
 /* USER CODE BEGIN PV */
 periodic_task_t tasks[MAX_TASK] = {
 	{"OLED_TICK", 	  20,   oled_menu_tick,				 RUN },

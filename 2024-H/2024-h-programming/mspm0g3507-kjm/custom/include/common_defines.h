@@ -5,9 +5,7 @@
 
 #include "stdint.h"
 
-#define UNIT_TEST_MODE 0 									//单元测试模式 1 打开 0 关闭
-#define DEBUG_MODE 		 1												//调试模式		 1 打开 0 关闭
-
+#define UNIT_TEST_MODE 1 									//单元测试模式 1 打开 0 关闭
 
 #define ENCODER_PERIOD_MS          20             // 20ms 采样周期
 #define WHEEL_RADIUS_CM            3.3f           // 轮胎半径，单位：cm

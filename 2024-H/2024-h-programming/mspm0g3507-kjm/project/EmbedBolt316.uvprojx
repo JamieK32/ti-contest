@@ -337,7 +337,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>-fno-builtin-printf</MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
               <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\imu\wit_gyro;..\custom\app\imu\mpu6050_dmplib</IncludePath>
@@ -668,6 +668,11 @@
               <FileName>uart_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\hardware\bsp\uart_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\bsp\bsp_spi.c</FilePath>
             </File>
           </Files>
         </Group>

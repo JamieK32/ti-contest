@@ -9,7 +9,6 @@ void wit_test(void);
 void motor_test(void);
 // mpu6050测试
 void mpu_test(void);
-//icm42688测试
-void icm42688_test(void);
+
 
 #endif
