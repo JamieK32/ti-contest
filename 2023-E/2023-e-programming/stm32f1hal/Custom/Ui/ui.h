@@ -24,7 +24,7 @@
 #endif
 
 #ifndef SHOW_OPENING_ANIMATION
-#define SHOW_OPENING_ANIMATION 1     // 是否显示开机动画
+#define SHOW_OPENING_ANIMATION 0     // 是否显示开机动画
 #endif
 
 

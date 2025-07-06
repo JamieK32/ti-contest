@@ -36,6 +36,7 @@ static void task_find_rect_cb(void *arg) {
 static void task_receive_center_cb(void *arg) {
 		show_message("Receive Center");
 		printf("QUESTION1");
+		start_servo_pid_control();
 }
 
 static void task_receive_path_cb(void *arg) {
@@ -142,4 +143,3 @@ void menu_init_and_create(void) {
     // 初始化按钮和创建菜单
     create_oled_menu(&main_menu);
 }
-

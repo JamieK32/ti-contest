@@ -11,7 +11,7 @@
 
 // 初始位置定义
 #define INIT_ANGLE_X     95.0f
-#define INIT_ANGLE_Y  	 30.0f
+#define INIT_ANGLE_Y  	 90.0f
 
 #ifdef __cplusplus
 extern "C" {

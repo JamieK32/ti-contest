@@ -69,9 +69,8 @@ void Servo_SetAngleY(float AngleY)
  */
 void Servo_MoveIncrement(float x_increment, float y_increment)
 {
-    // 计算新的角度
-    float new_X = Angle_X + x_increment;
-    float new_Y = Angle_Y + y_increment;
+   float new_X = Angle_X + x_increment;
+   float new_Y = Angle_Y + y_increment;
     // 调用设置角度函数（包含角度范围限制）
     Servo_SetAngleX(new_X);
     Servo_SetAngleY(new_Y);
