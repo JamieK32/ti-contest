@@ -64,7 +64,8 @@ periodic_task_t tasks[MAX_TASK] = {
 	{"BUTTON_TICK",   20,   button_ticks, 				 RUN },
 	{"UART_DMA", 	    1, 	  UART_Process_DMA_Data, RUN },
 	{"OPENMV_TASK",   1,    process_received_data, RUN },
-	{"SERVO_CONTROL", 35,   servo_pid_control,	   RUN },
+	{"SERVO_CONTROL", 20,   servo_pid_control,	   RUN },
+
 
 };
 /* USER CODE END PV */

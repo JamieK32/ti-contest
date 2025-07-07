@@ -24,9 +24,9 @@ extern float err_x, err_y;
 static void task_find_rect_cb(void *arg) {
 	if (task_counter < 4) {
 			char buffer[32];
-			snprintf(buffer, sizeof(buffer), "Find Rect %d", task_counter);
+			snprintf(buffer, sizeof(buffer), "MANUAL MARKING %d", task_counter);
 			show_message(buffer);
-			printf("QUESTION0");
+			printf("MANUAL_MARKING");
 			task_counter++;
 	} else {
 			show_message("Please Reset First");
@@ -34,14 +34,14 @@ static void task_find_rect_cb(void *arg) {
 }
 
 static void task_receive_center_cb(void *arg) {
-		show_message("Receive Center");
-		printf("QUESTION1");
+		show_message("TRACK POINT CENTER");
+		printf("TRACK_POINT_CENTER");
 		start_servo_pid_control();
 }
 
 static void task_receive_path_cb(void *arg) {
 		show_message("Receive Path");
-		printf("QUESTION2");
+		printf("TRACK_PATH_POINT");
 		start_servo_pid_control();
 }
 
@@ -116,8 +116,8 @@ void menu_init_and_create(void) {
     
     // 任务执行菜单
     ADD_SUBMENU(main_menu, tasks_menu, "Run Tasks", NULL);
-    ADD_ACTION(tasks_menu, task1, "Find Rect", task_find_rect_cb);
-    ADD_ACTION(tasks_menu, task2, "Recv Center", task_receive_center_cb);
+    ADD_ACTION(tasks_menu, task1, "MANUAL MARKING", task_find_rect_cb);
+    ADD_ACTION(tasks_menu, task2, "TRACK POINT CENTER", task_receive_center_cb);
     ADD_ACTION(tasks_menu, task3, "Recv Path", task_receive_path_cb);
     ADD_ACTION(tasks_menu, task_reset, "Reset", task_reset_cb);
     

@@ -2,6 +2,7 @@
 #include "tim.h"
 #include "main.h"
 #include "stm32f1xx_hal_tim.h"
+#include "math.h"
 
 static float Angle_X = INIT_ANGLE_X;   // 当前X轴角度
 static float Angle_Y = INIT_ANGLE_Y;   // 当前Y轴角度
@@ -69,6 +70,16 @@ void Servo_SetAngleY(float AngleY)
  */
 void Servo_MoveIncrement(float x_increment, float y_increment)
 {
+    // 限制单次增量大小，防止过大的跳跃
+    float max_increment = 3.0f;  // 单次最大增量
+    
+    if (fabsf(x_increment) > max_increment) {
+        x_increment = (x_increment > 0) ? max_increment : -max_increment;
+    }
+    if (fabsf(y_increment) > max_increment) {
+        y_increment = (y_increment > 0) ? max_increment : -max_increment;
+    }
+
    float new_X = Angle_X + x_increment;
    float new_Y = Angle_Y + y_increment;
     // 调用设置角度函数（包含角度范围限制）
