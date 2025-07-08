@@ -12,7 +12,6 @@
 #define USE_ANGLE_SENSOR 1
 #define DISTANCE_THRESHOLD_CM 1
 #define ANGLE_THRESHOLD_DEG 1
-#define TRACK_NUM 12
 #define TRACK_BASE_SPEED 40
 
 // 定义 encoder 结构体实例
@@ -111,20 +110,19 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
 					car.target_mileage_cm = 0xFF; //随便给一个距离
 				}
     }
-    uint8_t track_data[TRACK_NUM];
+    uint8_t track_data[TRACK_SENSOR_COUNT];
     
     // 读取灰度传感器数据
-    int temp_data = pca9555_read_bit12(&pca9555_i2c, PCA9555_ADDR);
+    int temp_data = gray_read_byte();
     
-		// 将 16 位数据按位压入 gray_datas 数组（只取低 12 位）
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < TRACK_SENSOR_COUNT; i++) {
         track_data[i] = (temp_data >> i) & 0x01; // 提取每一位并存入数组
     }
 
     // 检查当前是否全白（所有传感器值为0）
     bool is_all_white = true;
     bool has_black = false;
-    for (int i = 0; i < TRACK_NUM; i++) {
+    for (int i = 0; i < TRACK_SENSOR_COUNT; i++) {
         if (track_data[i] == 1) {
             is_all_white = false; // 只要有一个是黑，就不是全白
             has_black = true;     // 标记有黑色

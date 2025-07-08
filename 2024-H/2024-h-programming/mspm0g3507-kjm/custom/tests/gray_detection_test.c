@@ -10,7 +10,7 @@ void gd_test(void) {
 		gray_detection_init();
     for ( ; ; )  {
 				gray_read_data();
-				uint16_t temp_data = pca9555_read_bit12(&pca9555_i2c, PCA9555_ADDR);
+				uint16_t temp_data = gray_read_byte();
 			   for (int i = 0; i < 12; i++) {
 					gray_datas[i] = (temp_data >> i) & 0x01; // 提取每一位并存入数组
 				}

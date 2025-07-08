@@ -1,10 +1,11 @@
-
-#include "pca9555.h"
 #include "gray_detection_app.h"
-//#include "log_config.h"
+#include "pca9555.h"
 #include "log.h"
 
-sw_i2c_t pca9555_i2c = {
+static float gray_status_backup = 0.0f; // 初始备份值设为0
+
+// I2C 硬件配置 (与您的代码相同)
+static sw_i2c_t pca9555_i2c = {
     .sclPort = PORTA_PORT,
     .sdaPort = PORTA_PORT,
     .sclPin = PORTA_SCL1_PIN,
@@ -13,98 +14,50 @@ sw_i2c_t pca9555_i2c = {
     .sdaIOMUX = PORTA_SDA1_IOMUX,
 };
 
+#if !USE_PCA9555
+static gpio_struct_t gray_gpio[TRACK_SENSOR_COUNT] = {
+	TRACK_PIN_0_PORT, TRACK_PIN_0_PIN,
+	TRACK_PIN_1_PORT, TRACK_PIN_1_PIN,
+	TRACK_PIN_2_PORT, TRACK_PIN_2_PIN,
+	TRACK_PIN_3_PORT, TRACK_PIN_3_PIN,
+	TRACK_PIN_4_PORT, TRACK_PIN_4_PIN,
+	TRACK_PIN_5_PORT, TRACK_PIN_5_PIN,
+	TRACK_PIN_6_PORT, TRACK_PIN_6_PIN,
+	TRACK_PIN_7_PORT, TRACK_PIN_7_PIN,
+};
+#endif
+
 void gray_detection_init(void) {
     SOFT_IIC_Init(&pca9555_i2c);
 }
 
-static float gray_status_backup;
+uint16_t gray_read_byte(void) {
+#if !USE_PCA9555
+		uint16_t data = 0;
+		for (int i = 0; i < TRACK_SENSOR_COUNT; i++) {
+			uint8_t bit = !DL_GPIO_readPins(gray_gpio[i].port, gray_gpio[i].pin);
+			data = (data << 1) | bit;  // Correct version
+		}
+		return data;	
+#else
+		return pca9555_read_bit12(&pca9555_i2c, PCA9555_ADDR);
+#endif
+}
 
 float gray_read_data(void) {
-    uint16_t pca_data = pca9555_read_bit12(&pca9555_i2c, PCA9555_ADDR);
-    
-    static const struct {
-        uint16_t input;
-        float output;
-    } lookup_table[] = {
-        // ⭐ 单个传感器检测 - 中心为传感器6
-        {0x0001, -5.5},   // 0000-0000-0000-0001b (bit 0) - 最左端
-        {0x0002, -4.5},   // 0000-0000-0000-0010b (bit 1)
-        {0x0004, -3.5},   // 0000-0000-0000-0100b (bit 2)
-        {0x0008, -2.5},   // 0000-0000-0000-1000b (bit 3)
-        {0x0010, -1.5},   // 0000-0000-0001-0000b (bit 4)
-        {0x0020, -0.5},   // 0000-0000-0010-0000b (bit 5)
-        {0x0040, 0.0},    // 0000-0000-0100-0000b (bit 6) ⭐ 单线中心
-        {0x0080, 0.5},    // 0000-0000-1000-0000b (bit 7)
-        {0x0100, 1.5},    // 0000-0001-0000-0000b (bit 8)
-        {0x0200, 2.5},    // 0000-0010-0000-0000b (bit 9)
-        {0x0400, 3.5},    // 0000-0100-0000-0000b (bit 10)
-        {0x0800, 4.5},    // 0000-1000-0000-0000b (bit 11) - 最右端
-        
-        // ⭐ 两个相邻传感器检测 - 中心为传感器5,6
-        {0x0003, -5.0},   // 0000-0000-0000-0011b (bit 0,1)
-        {0x0006, -4.0},   // 0000-0000-0000-0110b (bit 1,2)
-        {0x000C, -3.0},   // 0000-0000-0000-1100b (bit 2,3)
-        {0x0018, -2.0},   // 0000-0000-0001-1000b (bit 3,4)
-        {0x0030, -1.0},   // 0000-0000-0011-0000b (bit 4,5)
-        {0x0060, 0.0},    // 0000-0000-0110-0000b (bit 5,6) ⭐ 双线中心
-        {0x00C0, 1.0},    // 0000-0000-1100-0000b (bit 6,7)
-        {0x0180, 2.0},    // 0000-0001-1000-0000b (bit 7,8)
-        {0x0300, 3.0},    // 0000-0011-0000-0000b (bit 8,9)
-        {0x0600, 4.0},    // 0000-0110-0000-0000b (bit 9,10)
-        {0x0C00, 5.0},    // 0000-1100-0000-0000b (bit 10,11)
-        
-        // 三个相邻传感器检测（宽线条）
-        {0x0007, -4.75},  // 0000-0000-0000-0111b (bit 0,1,2) - 最左端三个
-        {0x000E, -3.75},  // 0000-0000-0000-1110b (bit 1,2,3)
-        {0x001C, -2.75},  // 0000-0000-0001-1100b (bit 2,3,4)
-        {0x0038, -1.75},  // 0000-0000-0011-1000b (bit 3,4,5)
-        {0x0070, -0.25},  // 0000-0000-0111-0000b (bit 4,5,6) - 左偏中心
-        {0x00E0, 0.25},   // 0000-0000-1110-0000b (bit 5,6,7) - 右偏中心
-        {0x01C0, 1.25},   // 0000-0001-1100-0000b (bit 6,7,8)
-        {0x0380, 2.25},   // 0000-0011-1000-0000b (bit 7,8,9)
-        {0x0700, 3.25},   // 0000-0111-0000-0000b (bit 8,9,10)
-        {0x0E00, 4.25},   // 0000-1110-0000-0000b (bit 9,10,11) - 最右端三个
-        
-        // 四个相邻传感器（非常宽的线条）
-        {0x000F, -4.5},   // 0000-0000-0000-1111b (bit 0,1,2,3)
-        {0x001E, -3.5},   // 0000-0000-0001-1110b (bit 1,2,3,4)
-        {0x003C, -2.5},   // 0000-0000-0011-1100b (bit 2,3,4,5)
-        {0x0078, -1.0},   // 0000-0000-0111-1000b (bit 3,4,5,6) - 左偏超宽
-        {0x00F0, 0.0},    // 0000-0000-1111-0000b (bit 4,5,6,7) ⭐ 中心四传感器
-        {0x01E0, 1.0},    // 0000-0001-1110-0000b (bit 5,6,7,8) - 右偏超宽
-        {0x03C0, 2.5},    // 0000-0011-1100-0000b (bit 6,7,8,9)
-        {0x0780, 3.5},    // 0000-0111-1000-0000b (bit 7,8,9,10)
-        {0x0F00, 4.5},    // 0000-1111-0000-0000b (bit 8,9,10,11)
-        
-        // 特殊情况：分离的传感器检测（噪声或多线检测）
-        {0x0005, -4.0},   // 0000-0000-0000-0101b (bit 0,2)
-        {0x000A, -3.5},   // 0000-0000-0000-1010b (bit 1,3)
-        {0x0014, -2.5},   // 0000-0000-0001-0100b (bit 2,4)
-        {0x0028, -1.5},   // 0000-0000-0010-1000b (bit 3,5)
-        {0x0050, -0.5},   // 0000-0000-0101-0000b (bit 4,6)
-        {0x00A0, 0.5},    // 0000-0000-1010-0000b (bit 5,7)
-        {0x0140, 1.5},    // 0000-0001-0100-0000b (bit 6,8)
-        {0x0280, 2.5},    // 0000-0010-1000-0000b (bit 7,9)
-        {0x0500, 3.5},    // 0000-0101-0000-0000b (bit 8,10)
-        {0x0A00, 4.0},    // 0000-1010-0000-0000b (bit 9,11)
-        
-        // 跨中心的分离检测
-        {0x0044, 0.0},    // 0000-0000-0100-0100b (bit 2,6) - 跨中心检测
-        {0x0088, 0.0},    // 0000-0000-1000-1000b (bit 3,7) - 跨中心检测
-        {0x0110, 0.0},    // 0000-0001-0001-0000b (bit 4,8) - 跨中心检测
-        {0x0220, 0.0},    // 0000-0010-0010-0000b (bit 5,9) - 跨中心检测
-    };
+    uint16_t pca_data = gray_read_byte();
     
     const int table_size = sizeof(lookup_table) / sizeof(lookup_table[0]);
     
     // 查找匹配的输入值
     for (int i = 0; i < table_size; i++) {
         if (lookup_table[i].input == pca_data) {
-            gray_status_backup = lookup_table[i].output;
+            gray_status_backup = lookup_table[i].output; // 找到匹配项，更新备份值
             return lookup_table[i].output;
         }
     }
     
-    // 如果没有找到匹配项，返回备份值
+    // 如果没有找到匹配项 (例如，所有传感器都未检测到，或出现不连续的噪声)
+    // 返回上一次有效的值。这有助于在短暂丢失线时保持方向。
     return gray_status_backup;
 }
