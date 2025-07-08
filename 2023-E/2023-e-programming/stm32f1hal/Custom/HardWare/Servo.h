@@ -10,8 +10,8 @@
 #define MAX_ANGLE_Y     180.0f
 
 // 初始位置定义
-#define INIT_ANGLE_X     95.0f
-#define INIT_ANGLE_Y  	 90.0f
+#define INIT_ANGLE_X     0.0f
+#define INIT_ANGLE_Y  	 20.0f
 
 #ifdef __cplusplus
 extern "C" {

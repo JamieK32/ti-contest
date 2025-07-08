@@ -42,3 +42,4 @@ stm32f1hal\ui_app.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\inclu
 stm32f1hal\ui_app.o: ..\Custom\Ui\oled_driver.h
 stm32f1hal\ui_app.o: ../Core/Inc/main.h
 stm32f1hal\ui_app.o: ../Custom/HardWare/ServoPid.h
+stm32f1hal\ui_app.o: ../Custom/HardWare/pid.h

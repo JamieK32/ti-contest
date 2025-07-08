@@ -11,12 +11,14 @@ static bool pid_start_flag = false;
 
 void servo_pid_init(void) {
 	PID_Init(&x_pid,PID_TYPE_POSITION);
-	PID_SetParams(&x_pid,0.008,0.0,0.1);
-	PID_SetDeadzone(&x_pid, 8);
+	PID_SetParams(&x_pid,0.01,0.0,0.1);
+	PID_SetDeadzone(&x_pid, 5);
+	PID_SetOutputLimit(&x_pid, 0.5, -0.5);
 
 	PID_Init(&y_pid,PID_TYPE_POSITION);
-	PID_SetParams(&y_pid,0.008,0.0,0.1);
-	PID_SetDeadzone(&y_pid, 8);
+	PID_SetParams(&y_pid,0.01,0.0,0.1);
+	PID_SetDeadzone(&y_pid, 5);
+	PID_SetOutputLimit(&y_pid, 0.5, -0.5);
 }
 
 void servo_pid_control(void) {
@@ -24,7 +26,7 @@ void servo_pid_control(void) {
 	float x_output = PID_Calculate(0, err_x, &x_pid);
 	float y_output = PID_Calculate(0, err_y, &y_pid);
 	
-	Servo_MoveIncrement(x_output, y_output);
+	Servo_MoveIncrement(x_output, -y_output);
 }
 
 void start_servo_pid_control(void) {
