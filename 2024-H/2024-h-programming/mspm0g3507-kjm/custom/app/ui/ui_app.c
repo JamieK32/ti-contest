@@ -90,6 +90,21 @@ void set_yaw_zero(void *arg) {
 		show_message("Reset Ok");
 }
 
+void play_music_1_cb(void *arg) {
+	show_message("Play Music1");
+	music_player_start(music_example_1, music_example_1_size);
+}
+
+void play_music_2_cb(void *arg) {
+	show_message("Play Music2");
+	music_player_start(music_example_2, music_example_2_size);
+}
+
+void stop_music_cb(void *arg) {
+	show_message("Stop Music");
+	music_player_stop();
+}
+
 menu_variable_t gyro_vars[] = {
     MENU_VAR_READONLY("Yaw", &jy901s.yaw, VAR_TYPE_FLOAT),
 		MENU_VAR_READONLY("Pitch", &jy901s.pitch, VAR_TYPE_FLOAT),
@@ -112,6 +127,10 @@ void menu_init_and_create(void) {
     ADD_ACTION(tasks_menu, task4, "Run 24h Task4", run_task04_cb);
 		ADD_ACTION(tasks_menu, task5, "Set Yaw Zero",  set_yaw_zero);
 		
+		ADD_SUBMENU(main_menu, PlayMusic, "Play Music", NULL);
+		ADD_ACTION(PlayMusic, music1, "ChunRiYing", play_music_1_cb);
+    ADD_ACTION(PlayMusic, music2, "TianKongZhiCheng", play_music_2_cb);
+		ADD_ACTION(PlayMusic, stop_music, "StopMusic", stop_music_cb);
 		
 		ADD_SUBMENU(main_menu, status_menu, "System Status", NULL);
 		ADD_VAR_VIEW(status_menu, status_view, "Gyro Status", gyro_vars);

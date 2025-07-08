@@ -27,11 +27,18 @@ void PID_Init(PID_Controller_t *pid, PID_Type_e type) {
     
     pid->deadzone = 0.0f;               // 默认无死区
     
+    // 新增：微分项滤波相关
+    pid->derivative_filter_alpha = 0.7f; // 默认滤波系数
+    pid->last_derivative = 0.0f;
+    pid->filtered_derivative = 0.0f;
+    
     pid->type = type;
     pid->enable_integral_separation = 0;     // 默认关闭积分分离
     pid->enable_integral_limit = 0;          // 默认关闭积分限幅
     pid->enable_output_limit = 0;            // 默认关闭输出限幅
     pid->enable_deadzone = 0;                // 默认关闭死区
+    pid->enable_anti_windup = 1;            // 默认开启抗积分饱和
+    pid->enable_derivative_filter = 1;       // 默认开启微分滤波
 }
 
 // 死区处理函数
@@ -63,6 +70,20 @@ static uint16_t PID_IntegralSeparationCheck(float error, PID_Controller_t *pid) 
     return (abs_error < pid->integral_separation_threshold) ? 1 : 0;
 }
 
+// 抗积分饱和处理
+static void PID_AntiWindupProcess(PID_Controller_t *pid) {
+    if (!pid->enable_anti_windup || !pid->enable_output_limit) {
+        return;
+    }
+    
+    // 如果输出已经饱和，且误差方向会使饱和加剧，则停止积分
+    if ((pid->output >= pid->output_max && pid->error > 0) ||
+        (pid->output <= pid->output_min && pid->error < 0)) {
+        // 可选：缓慢减小积分项，而不是完全停止
+        pid->integral *= 0.95f;
+    }
+}
+
 // 积分限幅处理
 static void PID_IntegralLimitProcess(PID_Controller_t *pid) {
     if (!pid->enable_integral_limit) {
@@ -89,6 +110,20 @@ static void PID_OutputLimitProcess(PID_Controller_t *pid) {
     }
 }
 
+// 微分项滤波处理
+static float PID_DerivativeFilter(float derivative, PID_Controller_t *pid) {
+    if (!pid->enable_derivative_filter) {
+        return derivative;
+    }
+    
+    // 一阶低通滤波器
+    pid->filtered_derivative = pid->derivative_filter_alpha * derivative + 
+                              (1.0f - pid->derivative_filter_alpha) * pid->last_derivative;
+    pid->last_derivative = pid->filtered_derivative;
+    
+    return pid->filtered_derivative;
+}
+
 // 位置式PID计算
 float PID_PositionCalculate(PID_Controller_t *pid) {
     float proportional, integral, differential;
@@ -100,22 +135,35 @@ float PID_PositionCalculate(PID_Controller_t *pid) {
     // 比例项
     proportional = pid->Kp * pid->error;
     
-    // 积分项 - 检查积分分离
+    // 积分项 - 检查积分分离和抗饱和
     if (PID_IntegralSeparationCheck(pid->error, pid)) {
-        pid->integral += pid->error;
+        // 先计算输出，用于抗积分饱和判断
+        float temp_output = proportional + pid->Ki * pid->integral + pid->output_offset;
+        
+        // 抗积分饱和检查
+        if (!pid->enable_anti_windup || 
+            !((temp_output >= pid->output_max && pid->error > 0) ||
+              (temp_output <= pid->output_min && pid->error < 0))) {
+            pid->integral += pid->error;
+        }
+        
         PID_IntegralLimitProcess(pid); // 积分限幅
     }
     integral = pid->Ki * pid->integral;
     
-    // 微分项
+    // 微分项 - 带滤波
     float error_diff = pid->error - pid->last_error;
-    differential = pid->Kd * error_diff;
+    float raw_derivative = pid->Kd * error_diff;
+    differential = PID_DerivativeFilter(raw_derivative, pid);
     
     // 计算输出
     pid->output = proportional + integral + differential + pid->output_offset;
     
     // 输出限幅
     PID_OutputLimitProcess(pid);
+    
+    // 抗积分饱和后处理
+    PID_AntiWindupProcess(pid);
     
     // 更新历史误差
     pid->last_error = pid->error;
@@ -127,6 +175,7 @@ float PID_PositionCalculate(PID_Controller_t *pid) {
 float PID_IncrementCalculate(PID_Controller_t *pid) {
     float delta_output;
     float proportional_delta, integral_delta, differential_delta;
+    static uint8_t first_run = 1;  // 标记是否第一次运行
     
     // 计算误差并进行死区处理
     pid->error = pid->target - pid->feedback;
@@ -144,15 +193,32 @@ float PID_IncrementCalculate(PID_Controller_t *pid) {
         integral_delta = 0.0f;
     }
     
-    // 微分增量
+    // 微分增量 - 带滤波
     float error_diff2 = pid->error - 2.0f * pid->last_error + pid->last_last_error;
-    differential_delta = pid->Kd * error_diff2;
+    float raw_derivative_delta = pid->Kd * error_diff2;
+    differential_delta = PID_DerivativeFilter(raw_derivative_delta, pid);
     
     // 计算输出增量
     delta_output = proportional_delta + integral_delta + differential_delta;
     
     // 计算新的输出
-    pid->output = pid->last_output + delta_output + pid->output_offset;
+    if (first_run) {
+        // 第一次运行时加入偏移
+        pid->output = pid->last_output + delta_output + pid->output_offset;
+        first_run = 0;
+    } else {
+        // 后续运行不再累加偏移
+        pid->output = pid->last_output + delta_output;
+    }
+    
+    // 输出限幅前的抗积分饱和检查
+    if (pid->enable_anti_windup && pid->enable_output_limit) {
+        if ((pid->output >= pid->output_max && delta_output > 0) ||
+            (pid->output <= pid->output_min && delta_output < 0)) {
+            // 如果输出饱和且增量会使饱和加剧，则不更新输出
+            pid->output = pid->last_output;
+        }
+    }
     
     // 输出限幅
     PID_OutputLimitProcess(pid);
@@ -185,6 +251,8 @@ void PID_Reset(PID_Controller_t *pid) {
     pid->integral = 0.0f;
     pid->output = 0.0f;
     pid->last_output = 0.0f;
+    pid->last_derivative = 0.0f;
+    pid->filtered_derivative = 0.0f;
 }
 
 // 辅助函数实现
@@ -231,4 +299,16 @@ void PID_SetDeadzone(PID_Controller_t *pid, float deadzone) {
 void PID_SetIntegralSeparation(PID_Controller_t *pid, float threshold) {
     pid->integral_separation_threshold = threshold;
     pid->enable_integral_separation = (threshold > 0.0f) ? 1 : 0;
+}
+
+
+void PID_SetAntiWindup(PID_Controller_t *pid, uint8_t enable) {
+    pid->enable_anti_windup = enable;
+}
+
+void PID_SetDerivativeFilter(PID_Controller_t *pid, uint8_t enable, float alpha) {
+    pid->enable_derivative_filter = enable;
+    if (alpha > 0.0f && alpha < 1.0f) {
+        pid->derivative_filter_alpha = alpha;
+    }
 }

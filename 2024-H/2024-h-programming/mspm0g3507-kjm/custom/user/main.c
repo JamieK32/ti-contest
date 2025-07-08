@@ -21,7 +21,7 @@ void main_task_init(void)
 
 void test_task(void) 
 {
-
+		play_music(music_example_2, music_example_2_size);
 }
 
 int main(void) 

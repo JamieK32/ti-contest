@@ -5,10 +5,10 @@ import numpy as np
 class RectangleDetector:
     """矩形检测器 - 找到最大矩形并向内缩进"""
     
-    def __init__(self, cam, disp, inset_pixels=5):
+    def __init__(self, cam, disp, inset_pixels=4):
         self.cam = cam
         self.disp = disp
-        self.kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        self.kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         self.inset_pixels = inset_pixels  # 内缩像素数，可调节
 
     def preprocess(self, img_raw):
@@ -26,7 +26,7 @@ class RectangleDetector:
         img_morphed = cv2.morphologyEx(img_filtered, cv2.MORPH_CLOSE, self.kernel)
         
         # 边缘检测 - 调整参数使其更敏感
-        edges = cv2.Canny(img_morphed, 30, 100)
+        edges = cv2.Canny(img_morphed, 20, 100)
         
         return edges
 

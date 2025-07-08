@@ -45,6 +45,14 @@ typedef struct {
     uint16_t enable_integral_limit;      // 积分限幅使能 (1=开启, 0=关闭)
     uint16_t enable_output_limit;        // 输出限幅使能 (1=开启, 0=关闭)
     uint16_t enable_deadzone;            // 死区使能 (1=开启, 0=关闭)
+		
+    float derivative_filter_alpha;    // 微分滤波系数 (0-1)
+    float last_derivative;           // 上次微分项值
+    float filtered_derivative;       // 滤波后的微分项
+    
+    uint8_t enable_anti_windup;      // 抗积分饱和使能
+    uint8_t enable_derivative_filter; // 微分滤波使能
+    
     
 } PID_Controller_t;
 
@@ -67,5 +75,7 @@ void PID_SetIntegralLimit(PID_Controller_t *pid, float max_val, float min_val);
 void PID_SetOutputLimit(PID_Controller_t *pid, float max_val, float min_val);
 void PID_SetDeadzone(PID_Controller_t *pid, float deadzone);
 void PID_SetIntegralSeparation(PID_Controller_t *pid, float threshold);
+void PID_SetAntiWindup(PID_Controller_t *pid, uint8_t enable);
+void PID_SetDerivativeFilter(PID_Controller_t *pid, uint8_t enable, float alpha);
 
 #endif // __FLOAT_PID_H__
