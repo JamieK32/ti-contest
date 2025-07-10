@@ -7,86 +7,88 @@
  * ============================================================================= */
 bool task_running_flag = false;
 
-static action_config_t task1_action_config = {
-    .actions = {
-        {ACTION_SPIN_TURN, 0.0f}, 
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-    },
-    .is_loop_enabled = true,
-    .loop_count = 1
-};
+static void setup_task1(void) {
+    car_path_init();
+    car_add_turn(0.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_set_loop(1);
+}
 
-static action_config_t task2_action_config = {
-    .actions = {
-        {ACTION_SPIN_TURN, 0.0f}, 
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-        {ACTION_SPIN_TURN, -180.0f}, 
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-    },
-    .is_loop_enabled = true,
-    .loop_count = 1
-};
+static void setup_task2(void) {
+    car_path_init();
+    car_add_turn(0.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_add_turn(-180.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_set_loop(1);
+}
 
-static action_config_t task3_action_config = {
-    .actions = {
-        {ACTION_SPIN_TURN, -35.0f},
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-        {ACTION_SPIN_TURN, -145.0f},
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-    },
-    .is_loop_enabled = true,
-    .loop_count = 1
-};
+static void setup_task3(void) {
+    car_path_init();
+    car_add_turn(-35.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_add_turn(-145.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_set_loop(1);
+}
 
-static action_config_t task4_action_config = {
-    .actions = {
-        {ACTION_SPIN_TURN, -35.0f},
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-        {ACTION_SPIN_TURN, -145.0f},
-        {ACTION_MOVE_UNTIL_BLACK, CAR_STATE_GO_STRAIGHT},
-        {ACTION_MOVE_UNTIL_WHITE, CAR_STATE_TRACK},
-    },
-    .action_count = 0,  // 自动计算
-    .is_loop_enabled = true,
-    .loop_count = 4
-};
+static void setup_task4(void) {
+    car_path_init();
+    car_add_turn(-35.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_add_turn(-145.0f);
+    car_add_move_until_black(CAR_STATE_GO_STRAIGHT);
+    car_add_move_until_white(CAR_STATE_TRACK);
+    car_set_loop(4);  
+}
 
-static void run_task(const char *task_name, bool *task_flag, action_config_t *task_config) {
+static void setup_task5(void) {
+	car_path_init();
+	car_add_move_until_stop_mark(CAR_STATE_TRACK);
+	car_add_straight(100);
+	car_set_loop(1);  
+}
+
+static void run_task(const char *task_name, bool *task_flag, void (*setup_func)(void)) {
     if (*task_flag == true) {
         show_message("Running Failed");
         return;
     }
     *task_flag = true;
-    show_message(task_name);
-    jy901s.reset();
-    car_path_init(task_config);
+    show_message(task_name);    
+    setup_func();     // 调用设置函数
+    car_start();      // 启动状态机
     enable_periodic_task(EVENT_CAR_STATE_MACHINE);
 }
 
 void run_task01_cb(void *arg) {
-    run_task("Running Task 01", &task_running_flag, &task1_action_config);
+    run_task("Running Task 01", &task_running_flag, setup_task1);
 }
 
 void run_task02_cb(void *arg) {
-    run_task("Running Task 02", &task_running_flag, &task2_action_config);
+    run_task("Running Task 02", &task_running_flag, setup_task2);
 }
 
 void run_task03_cb(void *arg) {
-    run_task("Running Task 03", &task_running_flag, &task3_action_config);
+    run_task("Running Task 03", &task_running_flag, setup_task3);
 }
 
 void run_task04_cb(void *arg) {
-    run_task("Running Task 04", &task_running_flag, &task4_action_config);
+    run_task("Running Task 04", &task_running_flag, setup_task4);
+}
+
+void run_task05_cb(void *arg) {
+		run_task("Running Task 01", &task_running_flag, setup_task5);
 }
 
 void set_yaw_zero(void *arg) {
 		show_message("Resetting...");
-		jy901s.reset();
+		wit_imu_set_yaw_zero();
 		show_message("Reset Ok");
 }
 
@@ -106,10 +108,16 @@ void stop_music_cb(void *arg) {
 }
 
 menu_variable_t gyro_vars[] = {
-    MENU_VAR_READONLY("Yaw", &jy901s.yaw, VAR_TYPE_FLOAT),
-		MENU_VAR_READONLY("Pitch", &jy901s.pitch, VAR_TYPE_FLOAT),
-		MENU_VAR_READONLY("Roll", &jy901s.roll, VAR_TYPE_FLOAT),
+    MENU_VAR_READONLY("Yaw", &jy61p.yaw, VAR_TYPE_FLOAT),
+		MENU_VAR_READONLY("Pitch", &jy61p.pitch, VAR_TYPE_FLOAT),
+		MENU_VAR_READONLY("Roll", &jy61p.roll, VAR_TYPE_FLOAT),
 		MENU_VAR_END
+};
+
+
+menu_variable_t car_vars[] = {
+    MENU_VAR_BINARY_8BIT("Gray", &gray_byte),
+    MENU_VAR_END
 };
 
 /* =============================================================================
@@ -120,12 +128,16 @@ void menu_init_and_create(void) {
     MENU_BUILDER_START(main_menu, "Main Menu");
     
     // 任务执行菜单
-    ADD_SUBMENU(main_menu, tasks_menu, "Run 24h App", NULL);
-    ADD_ACTION(tasks_menu, task1, "Run 24h Task1", run_task01_cb);
-    ADD_ACTION(tasks_menu, task2, "Run 24h Task2", run_task02_cb);
-    ADD_ACTION(tasks_menu, task3, "Run 24h Task3", run_task03_cb);
-    ADD_ACTION(tasks_menu, task4, "Run 24h Task4", run_task04_cb);
-		ADD_ACTION(tasks_menu, task5, "Set Yaw Zero",  set_yaw_zero);
+    ADD_SUBMENU(main_menu, tasks1_menu, "Run 24h App", NULL);
+    ADD_ACTION(tasks1_menu, _24h_task1, "Run 24h Task1", run_task01_cb);
+    ADD_ACTION(tasks1_menu, _24h_task2, "Run 24h Task2", run_task02_cb);
+    ADD_ACTION(tasks1_menu, _24h_task3, "Run 24h Task3", run_task03_cb);
+    ADD_ACTION(tasks1_menu, _24h_task4, "Run 24h Task4", run_task04_cb);
+		ADD_ACTION(tasks1_menu, _24h_task5, "Set Yaw Zero",  set_yaw_zero);
+		
+		ADD_SUBMENU(main_menu, tasks2_menu, "Run 22c App", NULL);
+		ADD_ACTION(tasks2_menu, _22c_task1, "Run 22c Task1", run_task05_cb);
+			
 		
 		ADD_SUBMENU(main_menu, PlayMusic, "Play Music", NULL);
 		ADD_ACTION(PlayMusic, music1, "ChunRiYing", play_music_1_cb);
@@ -133,6 +145,7 @@ void menu_init_and_create(void) {
 		ADD_ACTION(PlayMusic, stop_music, "StopMusic", stop_music_cb);
 		
 		ADD_SUBMENU(main_menu, status_menu, "System Status", NULL);
-		ADD_VAR_VIEW(status_menu, status_view, "Gyro Status", gyro_vars);
+		ADD_VAR_VIEW(status_menu, gyro_status_view, "Gyro Status", gyro_vars);
+		ADD_VAR_VIEW(status_menu, car_status_view, "Car Status", car_vars);
     create_oled_menu(&main_menu);
 }

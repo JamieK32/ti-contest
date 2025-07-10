@@ -360,7 +360,33 @@ static void modify_variable_value(menu_variable_t *var, bool increase) {
             *val = !(*val);
             break;
         }
-        
+        // 在 switch 语句中添加 case
+				case VAR_TYPE_BINARY: {
+						unsigned int *val = (unsigned int*)var->val_ptr;
+						if (increase) {
+								// 可以选择按位翻转或者增减
+								if (var->modify_mode == MODIFY_MODE_FIXED_STEP) {
+										*val += (unsigned int)step;
+								} else {
+										// 位翻转模式：翻转最低位
+										*val ^= 1;
+								}
+						} else {
+								if (var->modify_mode == MODIFY_MODE_FIXED_STEP) {
+										if (*val >= (unsigned int)step) {
+												*val -= (unsigned int)step;
+										} else {
+												*val = 0;
+										}
+								} else {
+										// 位翻转模式：翻转最低位
+										*val ^= 1;
+								}
+						}
+						if (*val < var->u_range.min) *val = var->u_range.min;
+						if (*val > var->u_range.max) *val = var->u_range.max;
+						break;
+				}
         default:
             break;
     }

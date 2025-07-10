@@ -21,7 +21,7 @@
 #endif
 
 #ifndef VIEW_VAR_TIME_INTERVAL  
-#define VIEW_VAR_TIME_INTERVAL 1000   // 变量刷新间隔
+#define VIEW_VAR_TIME_INTERVAL 400   // 变量刷新间隔
 #endif
 
 #ifndef SHOW_OPENING_ANIMATION
@@ -45,6 +45,7 @@ typedef enum {
     VAR_TYPE_INT,
     VAR_TYPE_UINT,
     VAR_TYPE_BOOL,
+		VAR_TYPE_BINARY,
     VAR_TYPE_READONLY
 } VariableType;
 
@@ -99,6 +100,7 @@ typedef struct {
     VariableChangeCallback on_change;   // 变化回调
     const char *unit;                   // 单位
     const char *format;                 // 显示格式
+		uint8_t binary_bits; 
 } menu_variable_t;
 
 /* =============================================================================
@@ -150,27 +152,41 @@ typedef struct {
  * 便利宏 - 变量定义
  * ============================================================================= */
 #define MENU_VAR_FLOAT(name, ptr) \
-    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_PERCENTAGE, .f_range = {-999999, 999999}, .f_step = 0.1, .percentage = 0.08, NULL, NULL, "%.2f"}
+    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_PERCENTAGE, .f_range = {-999999, 999999}, .f_step = 0.1, .percentage = 0.08, NULL, NULL, "%.2f", .binary_bits = 0}
 
 #define MENU_VAR_INT(name, ptr) \
-    {name, ptr, VAR_TYPE_INT, MODIFY_MODE_FIXED_STEP, .i_range = {-999999, 999999}, .i_step = 1, .percentage = 0.08, NULL, NULL, "%d"}
+    {name, ptr, VAR_TYPE_INT, MODIFY_MODE_FIXED_STEP, .i_range = {-999999, 999999}, .i_step = 1, .percentage = 0.08, NULL, NULL, "%d", .binary_bits = 0}
 
 #define MENU_VAR_BOOL(name, ptr) \
-    {name, ptr, VAR_TYPE_BOOL, MODIFY_MODE_FIXED_STEP, .i_range = {0, 1}, .i_step = 1, .percentage = 0, NULL, NULL, "%s"}
+    {name, ptr, VAR_TYPE_BOOL, MODIFY_MODE_FIXED_STEP, .i_range = {0, 1}, .i_step = 1, .percentage = 0, NULL, NULL, "%s", .binary_bits = 0}
 
 #define MENU_VAR_READONLY(name, ptr, type) \
-    {name, ptr, VAR_TYPE_READONLY, MODIFY_MODE_FIXED_STEP, .f_range = {0, 0}, .f_step = 0, .percentage = 0, NULL, NULL, NULL}
+    {name, ptr, VAR_TYPE_READONLY, MODIFY_MODE_FIXED_STEP, .f_range = {0, 0}, .f_step = 0, .percentage = 0, NULL, NULL, NULL, .binary_bits = 0}
 
 #define MENU_VAR_FLOAT_RANGE(name, ptr, min_val, max_val, step_val) \
-    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_FIXED_STEP, .f_range = {min_val, max_val}, .f_step = step_val, .percentage = 0.08, NULL, NULL, "%.2f"}
+    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_FIXED_STEP, .f_range = {min_val, max_val}, .f_step = step_val, .percentage = 0.08, NULL, NULL, "%.2f", .binary_bits = 0}
 
 #define MENU_VAR_INT_RANGE(name, ptr, min_val, max_val, step_val) \
-    {name, ptr, VAR_TYPE_INT, MODIFY_MODE_FIXED_STEP, .i_range = {min_val, max_val}, .i_step = step_val, .percentage = 0.08, NULL, NULL, "%d"}
+    {name, ptr, VAR_TYPE_INT, MODIFY_MODE_FIXED_STEP, .i_range = {min_val, max_val}, .i_step = step_val, .percentage = 0.08, NULL, NULL, "%d", .binary_bits = 0}
 
 #define MENU_VAR_PID(name, ptr) \
-    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_EXPONENTIAL, .f_range = {0, 1000}, .f_step = 0.01, .percentage = 0.1, NULL, NULL, "%.3f"}
+    {name, ptr, VAR_TYPE_FLOAT, MODIFY_MODE_EXPONENTIAL, .f_range = {0, 1000}, .f_step = 0.01, .percentage = 0.1, NULL, NULL, "%.3f", .binary_bits = 0}
 
-#define MENU_VAR_END {NULL, NULL, VAR_TYPE_FLOAT, MODIFY_MODE_FIXED_STEP, .f_range = {0, 0}, .f_step = 0, .percentage = 0, NULL, NULL, NULL}
+// 新增二进制相关宏
+#define MENU_VAR_BINARY(name, ptr, bits) \
+    {name, ptr, VAR_TYPE_BINARY, MODIFY_MODE_FIXED_STEP, .u_range = {0, (1U << bits) - 1}, .u_step = 1, .percentage = 0, NULL, NULL, NULL, .binary_bits = bits}
+
+#define MENU_VAR_BINARY_4BIT(name, ptr) \
+    {name, ptr, VAR_TYPE_BINARY, MODIFY_MODE_FIXED_STEP, .u_range = {0, 0xF}, .u_step = 1, .percentage = 0, NULL, NULL, NULL, .binary_bits = 4}
+
+#define MENU_VAR_BINARY_8BIT(name, ptr) \
+    {name, ptr, VAR_TYPE_BINARY, MODIFY_MODE_FIXED_STEP, .u_range = {0, 0xFF}, .u_step = 1, .percentage = 0, NULL, NULL, NULL, .binary_bits = 8}
+
+#define MENU_VAR_BINARY_12BIT(name, ptr) \
+    {name, ptr, VAR_TYPE_BINARY, MODIFY_MODE_FIXED_STEP, .u_range = {0, 0xFFF}, .u_step = 1, .percentage = 0, NULL, NULL, NULL, .binary_bits = 12}
+
+#define MENU_VAR_END {NULL, NULL, VAR_TYPE_FLOAT, MODIFY_MODE_FIXED_STEP, .f_range = {0, 0}, .f_step = 0, .percentage = 0, NULL, NULL, NULL, .binary_bits = 0}
+
 
 /* =============================================================================
  * 便利宏 - 菜单构建

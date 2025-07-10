@@ -6,10 +6,10 @@
 
 
 void wit_test(void) {
-		jy901s.init();
-		jy901s.reset();
+		wit_imu_init();
+		wit_imu_set_yaw_zero();
     for ( ; ; )  {
-				log_i("wit: roll = %.2lf, yaw = %.2lf, pitch = %.2lf", jy901s.roll, jy901s.yaw, jy901s.pitch);
+				log_i("wit: roll = %.2lf, yaw = %.2lf, pitch = %.2lf", jy61p.roll, jy61p.yaw, jy61p.pitch);
 				delay_ms(200);
     }
 }

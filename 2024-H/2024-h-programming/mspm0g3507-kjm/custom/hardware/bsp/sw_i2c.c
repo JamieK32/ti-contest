@@ -9,9 +9,9 @@
  * @brief I2C 软件模拟延时函数
  * @note  延时时间根据 CPU 主频和目标 I2C 频率调整，当前设置为约 5us（基于 32MHz CPU 频率）
  */
- void SOFT_IIC_DLY(void)
+void SOFT_IIC_DLY(uint16_t time)
 {
-		delay_us(1);
+		delay_us(time);
 }
 
 /**
@@ -68,13 +68,13 @@
 {
     SOFT_SDA_OUT(i2c_cfg); // SDA 设为输出模式
     DL_GPIO_setPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 高电平
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 高电平
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_clearPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 拉低，产生起始信号
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低，准备数据传输
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     log_i("I2C 起始信号发送完成\n");
 }
 
@@ -87,11 +87,11 @@
     SOFT_SDA_OUT(i2c_cfg); // SDA 设为输出模式
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
     DL_GPIO_clearPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 拉低
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 拉高，产生停止信号
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     log_i("I2C 停止信号发送完成\n");
 }
 
@@ -106,9 +106,9 @@
     SOFT_SDA_IN(i2c_cfg); // SDA 设为输入模式
     DL_GPIO_setPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // 释放 SDA 总线
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高，等待从机应答
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
 
     // 检测 SDA 是否被从机拉低（表示应答）
     while ((DL_GPIO_readPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin) & i2c_cfg->sdaPin) == i2c_cfg->sdaPin)
@@ -120,11 +120,11 @@
             SOFT_IIC_Stop(i2c_cfg); // 发送停止信号
             return 1; // 应答失败
         }
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
     }
 
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低，结束检测
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     log_i("I2C 应答信号检测成功\n");
     return 0; // 应答成功
 }
@@ -138,11 +138,11 @@
     SOFT_SDA_OUT(i2c_cfg); // SDA 设为输出模式
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
     DL_GPIO_clearPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 拉低，表示应答
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // 释放 SDA
     log_i("I2C ACK 应答信号发送\n");
 }
@@ -156,11 +156,11 @@
     SOFT_SDA_OUT(i2c_cfg); // SDA 设为输出模式
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
     DL_GPIO_setPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin); // SDA 拉高，表示非应答
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
-    SOFT_IIC_DLY();
+    SOFT_IIC_DLY(i2c_cfg->delay_time);
     log_i("I2C NACK 非应答信号发送\n");
 }
 
@@ -182,11 +182,11 @@
         else
             DL_GPIO_clearPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin);
         txd <<= 1;
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
         DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高，触发数据发送
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
         DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
     }
     log_i("I2C 发送字节: 0x%02X\n", txd);
 }
@@ -206,12 +206,12 @@
     for (i = 0; i < 8; i++)
     {
         DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
         DL_GPIO_setPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉高，读取数据
         receive <<= 1;
         if ((DL_GPIO_readPins(i2c_cfg->sdaPort, i2c_cfg->sdaPin) & i2c_cfg->sdaPin) == i2c_cfg->sdaPin)
             receive++; // 读取 SDA 状态
-        SOFT_IIC_DLY();
+        SOFT_IIC_DLY(i2c_cfg->delay_time);
     }
     DL_GPIO_clearPins(i2c_cfg->sclPort, i2c_cfg->sclPin); // SCL 拉低
 

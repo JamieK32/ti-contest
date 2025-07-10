@@ -6,25 +6,42 @@
 // ====================================================================
 // ⭐ 关键配置：请在此处定义您使用的传感器数量 (3到12)
 // ====================================================================
-#define TRACK_SENSOR_COUNT 12 // <--- 修改这里，例如 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-#define USE_PCA9555 			 1
+#define TRACK_SENSOR_COUNT 8 // <--- 修改这里，例如 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+
+//#define USE_PCA9555 			  
+#define USE_GW_GRAY 			  
+//#define USE_GPIO						
+
+#ifdef USE_GW_GRAY
+
+/* 默认地址 */
+#define GW_GRAY_ADDR_DEF 0x4C
+
+/* 开启开关数据模式 */
+#define GW_GRAY_DIGITAL_MODE 0xDD
+
+#endif
 
 void gray_detection_init(void);
-float gray_read_data(void);
+float gray_get_position(void);
 uint16_t gray_read_byte(void);
 
-#if !USE_PCA9555 
+extern uint16_t gray_byte;
+
+#ifdef USE_GPIO
 typedef struct {
 		GPIO_Regs* port;
 		uint32_t pin;
 } gpio_struct_t;
 #endif
 
-static const struct
+typedef struct
 {
-    uint16_t input; 
-    float output;
-} lookup_table[] = {
+	uint16_t input; 
+  float output;
+} lookup_table_t;
+
+static const lookup_table_t lookup_table[] = {
 
 #if (TRACK_SENSOR_COUNT == 3) // ⭐ 3路传感器 (中心: 1)
     // 单个传感器
@@ -139,17 +156,7 @@ static const struct
     {0x3C,  0.0},   // 00111100b (bit 2,3,4,5) ⭐ 中心
     {0x78,  1.0},   // 01111000b (bit 3,4,5,6) - 右偏超宽
     {0xF0,  2.0},   // 11110000b (bit 4,5,6,7) - 最右端四个
-    // 特殊情况：分离的传感器检测（噪声或多线检测）
-    {0x05, -2.0},   // 00000101b (bit 0,2)
-    {0x0A, -1.5},   // 00001010b (bit 1,3)
-    {0x14, -0.5},   // 00010100b (bit 2,4)
-    {0x28,  0.5},   // 00101000b (bit 3,5)
-    {0x50,  1.5},   // 01010000b (bit 4,6)
-    {0xA0,  2.0},   // 10100000b (bit 5,7)
-    // 特殊情况：跨中心的分离检测
-    {0x24,  0.0},   // 00100100b (bit 2,5) - 跨中心检测
-    {0x42,  0.0},   // 01000010b (bit 1,6) - 跨中心检测
-    {0x81,  0.0},   // 10000001b (bit 0,7) - 跨中心检测
+		
 #elif (TRACK_SENSOR_COUNT == 9) // ⭐ 9路传感器 (中心: 4)
     // 单个传感器
     {0x001, -4.0f}, // 0b000000001 (bit 0)
@@ -282,11 +289,11 @@ static const struct
     {0x1C0, 1.5f},  // 0b000111000000 (bit 6,7,8)
     {0x380, 2.5f},  // 0b001110000000 (bit 7,8,9)
     {0x700, 3.5f},  // 0b011100000000 (bit 8,9,10)
-    {0xE00, 4.5f},  // 0b111000000000 (bit 9,10,11)
-
+    {0xE00, 4.5f}  // 0b111000000000 (bit 9,10,11)
 #else
 #error "TRACK_SENSOR_COUNT must be between 3 and 12."
 #endif
 };
+
 
 #endif

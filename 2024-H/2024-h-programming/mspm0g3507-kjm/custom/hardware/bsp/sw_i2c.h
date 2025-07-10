@@ -24,6 +24,7 @@ typedef struct {
     GPIO_Regs* sclPort;         // SCL端口 (如 GPIOB)
     uint32_t sclPin;            // SCL引脚（如 DL_GPIO_PIN_4）
     uint32_t sclIOMUX;          // SCL IOMUX配置
+		uint16_t delay_time;
 } sw_i2c_t;
 
 // 函数声明
@@ -37,7 +38,7 @@ void SOFT_IIC_Ack(const sw_i2c_t *i2c_cfg);
 void SOFT_IIC_NAck(const sw_i2c_t *i2c_cfg);
 void SOFT_IIC_Send_Byte(const sw_i2c_t *i2c_cfg, uint8_t txd);
 uint8_t SOFT_IIC_Read_Byte(const sw_i2c_t *i2c_cfg, unsigned char ack);
-void SOFT_IIC_DLY(void);
+void SOFT_IIC_DLY(uint16_t time);
 uint8_t SOFT_IIC_Write_Len(const sw_i2c_t *iic, uint8_t addr, uint8_t reg, uint8_t len, uint8_t *buf);
 uint8_t SOFT_IIC_Read_Len(const sw_i2c_t *iic, uint8_t addr, uint8_t reg, uint8_t len, uint8_t *buf);
 

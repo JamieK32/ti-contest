@@ -4,7 +4,6 @@
 #include "ti_msp_dl_config.h"
 #include "stdio.h"
 
-
 #define WAIT_HEADER1 0
 #define WAIT_HEADER2 1
 #define RECEIVE_EULER_ANGLE 2
@@ -29,12 +28,14 @@ typedef struct {
     float roll;
     float pitch;
     float yaw;
-    void (*reset)(void);
-		void (*init)(void);
 } WitImu_TypeDef;
 
-extern WitImu_TypeDef jy901s;
+void wit_imu_init(void);
+void wit_imu_process(void);
+void wit_imu_uart_irq_handler(DL_UART_IIDX idx);
+void wit_imu_set_yaw_zero(void);
+void wit_imu_get_euler_angle(float *yaw, float *roll, float *pitch);
 
-static void Serial_Jy61p_Zero_Yaw(void);
-static void wit_jyxx_init(void);
+extern WitImu_TypeDef jy61p;
+
 #endif

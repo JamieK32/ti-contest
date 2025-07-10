@@ -1,8 +1,14 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-
 #define MODULE_LOG_ENABLED 1
-#define MODULE_LOG_LEVEL 3  // LOG_LEVEL_INFO
+
+//  LOG_LEVEL_ERROR = 1
+//  LOG_LEVEL_WARN = 2
+//  LOG_LEVEL_INFO = 3
+//  LOG_LEVEL_DEBUG = 4
+//  LOG_LEVEL_EMPTY = 5
+
+#define MODULE_LOG_LEVEL 4  
 
 #endif // CONFIG_H

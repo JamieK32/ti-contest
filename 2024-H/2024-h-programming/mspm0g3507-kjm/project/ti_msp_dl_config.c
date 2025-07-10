@@ -61,7 +61,6 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_UART_0_init();
     SYSCFG_DL_UART_1_init();
     SYSCFG_DL_SPI_0_init();
-    SYSCFG_DL_DMA_init();
     /* Ensure backup structures have no valid state */
 	gMotor_PWM1Backup.backupRdy 	= false;
 	gBEEP_PWMBackup.backupRdy 	= false;
@@ -109,7 +108,6 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_reset(UART_1_INST);
     DL_SPI_reset(SPI_0_INST);
 
-
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_TimerA_enablePower(Motor_PWM1_INST);
@@ -118,7 +116,6 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_enablePower(UART_0_INST);
     DL_UART_Main_enablePower(UART_1_INST);
     DL_SPI_enablePower(SPI_0_INST);
-
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
@@ -228,28 +225,20 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 
     DL_GPIO_initDigitalOutput(PORTA_HC595_STCP_IOMUX);
 
-    DL_GPIO_initDigitalOutput(PORTA_SCL3_IOMUX);
-
-    DL_GPIO_initDigitalOutput(PORTA_SDA3_IOMUX);
-
     DL_GPIO_clearPins(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
 		PORTA_HC595_DS_PIN |
 		PORTA_HC595_SHCP_PIN |
-		PORTA_HC595_STCP_PIN |
-		PORTA_SCL3_PIN |
-		PORTA_SDA3_PIN);
+		PORTA_HC595_STCP_PIN);
     DL_GPIO_enableOutput(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
 		PORTA_HC595_DS_PIN |
 		PORTA_HC595_SHCP_PIN |
-		PORTA_HC595_STCP_PIN |
-		PORTA_SCL3_PIN |
-		PORTA_SDA3_PIN);
+		PORTA_HC595_STCP_PIN);
     DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_R_PIN |
 		PORTB_LED_G_PIN |
 		PORTB_LED_B_PIN |
@@ -505,12 +494,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_0_init(void)
 
     /* Configure Interrupts */
     DL_UART_Main_enableInterrupt(UART_0_INST,
-                                 DL_UART_MAIN_INTERRUPT_DMA_DONE_TX |
-                                 DL_UART_MAIN_INTERRUPT_EOT_DONE |
                                  DL_UART_MAIN_INTERRUPT_RX);
 
-    /* Configure DMA Transmit Event */
-    DL_UART_Main_enableDMATransmitEvent(UART_0_INST);
     /* Configure FIFOs */
     DL_UART_Main_enableFIFOs(UART_0_INST);
     DL_UART_Main_setRXFIFOThreshold(UART_0_INST, DL_UART_RX_FIFO_LEVEL_ONE_ENTRY);
@@ -553,6 +538,10 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_1_init(void)
     /* Setting the Interrupt Priority */
     NVIC_SetPriority(UART_1_INST_INT_IRQN, 2);
 
+    /* Configure FIFOs */
+    DL_UART_Main_enableFIFOs(UART_1_INST);
+    DL_UART_Main_setRXFIFOThreshold(UART_1_INST, DL_UART_RX_FIFO_LEVEL_1_2_FULL);
+    DL_UART_Main_setTXFIFOThreshold(UART_1_INST, DL_UART_TX_FIFO_LEVEL_1_2_EMPTY);
 
     DL_UART_Main_enable(UART_1_INST);
 }
@@ -588,24 +577,4 @@ SYSCONFIG_WEAK void SYSCFG_DL_SPI_0_init(void) {
     /* Enable module */
     DL_SPI_enable(SPI_0_INST);
 }
-
-static const DL_DMA_Config gDMA_CH0Config = {
-    .transferMode   = DL_DMA_SINGLE_TRANSFER_MODE,
-    .extendedMode   = DL_DMA_NORMAL_MODE,
-    .destIncrement  = DL_DMA_ADDR_UNCHANGED,
-    .srcIncrement   = DL_DMA_ADDR_INCREMENT,
-    .destWidth      = DL_DMA_WIDTH_BYTE,
-    .srcWidth       = DL_DMA_WIDTH_BYTE,
-    .trigger        = UART_0_INST_DMA_TRIGGER,
-    .triggerType    = DL_DMA_TRIGGER_TYPE_EXTERNAL,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_DMA_CH0_init(void)
-{
-    DL_DMA_initChannel(DMA, DMA_CH0_CHAN_ID , (DL_DMA_Config *) &gDMA_CH0Config);
-}
-SYSCONFIG_WEAK void SYSCFG_DL_DMA_init(void){
-    SYSCFG_DL_DMA_CH0_init();
-}
-
 

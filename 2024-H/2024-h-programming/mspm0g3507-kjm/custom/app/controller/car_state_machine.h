@@ -5,43 +5,74 @@
 #include "stdbool.h"
 #include "car_controller.h"
 
-// 动作队列结构体
-#define QUEUE_MAX_SIZE 10  // 队列最大容量，可根据需求调整
-
-// 最大动作数量，限制 actions 数组的大小
-#define ACTION_MAX_COUNT 10
-
-// 动作类型枚举
+// 动作类型定义
 typedef enum {
-		ACTION_INVALID = 0, 
-    ACTION_GO_STRAIGHT,  // 直行
-    ACTION_SPIN_TURN,     // 原地旋转
-		ACTION_TRACK,
-		ACTION_MOVE_UNTIL_BLACK,
-		ACTION_MOVE_UNTIL_WHITE
+    ACTION_NONE = 0,
+    ACTION_GO_STRAIGHT,
+    ACTION_SPIN_TURN,
+    ACTION_TRACK,
+    ACTION_MOVE_UNTIL_BLACK,
+    ACTION_MOVE_UNTIL_WHITE,
+		ACTION_MOVE_UNTIL_STOP_MARK,
+    ACTION_DELAY
 } action_type_t;
-// 动作结构体，包含动作类型和目标值
+
+// 动作参数联合体
+typedef union {
+    struct { float distance; float speed; } move;
+    struct { float angle; float speed; } turn;
+    struct { int state; } until;
+    struct { uint32_t ms; } delay;
+} action_params_t;
+
+// 动作结构体
 typedef struct {
-    action_type_t type;  // 动作类型
-    float target_value;  // 目标值（直行：里程厘米；旋转：角度度数）
+    action_type_t type;
+    action_params_t params;
 } car_action_t;
 
-typedef struct {
-    car_action_t actions[QUEUE_MAX_SIZE];  // 动作数组
-    uint8_t head;                          // 队列头指针
-    uint8_t tail;                          // 队列尾指针
-    uint8_t size;                          // 当前队列中的动作数量
-} action_queue_t;
+// 状态机结构
+#define MAX_ACTIONS 50
 
-// 动作配置结构体，包含动作序列和循环标志位
-typedef struct {
-    car_action_t actions[QUEUE_MAX_SIZE];  // 动作序列
-    uint8_t action_count;                  // 动作数量
-    bool is_loop_enabled;                  // 循环执行标志，true 表示循环，false 表示单次
-		uint8_t loop_count;
-} action_config_t;
+static struct {
+    car_action_t actions[MAX_ACTIONS];
+    uint8_t count;
+    uint8_t current;
+    uint8_t loop_count;
+    uint8_t current_loop;
+    bool is_running;
+    bool first_call;
+    uint32_t start_time;
+} sm = {0};
 
+
+// 初始化路径（清空之前的所有动作）
+void car_path_init(void);
+
+// 添加动作
+void car_add_straight(float distance);
+void car_add_straight_speed(float distance, float speed);
+void car_add_turn(float angle);
+void car_add_turn_speed(float angle, float speed);
+void car_add_track(float distance);
+void car_add_track_speed(float distance, float speed);
+void car_add_move_until_black(int state);
+void car_add_move_until_white(int state);
+void car_add_move_until_stop_mark(int state);
+void car_add_delay(uint32_t ms);
+
+// 设置循环
+void car_set_loop(uint8_t loop_count);  // 0 = 无限循环
+
+// 启动和停止
+void car_start(void);
+void car_stop(void);
+bool car_is_running(void);
+
+// 状态机更新（在主循环调用）
 void car_state_machine(void);
-void car_path_init(action_config_t *config);
 
-#endif 
+// 动态控制
+void car_clear_actions(void);  // 清空所有动作
+
+#endif // CAR_STATE_MACHINE_H__

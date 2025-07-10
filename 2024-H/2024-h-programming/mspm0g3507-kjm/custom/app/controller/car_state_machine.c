@@ -1,166 +1,220 @@
 #include "car_state_machine.h"
+#include "systick.h"
+#include <string.h>
 
-//任务运行完成标志位
+// 外部标志
 extern bool task_running_flag;
 
-// 全局动作队列
-static action_queue_t action_queue = {
-    .head = 0,
-    .tail = 0,
-    .size = 0
-};
 
-
-// 当前使用的动作配置，初始化时可以被用户传入的配置覆盖
-static action_config_t *current_action_config;
-static uint8_t current_loop_count = 0;  // 循环次数计数器
-
-/**
- * @brief 初始化动作队列
- */
-void action_queue_init(void) {
-    action_queue.head = 0;
-    action_queue.tail = 0;
-    action_queue.size = 0;
+// 时间函数（需要根据平台实现）
+static uint32_t get_time_ms(void) {
+    return get_ms();
 }
 
-/**
- * @brief 向队列中添加一个动作
- * @param type 动作类型
- * @param target_value 目标值（里程或角度）
- * @return true 表示添加成功，false 表示队列已满
- */
-bool action_queue_enqueue(action_type_t type, float target_value) {
-    if (action_queue.size >= QUEUE_MAX_SIZE) {
-        return false;  // 队列已满
-    }
-    action_queue.actions[action_queue.tail].type = type;
-    action_queue.actions[action_queue.tail].target_value = target_value;
-    action_queue.tail = (action_queue.tail + 1) % QUEUE_MAX_SIZE;
-    action_queue.size++;
-    return true;
+/* =============================================================================
+ * API实现
+ * ============================================================================= */
+
+void car_path_init(void) {
+    memset(&sm, 0, sizeof(sm));
+    task_running_flag = false;
 }
 
-/**
- * @brief 从队列中取出一个动作
- * @param action 存储取出的动作
- * @return true 表示取出成功，false 表示队列为空
- */
-bool action_queue_dequeue(car_action_t *action) {
-    if (action_queue.size == 0) {
-        return false;  // 队列为空
-    }
-    *action = action_queue.actions[action_queue.head];
-    action_queue.head = (action_queue.head + 1) % QUEUE_MAX_SIZE;
-    action_queue.size--;
-    return true;
-}
-
-/**
- * @brief 判断队列是否为空
- * @return true 表示队列为空，false 表示队列非空
- */
-bool action_queue_is_empty(void) {
-    return (action_queue.size == 0);
-}
-
-/**
- * @brief 自动计算动作配置中的动作数量
- * @param config 动作配置结构体指针
- * @return 计算出的动作数量
- */
-uint8_t calculate_action_count(action_config_t *config) {
-    uint8_t count = 0;
-    // 遍历 actions 数组，直到数组结束或遇到无效动作类型
-    for (uint8_t i = 0; i < ACTION_MAX_COUNT; i++) {
-        // 假设 ACTION_INVALID 是一个无效动作类型，用于标记数组末尾
-        // 如果你的系统中没有无效动作类型，可以根据 target_value 或其他条件判断
-        if (config->actions[i].type == ACTION_INVALID || config->actions[i].type == 0) {
-            break;
-        }
-        count++;
-    }
-    return count;
-}
-
-/**
- * @brief 从配置表中加载动作到队列
- * @param config 动作配置结构体指针
- * @return true 表示加载成功，false 表示队列容量不足
- */
-bool action_queue_load_from_config(action_config_t *config) {
-    action_queue_init();  // 清空当前队列
-    // 自动计算动作数量
-    config->action_count = calculate_action_count(config);
-    for (uint8_t i = 0; i < config->action_count; i++) {
-        if (!action_queue_enqueue(config->actions[i].type, config->actions[i].target_value)) {
-            return false;  // 队列容量不足
-        }
-    }
-    return true;
-}
-
-/**
- * @brief 初始化小车路径，从用户传入的配置表加载动作到队列
- * @param config 用户传入的动作配置结构体指针，如果为 NULL 则使用默认配置
- */
-void car_path_init(action_config_t *config) {
-    if (config != NULL) {
-        current_action_config = config;  // 使用用户传入的配置
-    }
-    action_queue_load_from_config(current_action_config);  // 加载动作到队列
-    current_loop_count = 0;  // 重置循环计数器
-    if (current_action_config->loop_count > 0) {
-        current_action_config->is_loop_enabled = true;
+void car_add_straight(float distance) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_GO_STRAIGHT;
+        sm.actions[sm.count].params.move.distance = distance;
+        sm.actions[sm.count].params.move.speed = 0; // 默认速度
+        sm.count++;
     }
 }
 
-/**
- * @brief 小车状态机，使用队列管理动作并支持循环或单次执行
- */
+void car_add_straight_speed(float distance, float speed) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_GO_STRAIGHT;
+        sm.actions[sm.count].params.move.distance = distance;
+        sm.actions[sm.count].params.move.speed = speed;
+        sm.count++;
+    }
+}
+
+void car_add_turn(float angle) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_SPIN_TURN;
+        sm.actions[sm.count].params.turn.angle = angle;
+        sm.actions[sm.count].params.turn.speed = 0; // 默认速度
+        sm.count++;
+    }
+}
+
+void car_add_turn_speed(float angle, float speed) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_SPIN_TURN;
+        sm.actions[sm.count].params.turn.angle = angle;
+        sm.actions[sm.count].params.turn.speed = speed;
+        sm.count++;
+    }
+}
+
+void car_add_track(float distance) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_TRACK;
+        sm.actions[sm.count].params.move.distance = distance;
+        sm.actions[sm.count].params.move.speed = 0;
+        sm.count++;
+    }
+}
+
+void car_add_track_speed(float distance, float speed) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_TRACK;
+        sm.actions[sm.count].params.move.distance = distance;
+        sm.actions[sm.count].params.move.speed = speed;
+        sm.count++;
+    }
+}
+
+void car_add_move_until_black(int state) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_MOVE_UNTIL_BLACK;
+        sm.actions[sm.count].params.until.state = state;
+        sm.count++;
+    }
+}
+
+void car_add_move_until_white(int state) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_MOVE_UNTIL_WHITE;
+        sm.actions[sm.count].params.until.state = state;
+        sm.count++;
+    }
+}
+
+void car_add_move_until_stop_mark(int state) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_MOVE_UNTIL_STOP_MARK;
+        sm.actions[sm.count].params.until.state = state;
+        sm.count++;
+    }
+}
+
+void car_add_delay(uint32_t ms) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_DELAY;
+        sm.actions[sm.count].params.delay.ms = ms;
+        sm.count++;
+    }
+}
+
+void car_set_loop(uint8_t loop_count) {
+    sm.loop_count = loop_count;
+}
+
+void car_start(void) {
+    if (sm.count > 0) {
+        sm.is_running = true;
+        sm.current = 0;
+        sm.current_loop = 0;
+        sm.first_call = true;
+        task_running_flag = true;
+    }
+}
+
+void car_stop(void) {
+    sm.is_running = false;
+    car.state = CAR_STATE_STOP;
+    car_reset();
+    task_running_flag = false;
+}
+
+bool car_is_running(void) {
+    return sm.is_running;
+}
+
+void car_clear_actions(void) {
+    sm.count = 0;
+    sm.current = 0;
+}
+
+/* =============================================================================
+ * 状态机核心
+ * ============================================================================= */
+
 void car_state_machine(void) {
-    static car_action_t current_action;  // 当前正在执行的动作
-    static bool is_action_active = false;  // 是否有动作正在执行
-
-
-    // 如果当前没有动作在执行，且队列为空，且循环模式启用，则重新加载配置表
-    if (!is_action_active && action_queue_is_empty() && current_action_config->is_loop_enabled) {
-        current_loop_count++;  // 完成一次完整序列循环，计数器加1
-        if (current_loop_count >= current_action_config->loop_count) {
-            current_action_config->is_loop_enabled = false;  // 达到循环次数限制，禁用循环
-            car.state = CAR_STATE_STOP;  // 确保小车进入停止状态
-						car_reset();
-						task_running_flag = false;
-            return;  // 退出函数，不再加载新动作
+    if (!sm.is_running) {
+        return;
+    }
+    
+    // 检查是否完成所有动作
+    if (sm.current >= sm.count) {
+        // 检查循环
+        if (sm.loop_count == 0 || ++sm.current_loop < sm.loop_count) {
+            sm.current = 0;
+            sm.first_call = true;
         } else {
-            action_queue_load_from_config(current_action_config);  // 未达到循环次数限制，继续加载动作
+            car_stop();
+            return;
         }
     }
-
-    // 如果当前没有动作在执行，且队列不为空，则从队列中取出一个动作
-    if (!is_action_active && !action_queue_is_empty()) {
-        if (action_queue_dequeue(&current_action)) {
-            is_action_active = true;
-        }
+    
+    // 获取当前动作
+    car_action_t* action = &sm.actions[sm.current];
+    bool completed = false;
+    
+    // 记录开始时间
+    if (sm.first_call) {
+        sm.start_time = get_time_ms();
     }
-
-    // 如果有动作在执行，调用对应的控制函数
-    if (is_action_active) {
-        bool action_completed = false;
-        if (current_action.type == ACTION_GO_STRAIGHT) {
-            action_completed = car_move_cm(current_action.target_value, CAR_STATE_GO_STRAIGHT);
-        } else if (current_action.type == ACTION_SPIN_TURN) {
-            action_completed = spin_turn(current_action.target_value);
-        } else if (current_action.type == ACTION_TRACK) {
-            action_completed = car_move_cm(current_action.target_value, CAR_STATE_TRACK);
-        } else if (current_action.type == ACTION_MOVE_UNTIL_BLACK) {
-            action_completed = car_move_until((CAR_STATES)current_action.target_value, UNTIL_BLACK_LINE);
-        } else if (current_action.type == ACTION_MOVE_UNTIL_WHITE) {
-            action_completed = car_move_until((CAR_STATES)current_action.target_value, UNTIL_WHITE_LINE);
-        }
-        // 如果当前动作完成，标记为未激活，准备处理下一个动作
-        if (action_completed) {
-            is_action_active = false;
-        }
+    
+    // 执行动作
+    switch (action->type) {
+        case ACTION_GO_STRAIGHT:
+            // 如果有速度参数且是第一次调用，设置速度
+            if (sm.first_call && action->params.move.speed > 0) {
+                // set_motor_speed(action->params.move.speed);
+            }
+            completed = car_move_cm(action->params.move.distance, CAR_STATE_GO_STRAIGHT);
+            break;
+            
+        case ACTION_SPIN_TURN:
+            if (sm.first_call && action->params.turn.speed > 0) {
+                // set_turn_speed(action->params.turn.speed);
+            }
+            completed = spin_turn(action->params.turn.angle);
+            break;
+            
+        case ACTION_TRACK:
+            if (sm.first_call && action->params.move.speed > 0) {
+                // set_motor_speed(action->params.move.speed);
+            }
+            completed = car_move_cm(action->params.move.distance, CAR_STATE_TRACK);
+            break;
+            
+        case ACTION_MOVE_UNTIL_BLACK:
+            completed = car_move_until((CAR_STATES)action->params.until.state, UNTIL_BLACK_LINE);
+            break;
+            
+        case ACTION_MOVE_UNTIL_WHITE:
+            completed = car_move_until((CAR_STATES)action->params.until.state, UNTIL_WHITE_LINE);
+            break;
+            
+        case ACTION_DELAY:
+            completed = (get_time_ms() - sm.start_time) >= action->params.delay.ms;
+            break;
+         
+				case ACTION_MOVE_UNTIL_STOP_MARK:
+						completed = car_move_until((CAR_STATES)action->params.until.state, UNTIL_STOP_MARK);
+						break;
+        default:
+            completed = true;
+            break;
+    }
+    
+    // 动作完成，切换到下一个
+    if (completed) {
+        sm.current++;
+        sm.first_call = true;
+    } else {
+        sm.first_call = false;
     }
 }

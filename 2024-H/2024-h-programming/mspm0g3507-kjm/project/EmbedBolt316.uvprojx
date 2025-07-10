@@ -34,7 +34,7 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>$$Device:MSPM0G3507$03_SVD\MSPM0G350X.svd</SFDFile>
-          <bCustSvd>0</bCustSvd>
+          <bCustSvd>1</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -329,7 +329,7 @@
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>4</v6Lang>
+            <v6Lang>3</v6Lang>
             <v6LangP>5</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
@@ -337,7 +337,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>-fno-builtin-printf</MiscControls>
+              <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
               <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\imu\wit_gyro;..\custom\app\imu\mpu6050_dmplib</IncludePath>
@@ -444,6 +444,11 @@
               <FileType>1</FileType>
               <FilePath>..\custom\tests\mpu6050_dmp_test.c</FilePath>
             </File>
+            <File>
+              <FileName>bluetooth_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\tests\bluetooth_test.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -473,6 +478,21 @@
               <FileName>serialplot_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\app\communication\serialplot_protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>lwrb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\communication\lwrb.c</FilePath>
+            </File>
+            <File>
+              <FileName>lwpkt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\communication\lwpkt.c</FilePath>
+            </File>
+            <File>
+              <FileName>bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\app\communication\bluetooth.c</FilePath>
             </File>
           </Files>
         </Group>

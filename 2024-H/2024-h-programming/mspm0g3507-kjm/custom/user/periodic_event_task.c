@@ -18,6 +18,7 @@ period_task_t period_tasks[] = {
     { EVENT_CAR_STATE_MACHINE, IDLE, car_state_machine,    20,  0 },    // 20ms
     { EVENT_CAR,               RUN,  car_task,             20,  0 },    // 20ms
 		{ EVENT_MUSIC_PLAYER,      RUN,  music_player_update,  5,   0 }, 		// 5ms
+		{ EVENT_WIT_IMU,					 RUN,  wit_imu_process, 		 2,   0 }, 	  // 2ms
 };
 
 // 获取任务数组大小

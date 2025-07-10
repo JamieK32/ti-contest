@@ -9,6 +9,7 @@ void wit_test(void);
 void motor_test(void);
 // mpu6050测试
 void mpu_test(void);
-
+// 蓝牙模块测试
+void bluetooth_test(void);
 
 #endif

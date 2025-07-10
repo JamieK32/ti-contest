@@ -57,7 +57,36 @@ static bool format_variable_value(menu_variable_t *var, char *buffer, size_t buf
             break;
         }
         
+			case VAR_TYPE_BINARY: {
+						unsigned int val = *(unsigned int*)var->val_ptr;
+						char binary_str[16] = ""; // 最大12位+前缀"0b"=14字符
+						
+						// 使用 binary_bits 字段确定显示位数
+						int bit_count = var->binary_bits;
+						if (bit_count <= 0 || bit_count > 12) {
+								// 如果未设置或超出范围，根据最大值自动确定
+								if (var->u_range.max <= 0xF) {
+										bit_count = 4;
+								} else if (var->u_range.max <= 0xFF) {
+										bit_count = 8;
+								} else {
+										bit_count = 12; // 最大12位
+								}
+						}
+						
+						// 生成二进制字符串
+						strcpy(binary_str, "0b");
+						for (int i = bit_count - 1; i >= 0; i--) {
+								binary_str[2 + (bit_count - 1 - i)] = (val & (1 << i)) ? '1' : '0';
+						}
+						binary_str[2 + bit_count] = '\0';
+						
+						strncpy(buffer, binary_str, buffer_size - 1);
+						buffer[buffer_size - 1] = '\0';
+						break;
+				}
         case VAR_TYPE_READONLY:
+						
         default: {
             float val = *(float*)var->val_ptr;
             if (var->format != NULL) {
@@ -87,6 +116,7 @@ static const char* get_variable_type_indicator(VariableType type) {
         case VAR_TYPE_INT: return "I";
         case VAR_TYPE_UINT: return "U";
         case VAR_TYPE_BOOL: return "B";
+				case VAR_TYPE_BINARY: return "b";
         case VAR_TYPE_READONLY: return "R";
         default: return "?";
     }

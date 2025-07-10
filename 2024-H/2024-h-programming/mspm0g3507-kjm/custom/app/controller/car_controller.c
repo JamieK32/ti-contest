@@ -9,40 +9,25 @@
 #include "car_debug.h"
 #include "_74hc595.h"
 
+#define MAX_DISTANCE 255
 #define USE_ANGLE_SENSOR 1
 #define DISTANCE_THRESHOLD_CM 1
 #define ANGLE_THRESHOLD_DEG 1
-#define TRACK_BASE_SPEED 40
+#define TRACK_DEFAULT_SPEED 40
 
 // 定义 encoder 结构体实例
 encoder_t encoder = {0};
 
 car_t car = {
     .state = CAR_STATE_STOP,
-	
+		.track_speed = TRACK_DEFAULT_SPEED,
 };
 
-static inline float calculate_angle_error(float target, float current) {
-    float error = target - current;
-    
-    // 将误差限制在 -180° 到 +180° 范围内（选择最短路径）
-    if (error > 180.0f) {
-        error -= 360.0f;
-    } else if (error < -180.0f) {
-        error += 360.0f;
-    }
-    
-    return error;
-}
-
 float get_yaw(void) {
-    return jy901s.yaw;
+    return jy61p.yaw;
 }
 
 void car_task(void) {
-    if (car.state == CAR_STATE_STOP) {
-			return;
-		} 
 		update_encoder();
     if (car.state == CAR_STATE_GO_STRAIGHT) {
         update_straight_control();
@@ -50,6 +35,9 @@ void car_task(void) {
         update_turn_control();
     } else if (car.state == CAR_STATE_TRACK) {
 				update_track_control();
+		} else if (car.state == CAR_STATE_STOP) {
+				update_debug_information();
+				car_set_base_speed(0);
 		}
     update_speed_pid();
 }
@@ -64,6 +52,7 @@ bool car_move_cm(float mileage, CAR_STATES move_state) {
         car.state = move_state;
         car.target_mileage_cm = mileage;
         car_reset();
+				gray_get_position();
     }
     float current_mileage = get_mileage_cm();
     if (fabsf(car.target_mileage_cm - current_mileage) <= DISTANCE_THRESHOLD_CM) {
@@ -95,78 +84,66 @@ bool spin_turn(float angle) {
     return false;
 }
 
-
 /**
  * @brief 移动直到检测到指定条件的线
- * @param move_state 小车的移动状态（如 CAR_STATE_GO_STRAIGHT 或 CAR_STATE_TRACK）
- * @param l_state 目标线状态（UNTIL_BLACK_LINE：移动直到检测到黑色；UNTIL_WHITE_LINE：移动直到连续20次检测到全白）
+ * @param move_state 小车的移动状态
+ * @param l_state 目标线状态
  * @return true 表示达到目标条件，false 表示未达到
  */
 bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
+    static uint8_t white_count = 0;
+    
+    // 初始化移动状态
     if (car.state == CAR_STATE_STOP) {
         car.state = move_state;
-				if (car.state == CAR_STATE_GO_STRAIGHT) {
-					car_reset();
-					car.target_mileage_cm = 0xFF; //随便给一个距离
-				}
-    }
-    uint8_t track_data[TRACK_SENSOR_COUNT];
-    
-    // 读取灰度传感器数据
-    int temp_data = gray_read_byte();
-    
-    for (int i = 0; i < TRACK_SENSOR_COUNT; i++) {
-        track_data[i] = (temp_data >> i) & 0x01; // 提取每一位并存入数组
-    }
-
-    // 检查当前是否全白（所有传感器值为0）
-    bool is_all_white = true;
-    bool has_black = false;
-    for (int i = 0; i < TRACK_SENSOR_COUNT; i++) {
-        if (track_data[i] == 1) {
-            is_all_white = false; // 只要有一个是黑，就不是全白
-            has_black = true;     // 标记有黑色
-            break;                // 可提前退出循环
+        if (move_state == CAR_STATE_GO_STRAIGHT) {
+            car_reset();
+            car.target_mileage_cm = MAX_DISTANCE;
         }
     }
     
-    // 使用静态变量记录连续检测到全白的次数
-    static uint8_t white_detection_count = 0;
+    // 读取传感器数据
+    uint16_t sensor_data = gray_read_byte();
     
-    // 根据目标状态判断是否达到条件
+    // 根据目标状态判断
     if (l_state == UNTIL_BLACK_LINE) {
-        // 目标是检测到黑色（至少有一个传感器值为1）
-        white_detection_count = 0; // 重置全白计数器
-        if (has_black) {
-            car.state = CAR_STATE_STOP; // 检测到黑色，停止小车
-						set_alert_count(1);
-						start_alert();
-						car_reset();
-            return true;                // 达到目标条件
-        } else {
-            return false; // 未检测到黑色（全白），继续移动
+        // 检测到黑线（sensor_data != 0 表示有传感器检测到黑色）
+        if (sensor_data != 0) {
+            car.state = CAR_STATE_STOP;
+            set_alert_count(1);
+            start_alert();
+            car_reset();
+            white_count = 0;
+            return true;
         }
-    } else if (l_state == UNTIL_WHITE_LINE) {
-        // 目标是检测到全白（所有传感器值为0），且需要连续5次确认
-        if (is_all_white) {
-            white_detection_count++; // 检测到全白，计数器加1 
-            if (white_detection_count >= 3 && get_mileage_cm() >= 100) {
-                car.state = CAR_STATE_STOP; // 停止小车
-                white_detection_count = 0;  // 重置计数器
-								set_alert_count(1);
-								start_alert();
-								car_reset();
-                return true;                // 达到目标条件
+    } 
+    else if (l_state == UNTIL_WHITE_LINE) {
+        // 检测到全白（sensor_data == 0 表示所有传感器都是白色）
+        if (sensor_data == 0) {
+            white_count++;
+            if (white_count >= 5 && get_mileage_cm() >= 120) {
+                car.state = CAR_STATE_STOP;
+                set_alert_count(1);
+                start_alert();
+                car_reset();
+                white_count = 0;
+                return true;
             }
         } else {
-            white_detection_count = 0; // 检测到非全白，重置计数器
+            white_count = 0;
         }
-        return false; // 未达到连续20次全白，继续移动
+    } 
+		else if (l_state == UNTIL_STOP_MARK) {
+        if (is_in_table(stop_mark_table, STOP_MARK_TABLE_SIZE, sensor_data)) {
+            car.state = CAR_STATE_STOP;
+            set_alert_count(1);
+            start_alert();
+            car_reset();
+            return true;
+        }
     }
-    
-    return false; // 默认返回false（未匹配的目标状态）
+    return false;
 }
-
 
 void car_init(void) {
     encoder_application_init();
@@ -229,13 +206,11 @@ void update_straight_control(void)
  * @brief 更新巡线控制逻辑，根据灰度传感器数据调整左右轮速度
  */
 void update_track_control(void) {
-	float error = gray_read_data();
+	float error = gray_get_position();
 	float correction = PID_Calculate(0.0f, error, &trackPid);
 	for (int i = 0; i < motor_count; ++i)
-		car.target_speed[i] = (i < motor_count / 2) ? TRACK_BASE_SPEED + correction: TRACK_BASE_SPEED - correction;
+		car.target_speed[i] = (i < motor_count / 2) ? car.track_speed + correction: car.track_speed - correction;
 }
-
-
 
 void update_turn_control(void) {
 		#if USE_ANGLE_SENSOR
@@ -273,4 +248,14 @@ void car_reset(void) {
 	PID_Reset(&anglePid);
 	PID_Reset(&trackPid);
 	motor_set_pwms(pwms);
+}
+
+void car_set_track_speed(float speed) {
+	car.track_speed = speed;
+}
+
+void car_set_base_speed(float speed) {
+	for (int i = 0; i < motor_count; i++) {
+		car.target_speed[i] = 0;
+	}
 }

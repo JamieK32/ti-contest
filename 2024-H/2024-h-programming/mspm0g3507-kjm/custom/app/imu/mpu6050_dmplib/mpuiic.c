@@ -8,6 +8,7 @@ sw_i2c_t mpui2c = {
 	.sdaIOMUX = PORTA_SCL2_IOMUX,
 	.sdaPin = PORTA_SCL2_PIN,
 	.sdaPort = PORTA_PORT,
+	.delay_time = 1,
 };
 
 void mpu6050_hardware_init(void) {

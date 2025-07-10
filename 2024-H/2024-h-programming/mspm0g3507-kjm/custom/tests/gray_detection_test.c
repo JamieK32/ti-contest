@@ -20,4 +20,3 @@ void gd_test(void) {
 				delay_ms(200);
     }
 }
-

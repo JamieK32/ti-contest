@@ -133,7 +133,7 @@ GPIO1.associatedPins[17].pin.$assign     = "PB13";
 
 GPIO2.$name                         = "PORTA";
 GPIO2.port                          = "PORTA";
-GPIO2.associatedPins.create(9);
+GPIO2.associatedPins.create(7);
 GPIO2.associatedPins[0].$name       = "SCL1";
 GPIO2.associatedPins[0].pin.$assign = "PA12";
 GPIO2.associatedPins[1].$name       = "SDA1";
@@ -149,10 +149,6 @@ GPIO2.associatedPins[5].assignedPin = "15";
 GPIO2.associatedPins[5].pin.$assign = "PA15";
 GPIO2.associatedPins[6].$name       = "HC595_STCP";
 GPIO2.associatedPins[6].pin.$assign = "PA14";
-GPIO2.associatedPins[7].assignedPin = "29";
-GPIO2.associatedPins[7].$name       = "SCL3";
-GPIO2.associatedPins[8].assignedPin = "30";
-GPIO2.associatedPins[8].$name       = "SDA3";
 
 PWM1.$name                              = "Motor_PWM1";
 PWM1.timerStartTimer                    = true;
@@ -227,27 +223,25 @@ SPI1.peripheral.mosiPin.$assign = "PB15";
 SPI1.peripheral.misoPin.$assign = "PA16";
 
 SYSCTL.clockTreeEn = true;
+scripting.suppress("For best practices when the CPUCLK is running at 32MHz and above, clear the flash status bit using DL_FlashCTL_executeClearStatus\\(\\) before executing any flash operation\\. Otherwise there may be false positives\\.", SYSCTL);
 
-UART1.$name                      = "UART_0";
-UART1.targetBaudRate             = 115200;
-UART1.enabledDMATXTriggers       = "DL_UART_DMA_INTERRUPT_TX";
-UART1.enableFIFO                 = true;
-UART1.rxFifoThreshold            = "DL_UART_RX_FIFO_LEVEL_ONE_ENTRY";
-UART1.txFifoThreshold            = "DL_UART_TX_FIFO_LEVEL_ONE_ENTRY";
-UART1.enabledInterrupts          = ["DMA_DONE_TX","EOT_DONE","RX"];
-UART1.peripheral.$assign         = "UART0";
-UART1.peripheral.rxPin.$assign   = "PA11";
-UART1.peripheral.txPin.$assign   = "PA10";
-UART1.txPinConfig.$name          = "ti_driverlib_gpio_GPIOPinGeneric7";
-UART1.rxPinConfig.$name          = "ti_driverlib_gpio_GPIOPinGeneric8";
-UART1.DMA_CHANNEL_TX.$name       = "DMA_CH0";
-UART1.DMA_CHANNEL_TX.addressMode = "b2f";
-UART1.DMA_CHANNEL_TX.dstLength   = "BYTE";
-UART1.DMA_CHANNEL_TX.srcLength   = "BYTE";
+UART1.$name                    = "UART_0";
+UART1.targetBaudRate           = 115200;
+UART1.enableFIFO               = true;
+UART1.rxFifoThreshold          = "DL_UART_RX_FIFO_LEVEL_ONE_ENTRY";
+UART1.txFifoThreshold          = "DL_UART_TX_FIFO_LEVEL_ONE_ENTRY";
+UART1.enableDMATX              = false;
+UART1.enabledInterrupts        = ["RX"];
+UART1.peripheral.$assign       = "UART0";
+UART1.peripheral.rxPin.$assign = "PA11";
+UART1.peripheral.txPin.$assign = "PA10";
+UART1.txPinConfig.$name        = "ti_driverlib_gpio_GPIOPinGeneric7";
+UART1.rxPinConfig.$name        = "ti_driverlib_gpio_GPIOPinGeneric8";
 
 UART2.$name                    = "UART_1";
 UART2.enabledInterrupts        = ["RX"];
 UART2.interruptPriority        = "2";
+UART2.enableFIFO               = true;
 UART2.peripheral.$assign       = "UART3";
 UART2.peripheral.rxPin.$assign = "PB3";
 UART2.peripheral.txPin.$assign = "PB2";
@@ -262,11 +256,8 @@ scripting.suppress("Project Configuration File generation is disabled for this p
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-Board.peripheral.$suggestSolution                = "DEBUGSS";
-Board.peripheral.swclkPin.$suggestSolution       = "PA20";
-Board.peripheral.swdioPin.$suggestSolution       = "PA19";
-GPIO2.associatedPins[7].pin.$suggestSolution     = "PA29";
-GPIO2.associatedPins[8].pin.$suggestSolution     = "PA30";
-PWM3.peripheral.$suggestSolution                 = "TIMG7";
-PWM3.peripheral.ccp0Pin.$suggestSolution         = "PA23";
-UART1.DMA_CHANNEL_TX.peripheral.$suggestSolution = "DMA_CH0";
+Board.peripheral.$suggestSolution          = "DEBUGSS";
+Board.peripheral.swclkPin.$suggestSolution = "PA20";
+Board.peripheral.swdioPin.$suggestSolution = "PA19";
+PWM3.peripheral.$suggestSolution           = "TIMG7";
+PWM3.peripheral.ccp0Pin.$suggestSolution   = "PA23";

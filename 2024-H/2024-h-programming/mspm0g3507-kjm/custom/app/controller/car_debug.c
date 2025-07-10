@@ -26,8 +26,6 @@ void car_debug_init(void) {
 #endif
 }
 
-float gray_byte = 0;
-
 void debug_speed_pid(void) {
 #if SPEED_TEST
 	serialplot_send_multi_data(5, speedPid[0].target, 
@@ -39,7 +37,11 @@ void debug_speed_pid(void) {
 #endif 
 	
 #if TRACK_TEST
-	gray_byte = gray_read_data();
+	gray_byte = gray_get_position();
 	log_i("%d", gray_byte);
 #endif 
+}
+
+void update_debug_information(void) {
+	gray_get_position();
 }
