@@ -5,6 +5,8 @@
 
 uint16_t gray_byte = 0x00;
 
+#define SEPARATED_PATTERN_OUTPUT  3.0
+
 static float gray_status_backup = 0.0f; // 初始备份值设为0
 
 #ifdef USE_PCA9555 
@@ -89,4 +91,37 @@ float gray_get_position(void) {
     }
 
     return gray_status_backup;
+}
+
+float gray_get_position_22c_ti_contest(bool flag) { 	//2022电赛
+    gray_byte = gray_read_byte();
+    
+    const int table_size = sizeof(lookup_table) / sizeof(lookup_table[0]);
+    
+		uint8_t ret;
+		if (is_separated_pattern(gray_byte)) {
+				ret = (flag == true) ? 0.0 : SEPARATED_PATTERN_OUTPUT;
+				return ret;
+		}
+	
+    // 查找匹配的输入值
+    for (int i = 0; i < table_size; i++) {
+        if (lookup_table[i].input == gray_byte) {
+            gray_status_backup = lookup_table[i].output; // 找到匹配项，更新备份值
+            return lookup_table[i].output;
+        }
+    }
+
+    return gray_status_backup;
+}
+
+static inline bool is_separated_pattern(uint8_t sensor_pattern) {
+    int table_size = sizeof(separated_pattern_table_8bit) / sizeof(separated_pattern_table_8bit[0]);
+    
+    for (int i = 0; i < table_size; i++) {
+        if (separated_pattern_table_8bit[i] == sensor_pattern) {
+            return true;
+        }
+    }
+    return false;
 }

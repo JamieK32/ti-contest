@@ -26,6 +26,6 @@
 #include "inv_mpu.h"
 #include "ui.h"
 #include "systick.h"
-
+#include "bluetooth.h"
 
 #endif // COMMON_H

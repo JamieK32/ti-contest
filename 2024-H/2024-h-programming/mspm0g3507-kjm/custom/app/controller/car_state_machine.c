@@ -1,6 +1,7 @@
 #include "car_state_machine.h"
 #include "systick.h"
 #include <string.h>
+#include "bluetooth.h"
 
 // 外部标志
 extern bool task_running_flag;
@@ -24,16 +25,6 @@ void car_add_straight(float distance) {
     if (sm.count < MAX_ACTIONS) {
         sm.actions[sm.count].type = ACTION_GO_STRAIGHT;
         sm.actions[sm.count].params.move.distance = distance;
-        sm.actions[sm.count].params.move.speed = 0; // 默认速度
-        sm.count++;
-    }
-}
-
-void car_add_straight_speed(float distance, float speed) {
-    if (sm.count < MAX_ACTIONS) {
-        sm.actions[sm.count].type = ACTION_GO_STRAIGHT;
-        sm.actions[sm.count].params.move.distance = distance;
-        sm.actions[sm.count].params.move.speed = speed;
         sm.count++;
     }
 }
@@ -42,16 +33,6 @@ void car_add_turn(float angle) {
     if (sm.count < MAX_ACTIONS) {
         sm.actions[sm.count].type = ACTION_SPIN_TURN;
         sm.actions[sm.count].params.turn.angle = angle;
-        sm.actions[sm.count].params.turn.speed = 0; // 默认速度
-        sm.count++;
-    }
-}
-
-void car_add_turn_speed(float angle, float speed) {
-    if (sm.count < MAX_ACTIONS) {
-        sm.actions[sm.count].type = ACTION_SPIN_TURN;
-        sm.actions[sm.count].params.turn.angle = angle;
-        sm.actions[sm.count].params.turn.speed = speed;
         sm.count++;
     }
 }
@@ -60,16 +41,6 @@ void car_add_track(float distance) {
     if (sm.count < MAX_ACTIONS) {
         sm.actions[sm.count].type = ACTION_TRACK;
         sm.actions[sm.count].params.move.distance = distance;
-        sm.actions[sm.count].params.move.speed = 0;
-        sm.count++;
-    }
-}
-
-void car_add_track_speed(float distance, float speed) {
-    if (sm.count < MAX_ACTIONS) {
-        sm.actions[sm.count].type = ACTION_TRACK;
-        sm.actions[sm.count].params.move.distance = distance;
-        sm.actions[sm.count].params.move.speed = speed;
         sm.count++;
     }
 }
@@ -102,6 +73,44 @@ void car_add_delay(uint32_t ms) {
     if (sm.count < MAX_ACTIONS) {
         sm.actions[sm.count].type = ACTION_DELAY;
         sm.actions[sm.count].params.delay.ms = ms;
+        sm.count++;
+    }
+}
+
+// 函数调用功能
+void car_add_function(void (*func)(void)) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_FUNCTION;
+        sm.actions[sm.count].params.function.func = func;
+        sm.count++;
+    }
+}
+
+// 新增：布尔值设置功能
+void car_add_bool(bool *flag, bool val) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_SET_BOOL;
+        sm.actions[sm.count].params.set_bool.flag = flag;
+        sm.actions[sm.count].params.set_bool.value = val;
+        sm.count++;
+    }
+}
+
+// 新增：浮点值设置功能
+void car_add_float(float *var, float val) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_SET_FLOAT;
+        sm.actions[sm.count].params.set_float.var = var;
+        sm.actions[sm.count].params.set_float.value = val;
+        sm.count++;
+    }
+}
+
+// 新增：字节发送功能
+void car_add_byte(uint8_t byte) {
+    if (sm.count < MAX_ACTIONS) {
+        sm.actions[sm.count].type = ACTION_SEND_BYTE;
+        sm.actions[sm.count].params.send_byte.byte = byte;
         sm.count++;
     }
 }
@@ -169,24 +178,14 @@ void car_state_machine(void) {
     // 执行动作
     switch (action->type) {
         case ACTION_GO_STRAIGHT:
-            // 如果有速度参数且是第一次调用，设置速度
-            if (sm.first_call && action->params.move.speed > 0) {
-                // set_motor_speed(action->params.move.speed);
-            }
             completed = car_move_cm(action->params.move.distance, CAR_STATE_GO_STRAIGHT);
             break;
             
         case ACTION_SPIN_TURN:
-            if (sm.first_call && action->params.turn.speed > 0) {
-                // set_turn_speed(action->params.turn.speed);
-            }
             completed = spin_turn(action->params.turn.angle);
             break;
             
         case ACTION_TRACK:
-            if (sm.first_call && action->params.move.speed > 0) {
-                // set_motor_speed(action->params.move.speed);
-            }
             completed = car_move_cm(action->params.move.distance, CAR_STATE_TRACK);
             break;
             
@@ -202,9 +201,38 @@ void car_state_machine(void) {
             completed = (get_time_ms() - sm.start_time) >= action->params.delay.ms;
             break;
          
-				case ACTION_MOVE_UNTIL_STOP_MARK:
-						completed = car_move_until((CAR_STATES)action->params.until.state, UNTIL_STOP_MARK);
-						break;
+        case ACTION_MOVE_UNTIL_STOP_MARK:
+            completed = car_move_until((CAR_STATES)action->params.until.state, UNTIL_STOP_MARK);
+            break;
+            
+        case ACTION_FUNCTION:
+            if (sm.first_call) {
+                // 立即执行函数
+                if (action->params.function.func != NULL) {
+                    action->params.function.func();
+                }
+                completed = true; // 立即完成，不等待
+            }
+            break;
+           
+        case ACTION_SET_BOOL:
+            if (sm.first_call) {
+                // 立即设置布尔值
+                if (action->params.set_bool.flag != NULL) {
+                    *(action->params.set_bool.flag) = action->params.set_bool.value;
+                }
+                completed = true; // 立即完成，不等待
+            }
+            break;
+     
+        case ACTION_SEND_BYTE:
+            if (sm.first_call) {
+                // 立即发送蓝牙字节
+                bluetooth_send_byte(action->params.send_byte.byte);
+                completed = true; // 立即完成，不等待
+            }
+            break;
+            
         default:
             completed = true;
             break;

@@ -9,8 +9,12 @@
 #include "car_debug.h"
 #include "_74hc595.h"
 
+//依靠码盘转向所需参数
+#define WHEEL_BASE_CM 24.0f  // 轮距，根据实际小车调整
+#define M_PI 3.14159265359f
+
 #define MAX_DISTANCE 255
-#define USE_ANGLE_SENSOR 1
+#define USE_ANGLE_SENSOR 0
 #define DISTANCE_THRESHOLD_CM 1
 #define ANGLE_THRESHOLD_DEG 1
 #define TRACK_DEFAULT_SPEED 40
@@ -22,6 +26,9 @@ car_t car = {
     .state = CAR_STATE_STOP,
 		.track_speed = TRACK_DEFAULT_SPEED,
 };
+
+// 2022 C 题特有变量 用于内外圈切换
+bool is_outer_track = true;
 
 float get_yaw(void) {
     return jy61p.yaw;
@@ -36,7 +43,7 @@ void car_task(void) {
     } else if (car.state == CAR_STATE_TRACK) {
 				update_track_control();
 		} else if (car.state == CAR_STATE_STOP) {
-				update_debug_information();
+				update_oled_debug_information();
 				car_set_base_speed(0);
 		}
     update_speed_pid();
@@ -50,9 +57,8 @@ void car_task(void) {
 bool car_move_cm(float mileage, CAR_STATES move_state) {
     if (car.state != move_state) {
         car.state = move_state;
-        car.target_mileage_cm = mileage;
-        car_reset();
-				gray_get_position();
+			  car_reset();
+				car.target_mileage_cm = mileage;
     }
     float current_mileage = get_mileage_cm();
     if (fabsf(car.target_mileage_cm - current_mileage) <= DISTANCE_THRESHOLD_CM) {
@@ -72,15 +78,35 @@ bool spin_turn(float angle) {
     if (car.state != CAR_STATE_TURN) {
         car.state = CAR_STATE_TURN;
         car.target_angle = angle;
-				car_reset();
+        car.turn_initialized = false;
+        car_reset();
     }
+    
+    #if USE_ANGLE_SENSOR
     float current_angle = get_yaw();
     float angle_error = calculate_angle_error(car.target_angle, current_angle);
     if (fabsf(angle_error) <= ANGLE_THRESHOLD_DEG) {
-				car_reset();
+        car_reset();
         car.state = CAR_STATE_STOP;
         return true;
     }
+    #else
+    // 基于码盘判断转向完成 - 使用左侧轮子的距离
+    float target_distance = fabsf(car.target_angle) * M_PI / 180.0f * WHEEL_BASE_CM / 2.0f;
+    float left_distance = 0;
+    for (int i = 0; i < motor_count / 2; i++) {
+        left_distance += fabsf(encoder.distance_cm[i]);
+    }
+    left_distance /= (motor_count / 2);
+    
+    if (left_distance >= target_distance) {
+        car_reset();
+        car.state = CAR_STATE_STOP;
+				car.target_angle = 0;
+        return true;
+    }
+    #endif
+    
     return false;
 }
 
@@ -92,6 +118,7 @@ bool spin_turn(float angle) {
  */
 bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
     static uint8_t white_count = 0;
+    static uint8_t stop_mark_count = 0;  // 新增：停止标记计数器
     
     // 初始化移动状态
     if (car.state == CAR_STATE_STOP) {
@@ -114,6 +141,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
             start_alert();
             car_reset();
             white_count = 0;
+            stop_mark_count = 0;  // 重置停止标记计数器
             return true;
         }
     } 
@@ -127,19 +155,28 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
                 start_alert();
                 car_reset();
                 white_count = 0;
+                stop_mark_count = 0;  // 重置停止标记计数器
                 return true;
             }
         } else {
             white_count = 0;
         }
     } 
-		else if (l_state == UNTIL_STOP_MARK) {
-        if (is_in_table(stop_mark_table, STOP_MARK_TABLE_SIZE, sensor_data)) {
-            car.state = CAR_STATE_STOP;
-            set_alert_count(1);
-            start_alert();
-            car_reset();
-            return true;
+    else if (l_state == UNTIL_STOP_MARK) {
+        // 检测到停止标记
+        if (is_in_table(stop_mark_table_8bit, STOP_MARK_TABLE_SIZE, sensor_data)) {
+            stop_mark_count++;
+            if (stop_mark_count >= 2) {  // 累加到2次才返回真
+                car.state = CAR_STATE_STOP;
+                set_alert_count(1);
+                start_alert();
+                car_reset();
+                white_count = 0;
+                stop_mark_count = 0;  // 重置计数器
+                return true;
+            }
+        } else {
+            stop_mark_count = 0;  // 如果没有检测到停止标记，重置计数器
         }
     }
     return false;
@@ -206,25 +243,51 @@ void update_straight_control(void)
  * @brief 更新巡线控制逻辑，根据灰度传感器数据调整左右轮速度
  */
 void update_track_control(void) {
-	float error = gray_get_position();
+	float error = gray_get_position_22c_ti_contest(is_outer_track);
 	float correction = PID_Calculate(0.0f, error, &trackPid);
 	for (int i = 0; i < motor_count; ++i)
 		car.target_speed[i] = (i < motor_count / 2) ? car.track_speed + correction: car.track_speed - correction;
 }
 
 void update_turn_control(void) {
-		#if USE_ANGLE_SENSOR
-			float current_angle = get_yaw();
-			float angle_error = calculate_angle_error(car.target_angle, current_angle);
-	    float output = PID_Calculate(0.0f, 
+    #if USE_ANGLE_SENSOR
+        float current_angle = get_yaw();
+        float angle_error = calculate_angle_error(car.target_angle, current_angle);
+        float output = PID_Calculate(0.0f, 
                                      angle_error,  
                                      &anglePid); 
-			for (int i = 0; i < motor_count; ++i)
-        car.target_speed[i] = (i < motor_count / 2) ? output : -output;
-		#else	
-	
-		#endif 
+        for (int i = 0; i < motor_count; ++i)
+            car.target_speed[i] = (i < motor_count / 2) ? output : -output;
+    #else    
+        // 基于码盘的转向逻辑
+        static float target_distance = 0;
+        
+        // 首次进入时计算目标距离
+        if (!car.turn_initialized) {
+            // 转向弧长 = 角度(弧度) × 轮距 / 2
+            target_distance = fabsf(car.target_angle) * M_PI / 180.0f * WHEEL_BASE_CM / 2.0f;
+            car.turn_initialized = true;
+        }
+        
+        // 计算左侧轮子的平均行驶距离（取绝对值）
+        float left_distance = 0;
+        for (int i = 0; i < motor_count / 2; i++) {
+            left_distance += fabsf(encoder.distance_cm[i]);
+        }
+        left_distance /= (motor_count / 2);
+        
+        // PID控制
+        float output = PID_Calculate(target_distance, left_distance, &anglePid);
+        
+        // 设置左右轮速度（根据转向方向）
+        float left_speed = (car.target_angle > 0) ? output : -output;   // 右转时左轮正转
+        float right_speed = (car.target_angle > 0) ? -output : output;  // 右转时右轮反转
+        
+        for (int i = 0; i < motor_count; ++i)
+            car.target_speed[i] = (i < motor_count / 2) ? left_speed : right_speed;
+    #endif 
 }
+
 
 float get_mileage_cm(void) {
     float output = 0;
@@ -248,6 +311,7 @@ void car_reset(void) {
 	PID_Reset(&anglePid);
 	PID_Reset(&trackPid);
 	motor_set_pwms(pwms);
+
 }
 
 void car_set_track_speed(float speed) {
@@ -258,4 +322,8 @@ void car_set_base_speed(float speed) {
 	for (int i = 0; i < motor_count; i++) {
 		car.target_speed[i] = 0;
 	}
+}
+
+void car_set_outer_track_flag(bool flag) {
+	is_outer_track = flag;
 }

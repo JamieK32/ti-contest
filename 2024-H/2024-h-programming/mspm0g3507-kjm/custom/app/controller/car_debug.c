@@ -8,7 +8,7 @@
 #define SPEED_TEST 0
 #define MILEAGE_TEST 0
 #define ANGLE_TEST 0
-#define TRACK_TEST 1
+#define DEBUG_INFORMATION 1 //用于OLED调试变量
 
 void car_debug_init(void) {
 #if SPEED_TEST
@@ -35,13 +35,10 @@ void debug_speed_pid(void) {
 #if MILEAGE_TEST
 	serialplot_send_multi_data(6, mileagePid.target, mileagePid.feedback, encoder.distance_cm[0], encoder.distance_cm[1], encoder.distance_cm[2], encoder.distance_cm[3]);
 #endif 
-	
-#if TRACK_TEST
-	gray_byte = gray_get_position();
-	log_i("%d", gray_byte);
-#endif 
 }
 
-void update_debug_information(void) {
-	gray_get_position();
+void update_oled_debug_information(void) {
+#if DEBUG_INFORMATION
+	gray_get_position(); //OLED 调试循迹板信息
+#endif 
 }

@@ -3,6 +3,6 @@
 
 void debug_speed_pid(void);
 void car_debug_init(void);
-void update_debug_information(void);
+void update_oled_debug_information(void);
 
 #endif 

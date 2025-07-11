@@ -93,6 +93,7 @@ void system_init(void)
 void main_task_init(void) 
 {
 		wit_imu_init();
+		bluetooth_init();
     menu_init_and_create();
     car_init();
 		gray_detection_init();

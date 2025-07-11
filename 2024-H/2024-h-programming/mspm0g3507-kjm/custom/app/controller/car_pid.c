@@ -38,7 +38,7 @@ void straight_pid_init(void) {
 /* ------------ 角度 PID ------------ */
 void angle_pid_init(void) {
 	PID_Init(&anglePid, PID_TYPE_POSITION);    
-	PID_SetParams(&anglePid, 1.5, 0.0, 0.0);  
+	PID_SetParams(&anglePid, 5, 0.0, 0.0);  
 	PID_SetOutputLimit(&anglePid, 40.0, -40.0); 
 }
 
