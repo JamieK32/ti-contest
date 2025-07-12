@@ -29,6 +29,7 @@ car_t car = {
 
 // 2022 C 题特有变量 用于内外圈切换
 bool is_outer_track = true;
+uint8_t global_stop_mark_count = 2;
 
 float get_yaw(void) {
     return jy61p.yaw;
@@ -166,7 +167,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
         // 检测到停止标记
         if (is_in_table(stop_mark_table_8bit, STOP_MARK_TABLE_SIZE, sensor_data)) {
             stop_mark_count++;
-            if (stop_mark_count >= 2) {  // 累加到2次才返回真
+            if (stop_mark_count >= global_stop_mark_count) {  // 累加到2次才返回真
                 car.state = CAR_STATE_STOP;
                 set_alert_count(1);
                 start_alert();

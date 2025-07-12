@@ -53,8 +53,8 @@
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
-          <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <DebugInformation>0</DebugInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\imu\wit_gyro;..\custom\app\imu\mpu6050_dmplib</IncludePath>
+              <IncludePath>..\project;..\source;..\source\third_party\CMSIS\Core\Include;..\kernel\freertos\Source\include;..\kernel\freertos\Source\portable\GCC\ARM_CM0;..\kernel\freertos\builds\LP_MSPM0G3507\release;..\custom\app\ui;..\custom\app\communication;..\custom\app\controller;..\custom\hardware\drivers;..\custom\hardware\bsp;..\custom\include;..\custom\user;..\custom\utils;..\source\third_party\u8g2;..\custom\tests;..\custom\app\imu\wit_gyro;..\custom\app\imu\mpu6050_dmplib;..\custom\hardware\drivers\vl53l1x;..\custom\hardware\drivers\vl53l1x_platform</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -448,6 +448,11 @@
               <FileName>bluetooth_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\custom\tests\bluetooth_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\tests\vl53l1_test.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -674,6 +679,16 @@
               <FileType>1</FileType>
               <FilePath>..\custom\hardware\drivers\_74hc595.c</FilePath>
             </File>
+            <File>
+              <FileName>vl53l1_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x_platform\vl53l1_platform.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_read.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x_platform\vl53l1_read.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -838,6 +853,71 @@
               <FileName>u8g2_fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\third_party\u8g2\csrc\u8g2_fonts.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>vl53l1x</GroupName>
+          <Files>
+            <File>
+              <FileName>vl53l1_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_api_calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api_calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_api_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_api_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_api_preset_modes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api_preset_modes.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_api_strings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_api_strings.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_core_support.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_core_support.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_error_strings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_error_strings.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_register_funcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_register_funcs.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_silicon_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_silicon_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l1_wait.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\hardware\drivers\vl53l1x\vl53l1_wait.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -38,6 +38,8 @@ typedef struct car_t {
 
 extern car_t car;
 extern bool is_outer_track;
+extern encoder_t encoder;
+extern uint8_t global_stop_mark_count;
 
 void car_task(void);
 void car_init(void);
@@ -59,7 +61,6 @@ void car_set_base_speed(float speed);
 void car_zero_speed_mode(void);
 void car_set_outer_track_flag(bool flag);
 
-extern encoder_t encoder;
 
 static const float CIRCLE_TO_RPM = (60.0f / (ENCODER_PERIOD_MS * 0.001f));
 static const float RPM_TO_CMPS = (2.0f * 3.1415926f * WHEEL_RADIUS_CM / 60.0f); 

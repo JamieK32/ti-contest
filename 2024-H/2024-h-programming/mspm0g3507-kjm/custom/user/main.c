@@ -80,7 +80,7 @@
 
 
 #include "common_include.h"
-//#include "log_config.h" // 日志配置
+#include "log_config.h" // 日志配置
 #include "log.h"
 
 void system_init(void) 
@@ -102,7 +102,7 @@ void main_task_init(void)
 
 void test_task(void) 
 {
-		gd_test();
+	vl53l1_test();
 }
 
 int main(void) 

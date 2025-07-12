@@ -225,6 +225,16 @@ void car_state_machine(void) {
             }
             break;
      
+				case ACTION_SET_FLOAT:
+            if (sm.first_call) {
+                // 立即设置布尔值
+                if (action->params.set_float.var != NULL) {
+                    *(action->params.set_float.var) = action->params.set_float.value;
+                }
+                completed = true; // 立即完成，不等待
+            }
+            break;
+						
         case ACTION_SEND_BYTE:
             if (sm.first_call) {
                 // 立即发送蓝牙字节

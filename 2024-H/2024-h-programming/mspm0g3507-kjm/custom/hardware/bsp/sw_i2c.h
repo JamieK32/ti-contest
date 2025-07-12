@@ -41,6 +41,10 @@ uint8_t SOFT_IIC_Read_Byte(const sw_i2c_t *i2c_cfg, unsigned char ack);
 void SOFT_IIC_DLY(uint16_t time);
 uint8_t SOFT_IIC_Write_Len(const sw_i2c_t *iic, uint8_t addr, uint8_t reg, uint8_t len, uint8_t *buf);
 uint8_t SOFT_IIC_Read_Len(const sw_i2c_t *iic, uint8_t addr, uint8_t reg, uint8_t len, uint8_t *buf);
+uint8_t SOFT_IIC_Write_Len_16bit(const sw_i2c_t *iic, uint8_t addr, uint16_t reg, uint8_t len, uint8_t *buf);
+uint8_t SOFT_IIC_Read_Len_16bit(const sw_i2c_t *iic, uint8_t addr, uint16_t reg, uint8_t len, uint8_t *buf);
+uint8_t SOFT_IIC_Write_Reg_16bit(const sw_i2c_t *iic, uint8_t addr, uint16_t reg);
+uint8_t SOFT_IIC_Read_Continue(const sw_i2c_t *iic, uint8_t addr, uint8_t len, uint8_t *buf);
 
 #ifdef __cplusplus
 }

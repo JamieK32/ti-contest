@@ -88,17 +88,39 @@ static void setup_task7(void) {
     
     // 第一圈：外圈循迹
     car_add_move_until_stop_mark(CAR_STATE_TRACK);            // 循迹移动直到检测到停车标记（第一圈完成）
-    car_add_track(40);                                        // 继续循迹40cm（越过停车标记）
+    car_add_track(50);                                        // 继续循迹40cm（越过停车标记）
     
     // 第二圈：继续外圈循迹
     car_add_move_until_stop_mark(CAR_STATE_TRACK);            // 循迹移动直到检测到停车标记（第二圈完成）
     car_add_bool(&is_outer_track, false);                    // 切换标志位：改为走内圈模式
-    car_add_track(40);                                        // 继续循迹40cm（变道过渡）
+	  car_add_float(&car.track_speed, C22_BASE_SPEED+7);          // 设置循迹速度为基准速度（40）
+    car_add_track(150);                                        // 继续循迹40cm（变道过渡）
     
     // 第三圈：内圈循迹
+		car_add_float(&car.track_speed, C22_BASE_SPEED );
     car_add_move_until_stop_mark(CAR_STATE_TRACK);            // 循迹移动直到检测到停车标记（第三圈完成）
     car_add_byte(BLUETOOTH_CMD_STOP);                         // 发送蓝牙指令：停止
     car_set_loop(1);                                          // 设置循环次数为1次
+}
+
+static void setup_task8(void)
+{
+	  car_path_init();                                          // 初始化路径规划
+	
+		global_stop_mark_count = 1;
+	
+    car_add_bool(&is_outer_track, true);                      // 设置标志位：初始走外圈模式
+    car_add_float(&car.track_speed, C22_BASE_SPEED + 20);          // 设置循迹速度为基准速度（40）
+    car_add_byte(BLUETOOTH_CMD_START_QUESTION4);              // 发送蓝牙指令：开始第四题
+	
+	  car_add_move_until_stop_mark(CAR_STATE_TRACK);
+		car_add_byte(BLUETOOTH_CMD_STOP);  
+    car_add_delay(5000);
+	  car_add_straight(10); 
+
+	  car_add_byte(BLUETOOTH_CMD_START_QUESTION5);              // 发送蓝牙指令：继续跑完第四题
+		car_add_move_until_stop_mark(CAR_STATE_TRACK);
+	  car_set_loop(1);
 }
 
 static void run_task(const char *task_name, bool *task_flag, void (*setup_func)(void)) {
@@ -139,6 +161,9 @@ void run_task06_cb(void *arg) {
 
 void run_task07_cb(void *arg) {
 		run_task("Running Task 03", &task_running_flag, setup_task7);
+}
+void run_task08_cb(void *arg) {
+		run_task("Running Task 04", &task_running_flag, setup_task8);
 }
 
 void set_yaw_zero(void *arg) {
@@ -194,6 +219,7 @@ void menu_init_and_create(void) {
 		ADD_ACTION(tasks2_menu, _22c_task1, "Run 22c Task1", run_task05_cb);
 		ADD_ACTION(tasks2_menu, _22c_task2, "Run 22c Task2", run_task06_cb);
 		ADD_ACTION(tasks2_menu, _22c_task3, "Run 22c Task3", run_task07_cb);
+		ADD_ACTION(tasks2_menu, _22c_task4, "Run 22c Task4", run_task08_cb);
 	
 		ADD_SUBMENU(main_menu, PlayMusic, "Play Music", NULL);
 		ADD_ACTION(PlayMusic, music1, "ChunRiYing", play_music_1_cb);

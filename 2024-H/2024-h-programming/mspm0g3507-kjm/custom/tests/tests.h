@@ -11,5 +11,7 @@ void motor_test(void);
 void mpu_test(void);
 // 蓝牙模块测试
 void bluetooth_test(void);
+// vl53l1模块测试
+void vl53l1_test(void);
 
 #endif
