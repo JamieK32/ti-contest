@@ -2,11 +2,11 @@
 
 // I2C配置
 static sw_i2c_t vl53l1_i2c_config = {
-    .sdaIOMUX = PORTA_SDA1_IOMUX,
-    .sdaPin = PORTA_SDA1_PIN,
+    .sdaIOMUX = PORTA_SDA2_IOMUX,
+    .sdaPin = PORTA_SDA2_PIN,
     .sdaPort = PORTA_PORT,
-    .sclIOMUX = PORTA_SCL1_IOMUX,
-    .sclPin = PORTA_SCL1_PIN,
+    .sclIOMUX = PORTA_SCL2_IOMUX,
+    .sclPin = PORTA_SCL2_PIN,
     .sclPort = PORTA_PORT,
     .delay_time = 1,
 };
@@ -32,9 +32,7 @@ void VL53L1_Read_Init(void)
     ctx.init_done = 0;
 }
 
-/**
- * @brief 处理函数 - 每10ms调用一次
- */
+
 /**
  * @brief 处理函数 - 每10ms调用一次
  */

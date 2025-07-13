@@ -91,7 +91,8 @@ void system_init(void)
 }
 
 void main_task_init(void) 
-{
+{	
+		VL53L1_Read_Init();
 		wit_imu_init();
 		bluetooth_init();
     menu_init_and_create();

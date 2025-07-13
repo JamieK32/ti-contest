@@ -8,6 +8,7 @@
 #include "car_pid.h"
 #include "car_debug.h"
 #include "_74hc595.h"
+#include "vl53l1_read.h"
 
 //依靠码盘转向所需参数
 #define WHEEL_BASE_CM 24.0f  // 轮距，根据实际小车调整
@@ -17,19 +18,22 @@
 #define USE_ANGLE_SENSOR 0
 #define DISTANCE_THRESHOLD_CM 1
 #define ANGLE_THRESHOLD_DEG 1
-#define TRACK_DEFAULT_SPEED 40
+#define TRACK_DEFAULT_SPEED 25
+#define TARGET_DISTANCE 214
+#define FOLLOW_PID_CONTROL 1
 
 // 定义 encoder 结构体实例
 encoder_t encoder = {0};
 
 car_t car = {
-    .state = CAR_STATE_STOP,
+    .state = CAR_STATE_TRACK,
 		.track_speed = TRACK_DEFAULT_SPEED,
 };
 
-// 2022 C 题特有变量 用于内外圈切换
+// 2022 C 题特有变量
 bool is_outer_track = true;
 uint8_t global_stop_mark_count = 2;
+uint16_t current_distance;
 
 float get_yaw(void) {
     return jy61p.yaw;
@@ -240,15 +244,32 @@ void update_straight_control(void)
 }
 
 
-/**
- * @brief 更新巡线控制逻辑，根据灰度传感器数据调整左右轮速度
- */
+
+
 void update_track_control(void) {
-	float error = gray_get_position_22c_ti_contest(is_outer_track);
-	float correction = PID_Calculate(0.0f, error, &trackPid);
-	for (int i = 0; i < motor_count; ++i)
-		car.target_speed[i] = (i < motor_count / 2) ? car.track_speed + correction: car.track_speed - correction;
+    #if FOLLOW_PID_CONTROL
+    static float target_speed = TRACK_DEFAULT_SPEED;
+    
+    if (VL53L1_GetDistance(&current_distance) == VL53L1_ERROR_NONE && current_distance > 0) {
+        // 有效距离测量 - 修改参数顺序，让距离大时输出为正
+        float pid_output = PID_Calculate(current_distance, TARGET_DISTANCE, &followPid);
+        target_speed = TRACK_DEFAULT_SPEED + pid_output;
+    } else {
+        // 距离测量失败，保持当前目标速度或缓慢回到默认速度
+        target_speed = target_speed * 0.95f + TRACK_DEFAULT_SPEED * 0.05f;
+    }
+    
+    // 渐进式调整实际速度，避免突变
+    car.track_speed = car.track_speed * 0.8f + target_speed * 0.2f;
+    
+    #endif
+    
+    float error = gray_get_position_22c_ti_contest(is_outer_track);
+    float correction = PID_Calculate(0.0f, error, &trackPid);
+    for (int i = 0; i < motor_count; ++i)
+        car.target_speed[i] = (i < motor_count / 2) ? car.track_speed + correction: car.track_speed - correction;
 }
+
 
 void update_turn_control(void) {
     #if USE_ANGLE_SENSOR

@@ -11,5 +11,6 @@ extern PID_Controller_t mileagePid;
 extern PID_Controller_t straightPid;
 extern PID_Controller_t anglePid;
 extern PID_Controller_t trackPid;
+extern PID_Controller_t followPid;
 
 #endif 

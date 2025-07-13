@@ -6,7 +6,7 @@ PID_Controller_t mileagePid;
 PID_Controller_t straightPid;
 PID_Controller_t anglePid;
 PID_Controller_t trackPid;
-
+PID_Controller_t followPid;
 
 /* ------------ 速度 PID ------------ */
 void speed_pid_init(void) {
@@ -49,10 +49,18 @@ void track_pid_init(void) {
     PID_SetOutputLimit(&trackPid, 30, -30);
 }
 
+/* ------------ 跟踪 PID ------------ */
+void follow_pid_init(void) {
+    PID_Init(&followPid, PID_TYPE_POSITION);
+    PID_SetParams(&followPid, 0.1, 0, 0);
+    PID_SetOutputLimit(&followPid, 30, -30);
+}
+
 void car_pid_init(void) {
 		speed_pid_init();
 		mileage_pid_init();
 		straight_pid_init();
 		angle_pid_init();
 		track_pid_init();
+		follow_pid_init();
 }

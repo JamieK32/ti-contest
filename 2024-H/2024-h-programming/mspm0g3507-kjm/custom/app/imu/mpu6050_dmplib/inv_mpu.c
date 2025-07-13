@@ -26,6 +26,8 @@
 #include "inv_mpu_dmp_motion_driver.h"
 #include "mpuiic.h"
 #include "delay.h"
+//#include "log_config.h"
+#include "log.h"
 
 #define MPU6050							//定义我们使用的传感器为MPU6050
 #define MOTION_DRIVER_TARGET_MSPM0G3507		//定义驱动部分,采用MSP430的驱动(移植到MSPM0G3507)
@@ -50,8 +52,6 @@
 #define i2c_read    MPU_Read_Len
 #define delay_ms    delay_ms
 #define get_ms(ms)      	 do {} while (0)
-#define log_i(format, ...) do {} while (0)
-#define log_e(format, ...) do {} while (0)
 #define printf(fmt, ...)   do {} while (0)
 #define fabs        fabsf
 #define min(a,b) ((a < b) ? a : b)
