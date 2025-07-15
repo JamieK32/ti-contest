@@ -20,13 +20,13 @@
 #define ANGLE_THRESHOLD_DEG 1
 #define TRACK_DEFAULT_SPEED 25
 #define TARGET_DISTANCE 214
-#define FOLLOW_PID_CONTROL 1
+#define FOLLOW_PID_CONTROL 0
 
 // 定义 encoder 结构体实例
 encoder_t encoder = {0};
 
 car_t car = {
-    .state = CAR_STATE_TRACK,
+    .state = CAR_STATE_STOP,
 		.track_speed = TRACK_DEFAULT_SPEED,
 };
 

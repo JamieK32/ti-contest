@@ -26,7 +26,7 @@ void car_debug_init(void) {
 #endif
 }
 
-void debug_speed_pid(void) {
+void car_debug_tick(void) {
 #if SPEED_TEST
 	serialplot_send_multi_data(5, speedPid[0].target, 
 					speedPid[0].feedback, speedPid[1].feedback, speedPid[2].feedback, speedPid[3].feedback);

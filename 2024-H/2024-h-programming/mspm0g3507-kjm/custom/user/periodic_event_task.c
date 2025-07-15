@@ -5,7 +5,7 @@
 #include "systick.h"  // 包含get_ms()
 
 void debug_task(void) {
-    debug_speed_pid();
+    car_debug_tick();
 }
 
 
