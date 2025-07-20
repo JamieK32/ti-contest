@@ -23,8 +23,8 @@ void speed_pid_init(void) {
 void mileage_pid_init(void) {
 	PID_Init(&mileagePid, PID_TYPE_POSITION);    
 	PID_SetParams(&mileagePid, 4.0, 0.1, 0.0); 
-	PID_SetOutputLimit(&mileagePid, 41.0, -41.0); 
-	PID_SetIntegralLimit(&mileagePid, 41.0, -41.0);
+	PID_SetOutputLimit(&mileagePid, 50.0, -50.0); 
+	PID_SetIntegralLimit(&mileagePid, 50.0, -50.0);
 	PID_SetIntegralSeparation(&mileagePid, 5);
 }
 
@@ -38,14 +38,14 @@ void straight_pid_init(void) {
 /* ------------ 角度 PID ------------ */
 void angle_pid_init(void) {
 	PID_Init(&anglePid, PID_TYPE_POSITION);    
-	PID_SetParams(&anglePid, 5, 0.0, 0.0);  
-	PID_SetOutputLimit(&anglePid, 40.0, -40.0); 
+	PID_SetParams(&anglePid, 1.1, 0.0, 0.3);  
+	PID_SetOutputLimit(&anglePid, 50.0, -50.0); 
 }
 
 /* ------------ 循迹 PID ------------ */
 void track_pid_init(void) {
     PID_Init(&trackPid, PID_TYPE_POSITION);
-    PID_SetParams(&trackPid, 10, 0, 0);
+    PID_SetParams(&trackPid, 14, 0, 0);
     PID_SetOutputLimit(&trackPid, 30, -30);
 }
 

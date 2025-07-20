@@ -28,5 +28,6 @@
 #include "systick.h"
 #include "bluetooth.h"
 #include "vl53l1_read.h"
+#include "task24h_config.h"
 
 #endif // COMMON_H

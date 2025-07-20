@@ -7,7 +7,6 @@
 typedef enum {
     EVENT_NONE = 0,
     EVENT_IMU_UPDATE,
-    EVENT_TEMP_CONTROL,
     EVENT_KEY_STATE_UPDATE,
     EVENT_MENU_VAR_UPDATE,
     EVENT_PERIOD_PRINT,
@@ -15,7 +14,6 @@ typedef enum {
     EVENT_CAR,
     EVENT_CAR_STATE_MACHINE,
 		EVENT_MUSIC_PLAYER,
-		EVENT_WIT_IMU,
     NUM_PERIOD_TASKS
 } EVENT_IDS;
 
@@ -35,6 +33,7 @@ typedef struct {
 } period_task_t;
 
 // 基础API函数
+void init_task_scheduler(period_task_t *table, uint8_t count);
 void create_periodic_event_task(void);
 void periodic_event_task_process(void);
 void enable_periodic_task(EVENT_IDS event_id);

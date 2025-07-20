@@ -1,3 +1,4 @@
+#include "common_defines.h"
 #include "car_controller.h"
 #include "encoder_user.h"
 //#include "log_config.h"
@@ -9,16 +10,12 @@
 #include "car_debug.h"
 #include "_74hc595.h"
 #include "vl53l1_read.h"
-
-//依靠码盘转向所需参数
-#define WHEEL_BASE_CM 24.0f  // 轮距，根据实际小车调整
-#define M_PI 3.14159265359f
+#include "car_config.h"
 
 #define MAX_DISTANCE 255
-#define USE_ANGLE_SENSOR 0
 #define DISTANCE_THRESHOLD_CM 1
 #define ANGLE_THRESHOLD_DEG 1
-#define TRACK_DEFAULT_SPEED 25
+#define TRACK_DEFAULT_SPEED 45
 #define TARGET_DISTANCE 214
 #define FOLLOW_PID_CONTROL 0
 
@@ -30,13 +27,19 @@ car_t car = {
 		.track_speed = TRACK_DEFAULT_SPEED,
 };
 
-// 2022 C 题特有变量
+
 bool is_outer_track = true;
 uint8_t global_stop_mark_count = 2;
 uint16_t current_distance;
 
+
 float get_yaw(void) {
+#if CURRENT_IMU == WIT_GYRO
     return jy61p.yaw;
+#elif CURRENT_IMU == MPU6050_GYRO
+		extern float yaw;
+		return yaw;
+#endif 
 }
 
 void car_task(void) {
@@ -154,7 +157,7 @@ bool car_move_until(CAR_STATES move_state, LINE_STATES l_state) {
         // 检测到全白（sensor_data == 0 表示所有传感器都是白色）
         if (sensor_data == 0) {
             white_count++;
-            if (white_count >= 5 && get_mileage_cm() >= 120) {
+            if (white_count >= 2 && get_mileage_cm() >= 120) {
                 car.state = CAR_STATE_STOP;
                 set_alert_count(1);
                 start_alert();
@@ -263,8 +266,11 @@ void update_track_control(void) {
     car.track_speed = car.track_speed * 0.8f + target_speed * 0.2f;
     
     #endif
-    
+    #if CURRENT_TASK == TASK_TYPE_22C
     float error = gray_get_position_22c_ti_contest(is_outer_track);
+		#else
+		float error = gray_get_position();
+		#endif 
     float correction = PID_Calculate(0.0f, error, &trackPid);
     for (int i = 0; i < motor_count; ++i)
         car.target_speed[i] = (i < motor_count / 2) ? car.track_speed + correction: car.track_speed - correction;
@@ -345,6 +351,7 @@ void car_set_base_speed(float speed) {
 		car.target_speed[i] = 0;
 	}
 }
+
 
 void car_set_outer_track_flag(bool flag) {
 	is_outer_track = flag;

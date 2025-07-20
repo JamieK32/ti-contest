@@ -3,8 +3,8 @@
 
 #include "motor_user.h"
 #include "common_defines.h"
+#include "car_config.h"
 
-#define motor_count MOTOR_TYPE_FOUR_WHEEL
 
 typedef enum {
     CAR_STATE_GO_STRAIGHT = 0,
@@ -61,11 +61,6 @@ void car_set_base_speed(float speed);
 void car_zero_speed_mode(void);
 void car_set_outer_track_flag(bool flag);
 
-
-static const float CIRCLE_TO_RPM = (60.0f / (ENCODER_PERIOD_MS * 0.001f));
-static const float RPM_TO_CMPS = (2.0f * 3.1415926f * WHEEL_RADIUS_CM / 60.0f); 
-static const float TIME_INTERVAL_S = (ENCODER_PERIOD_MS * 0.001f); 
-
 static inline float calculate_angle_error(float target, float current) {
     float error = target - current;
     
@@ -87,7 +82,6 @@ static inline bool is_in_table(const uint16_t *table, uint16_t table_size, uint1
 		return false;
 }
 
-
 static const uint16_t stop_mark_table_8bit[] = {
     
     // 连续6个传感器为1的情况
@@ -104,5 +98,6 @@ static const uint16_t stop_mark_table_8bit[] = {
 };
 
 #define STOP_MARK_TABLE_SIZE (sizeof(stop_mark_table_8bit) / sizeof(stop_mark_table_8bit[0]))
+	
 
 #endif

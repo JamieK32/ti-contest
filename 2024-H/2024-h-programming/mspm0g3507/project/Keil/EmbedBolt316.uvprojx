@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\source;..\..\tests\unit_tests;..\..\source\third_party\u8g2;..\..\source\third_party\CMSIS\Core\Include;..\..\custom_src\application\control;..\..\custom_src\core\config;..\..\custom_src\core\system;..\..\custom_src\drivers\actuators\motor;..\..\custom_src\drivers\actuators\voice_light_alert;..\..\custom_src\drivers\communication;..\..\custom_src\drivers\display\oled;..\..\custom_src\drivers\io_expander;..\..\custom_src\drivers\sensors\encoder;..\..\custom_src\drivers\sensors\gray_detect;..\..\custom_src\drivers\sensors\mpu6050;..\..\custom_src\drivers\sensors\vl53l1x;..\..\custom_src\drivers\sensors\vl53l1x\vl53l1x_platform;..\..\custom_src\drivers\sensors\wit_gyro;..\..\custom_src\hal\i2c;..\..\custom_src\hal\spi;..\..\custom_src\hal\uart;..\..\custom_src\middleware\communication\lwpkt;..\..\custom_src\middleware\communication\lwrb;..\..\custom_src\middleware\communication\protocol;..\..\custom_src\middleware\ui\button;..\..\custom_src\middleware\ui\graphics;..\..\custom_src\utils;..\..\custom_src\middleware\ui</IncludePath>
+              <IncludePath>..\config;..\..\source;..\..\tests\unit_tests;..\..\source\third_party\u8g2;..\..\source\third_party\CMSIS\Core\Include;..\..\custom_src\application\control;..\..\custom_src\core\config;..\..\custom_src\core\system;..\..\custom_src\drivers\actuators\motor;..\..\custom_src\drivers\actuators\voice_light_alert;..\..\custom_src\drivers\communication;..\..\custom_src\drivers\display\oled;..\..\custom_src\drivers\io_expander;..\..\custom_src\drivers\sensors\encoder;..\..\custom_src\drivers\sensors\gray_detect;..\..\custom_src\drivers\sensors\mpu6050;..\..\custom_src\drivers\sensors\vl53l1x;..\..\custom_src\drivers\sensors\vl53l1x\vl53l1x_platform;..\..\custom_src\drivers\sensors\wit_gyro;..\..\custom_src\hal\i2c;..\..\custom_src\hal\spi;..\..\custom_src\hal\uart;..\..\custom_src\middleware\communication\lwpkt;..\..\custom_src\middleware\communication\lwrb;..\..\custom_src\middleware\communication\protocol;..\..\custom_src\middleware\ui\button;..\..\custom_src\middleware\ui\graphics;..\..\custom_src\utils;..\..\custom_src\middleware\ui;..\..\custom_src\application\task_2024h;..\..\custom_src\application\task_2022c;..\..\custom_src\application\task_2021f</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,6 +381,46 @@
         </TargetArmAds>
       </TargetOption>
       <Groups>
+        <Group>
+          <GroupName>Config</GroupName>
+          <Files>
+            <File>
+              <FileName>common_defines.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\custom_src\core\config\common_defines.h</FilePath>
+            </File>
+            <File>
+              <FileName>common_include.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\custom_src\core\config\common_include.h</FilePath>
+            </File>
+            <File>
+              <FileName>log_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\custom_src\core\config\log_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Application/Tasks</GroupName>
+          <Files>
+            <File>
+              <FileName>task24h_mission_table.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\custom_src\application\task_2024h\task24h_mission_table.c</FilePath>
+            </File>
+            <File>
+              <FileName>task24h_ui_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\custom_src\application\task_2024h\task24h_ui_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>task24h_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\custom_src\application\task_2024h\task24h_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
         <Group>
           <GroupName>Core</GroupName>
           <Files>
@@ -653,11 +693,6 @@
               <FileName>ui_animation.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\custom_src\middleware\ui\graphics\ui_animation.c</FilePath>
-            </File>
-            <File>
-              <FileName>ui_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\custom_src\middleware\ui\graphics\ui_app.c</FilePath>
             </File>
             <File>
               <FileName>ui_drawing.c</FileName>

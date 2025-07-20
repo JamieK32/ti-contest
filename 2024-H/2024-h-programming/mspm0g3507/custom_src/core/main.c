@@ -92,10 +92,20 @@ void system_init(void)
 
 void main_task_init(void) 
 {	
-		VL53L1_Read_Init();
+	
+#if (CURRENT_TASK == TASK_24_H)
+#if CURRENT_IMU == WIT_GYRO
 		wit_imu_init();
+#elif (CURRENT_IMU == MPU6050_GYRO)
+		mpu6050_hardware_init();
+		while (mpu_dmp_init()) {}
+#endif
+	  menu_init_and_create_24h();
+		init_24h_task_table();
+#elif (CURRENT_TASK == TASK_22C)
+		VL53L1_Read_Init();
 		bluetooth_init();
-    menu_init_and_create();
+#endif
     car_init();
 		gray_detection_init();
 		create_periodic_event_task(); // 初始化任务调度器
