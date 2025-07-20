@@ -5649,6 +5649,7 @@ Image Symbol Table
     ../mathlib/rredf.c                       0x00000000   Number         0  rredf.o ABSOLUTE
     ../mathlib/sinf.c                        0x00000000   Number         0  sinf.o ABSOLUTE
     ../mathlib/sqrt.c                        0x00000000   Number         0  sqrt.o ABSOLUTE
+    ../startup/startup_mspm0g350x_uvision.s  0x00000000   Number         0  startup_mspm0g350x_uvision.o ABSOLUTE
     _74hc595.c                               0x00000000   Number         0  _74hc595.o ABSOLUTE
     beep.c                                   0x00000000   Number         0  beep.o ABSOLUTE
     bluetooth.c                              0x00000000   Number         0  bluetooth.o ABSOLUTE
@@ -5691,7 +5692,6 @@ Image Symbol Table
     pid.c                                    0x00000000   Number         0  pid.o ABSOLUTE
     rgb_led.c                                0x00000000   Number         0  rgb_led.o ABSOLUTE
     serialplot_protocol.c                    0x00000000   Number         0  serialplot_protocol.o ABSOLUTE
-    startup_mspm0g350x_uvision.s             0x00000000   Number         0  startup_mspm0g350x_uvision.o ABSOLUTE
     systick.c                                0x00000000   Number         0  systick.o ABSOLUTE
     ti_msp_dl_config.c                       0x00000000   Number         0  ti_msp_dl_config.o ABSOLUTE
     u8g2_arc.c                               0x00000000   Number         0  u8g2_arc.o ABSOLUTE
@@ -8432,7 +8432,7 @@ Image component sizes
        400         12          0        128          0       3947   periodic_event_task.o
       1108         20          0          0          1       6747   pid.o
         56          4          0          0          0       4551   rgb_led.o
-        48         22        192          0      13568        724   startup_mspm0g350x_uvision.o
+        48         22        192          0      13568        748   startup_mspm0g350x_uvision.o
         84         24          0          0          4       3351   systick.o
       1292        252        109          0        436      34352   ti_msp_dl_config.o
        794          0          0          0          0       8013   u8g2_box.o
@@ -8472,7 +8472,7 @@ Image component sizes
        136         28          0         15        308       7151   wit_jyxx.o
 
     ----------------------------------------------------------------------
-     46092       4006       6684        700      22116     794979   Object Totals
+     46092       4006       6684        700      22116     795003   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         40          0         12          5         13          0   (incl. Padding)
 
@@ -8625,8 +8625,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     58720       4540       7332        700      22212     879938   Grand Totals
-     58720       4540       7332        256      22212     879938   ELF Image Totals (compressed)
+     58720       4540       7332        700      22212     879962   Grand Totals
+     58720       4540       7332        256      22212     879962   ELF Image Totals (compressed)
      58720       4540       7332        256          0          0   ROM Totals
 
 ==============================================================================
