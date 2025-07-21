@@ -2,9 +2,14 @@
 #define CAR_CONTROLL_H__
 
 #include "motor_user.h"
-#include "common_defines.h"
+#include "encoder_user.h"
+#include "wit_jyxx.h"
+#include "gray_detection.h"
+#include "voice_light_alert.h"
+#include "car_pid.h"
+#include "car_debug.h"
+#include "_74hc595.h"
 #include "car_config.h"
-
 
 typedef enum {
     CAR_STATE_GO_STRAIGHT = 0,
@@ -61,43 +66,5 @@ void car_set_base_speed(float speed);
 void car_zero_speed_mode(void);
 void car_set_outer_track_flag(bool flag);
 
-static inline float calculate_angle_error(float target, float current) {
-    float error = target - current;
-    
-    if (error > 180.0f) {
-        error -= 360.0f;
-    } else if (error < -180.0f) {
-        error += 360.0f;
-    }
-    
-    return error;
-}
-
-static inline bool is_in_table(const uint16_t *table, uint16_t table_size, uint16_t data) {
-    for (int i = 0; i < table_size; i++) {
-        if (table[i] == data) {
-						return true;
-        }
-    }
-		return false;
-}
-
-static const uint16_t stop_mark_table_8bit[] = {
-    
-    // 连续6个传感器为1的情况
-    0x3F,  // 0b00111111 (bit 0-5) 连续6个
-    0x7E,  // 0b01111110 (bit 1-6) 连续6个
-    0xFC,  // 0b11111100 (bit 2-7) 连续6个
-    
-    // 连续7个传感器为1的情况
-    0x7F,  // 0b01111111 (bit 0-6) 连续7个
-    0xFE,  // 0b11111110 (bit 1-7) 连续7个
-    
-    // 连续8个传感器为1的情况
-    0xFF,  // 0b11111111 (bit 0-7) 连续8个
-};
-
-#define STOP_MARK_TABLE_SIZE (sizeof(stop_mark_table_8bit) / sizeof(stop_mark_table_8bit[0]))
-	
 
 #endif

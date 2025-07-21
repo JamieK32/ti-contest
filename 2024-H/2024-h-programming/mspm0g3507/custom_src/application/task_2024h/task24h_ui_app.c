@@ -1,3 +1,5 @@
+#include "common_defines.h"
+#if (CURRENT_TASK_TYPE == TASK_TYPE_24H)
 #include "ui.h"
 #include "log_config.h"
 #include "log.h"
@@ -11,7 +13,7 @@ bool task_running_flag = false;
 
 // 24h题目任务1：简单直行到黑线
 static void setup_task1(void) {
-    car_path_init();                                    // 初始化路径规划
+    car_path_init();                                   // 初始化路径规划
     car_add_turn(0.0f);                                // 原地转向0度（校正方向）
     car_add_move_until_black(CAR_STATE_GO_STRAIGHT);   // 直行移动直到检测到黑线
     car_set_loop(1);                                   // 设置循环次数为1次
@@ -19,7 +21,7 @@ static void setup_task1(void) {
 
 // 24h题目任务2：往返循迹
 static void setup_task2(void) {
-    car_path_init();                                    // 初始化路径规划
+    car_path_init();                                   // 初始化路径规划
     car_add_turn(0.0f);                                // 原地转向0度（校正方向）
     car_add_move_until_black(CAR_STATE_GO_STRAIGHT);   // 直行移动直到检测到黑线
     car_add_move_until_white(CAR_STATE_TRACK);         // 循迹移动直到检测到白线（路径结束）
@@ -31,7 +33,7 @@ static void setup_task2(void) {
 
 // 24h题目任务3：角度循迹
 static void setup_task3(void) {
-    car_path_init();                                    // 初始化路径规划
+    car_path_init();                                   // 初始化路径规划
     car_add_turn(-35.0f);                              // 原地左转35度（调整起始角度）
     car_add_move_until_black(CAR_STATE_GO_STRAIGHT);   // 直行移动直到检测到黑线
     car_add_move_until_white(CAR_STATE_TRACK);         // 循迹移动直到检测到白线
@@ -43,7 +45,7 @@ static void setup_task3(void) {
 
 // 24h题目任务4：角度循迹（多次循环）
 static void setup_task4(void) {
-    car_path_init();                                    // 初始化路径规划
+    car_path_init();                                   // 初始化路径规划
     car_add_turn(-35.0f);                              // 原地左转35度（调整起始角度）
     car_add_move_until_black(CAR_STATE_GO_STRAIGHT);   // 直行移动直到检测到黑线
     car_add_move_until_white(CAR_STATE_TRACK);         // 循迹移动直到检测到白线
@@ -131,7 +133,7 @@ static menu_variable_t car_vars[] = {
 /* =============================================================================
  * 菜单创建
  * ============================================================================= */
-void menu_init_and_create_24h(void) {
+void menu_init_and_create(void) {
     // 使用链式构建宏创建菜单结构
     MENU_BUILDER_START(main_menu, "Main Menu");
     
@@ -154,3 +156,5 @@ void menu_init_and_create_24h(void) {
 		ADD_VAR_VIEW(status_menu, car_status_view, "Car Status", car_vars);
     create_oled_menu(&main_menu);
 }
+
+#endif

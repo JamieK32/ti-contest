@@ -1,8 +1,8 @@
 #ifndef TASK_24_H__
 #define TASK_24_H__
 
-void init_24h_task_table(void);
-void menu_init_and_create_24h(void);
+void init_task_table(void);
+void menu_init_and_create(void);
 
 #define WIT_GYRO 1
 #define MPU6050_GYRO 2

@@ -2,8 +2,6 @@
 #ifndef COMMON_INCLUDE_H
 #define COMMON_INCLUDE_H
 
-
-
 #include <stdio.h>
 #include "ti_msp_dl_config.h"
 #include "oled_driver.h"

@@ -2,7 +2,7 @@
 #define CAR_PID_H__
 
 #include "pid.h"
-#include "car_controller.h"
+#include "car_config.h"
 
 void car_pid_init(void);
 

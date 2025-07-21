@@ -1,5 +1,6 @@
+#include "common_defines.h"
+#if (CURRENT_TASK_TYPE == TASK_TYPE_24H)
 #include "car_pid.h"
-
 
 PID_Controller_t speedPid[motor_count];  // 支持最多4个电机
 PID_Controller_t mileagePid;
@@ -56,3 +57,5 @@ void car_pid_init(void) {
 		angle_pid_init();
 		track_pid_init();
 }
+#endif
+
