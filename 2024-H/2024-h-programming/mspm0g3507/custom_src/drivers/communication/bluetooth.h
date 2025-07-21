@@ -12,16 +12,6 @@
 #include "lwpkt.h"
 #include "ti_msp_dl_config.h"
 
-enum {
-	BLUETOOTH_CMD_START_QUESTION1 = 0x01,
-	BLUETOOTH_CMD_STOP = 0x02,
-	BLUETOOTH_CMD_START_QUESTION2 = 0x03,
-	BLUETOOTH_CMD_START_QUESTION3 = 0x04,
-	BLUETOOTH_CMD_START_QUESTION4 = 0x06,
-	BLUETOOTH_CMD_START_QUESTION5 = 0x07,
-	
-};
-
 // ====================  返回值定义  ====================
 
 typedef enum {

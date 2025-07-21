@@ -53,8 +53,8 @@
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
-          <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <DebugInformation>0</DebugInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -445,14 +445,19 @@
               <FilePath>..\..\custom_src\application\task_2022c\task22c_car_pid_parameter.c</FilePath>
             </File>
             <File>
+              <FileName>task22c_ui_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\custom_src\application\task_2022c\task22c_ui_app.c</FilePath>
+            </File>
+            <File>
               <FileName>task22c_mission_table.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\custom_src\application\task_2022c\task22c_mission_table.c</FilePath>
             </File>
             <File>
-              <FileName>task22c_ui_app.c</FileName>
+              <FileName>task22c_bluetooth_app.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\custom_src\application\task_2022c\task22c_ui_app.c</FilePath>
+              <FilePath>..\..\custom_src\application\task_2022c\task22c_bluetooth_app.c</FilePath>
             </File>
           </Files>
         </Group>

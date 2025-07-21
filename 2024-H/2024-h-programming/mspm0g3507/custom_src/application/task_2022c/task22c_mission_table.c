@@ -17,6 +17,7 @@ period_task_t task_table[] = {
    { EVENT_CAR,               RUN,  car_task,             20,  0 },    // 20ms
 	 { EVENT_MUSIC_PLAYER,      RUN,  music_player_update,  5,   0 }, 	 // 5ms
 	 { EVENT_TOF, 							RUN, 	VL53L1_Process,       5,   0 }, 	 // 5ms
+	 { EVENT_BLUETOOTH, 				RUN, 	bluetooth_process,    5,   0 }, 	 // 5ms 
 };
 
 void init_task_table(void) {
