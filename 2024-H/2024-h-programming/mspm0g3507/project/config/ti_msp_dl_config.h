@@ -127,9 +127,9 @@ extern "C" {
 #define GPIO_BEEP_PWM_C0_IDX                                 DL_TIMER_CC_0_INDEX
 /* GPIO defines for channel 1 */
 #define GPIO_BEEP_PWM_C1_PORT                                              GPIOA
-#define GPIO_BEEP_PWM_C1_PIN                                      DL_GPIO_PIN_27
-#define GPIO_BEEP_PWM_C1_IOMUX                                   (IOMUX_PINCM60)
-#define GPIO_BEEP_PWM_C1_IOMUX_FUNC                  IOMUX_PINCM60_PF_TIMG7_CCP1
+#define GPIO_BEEP_PWM_C1_PIN                                      DL_GPIO_PIN_31
+#define GPIO_BEEP_PWM_C1_IOMUX                                    (IOMUX_PINCM6)
+#define GPIO_BEEP_PWM_C1_IOMUX_FUNC                   IOMUX_PINCM6_PF_TIMG7_CCP1
 #define GPIO_BEEP_PWM_C1_IDX                                 DL_TIMER_CC_1_INDEX
 
 
@@ -163,9 +163,9 @@ extern "C" {
 #define GPIO_UART_1_IOMUX_TX                                     (IOMUX_PINCM15)
 #define GPIO_UART_1_IOMUX_RX_FUNC                      IOMUX_PINCM16_PF_UART3_RX
 #define GPIO_UART_1_IOMUX_TX_FUNC                      IOMUX_PINCM15_PF_UART3_TX
-#define UART_1_BAUD_RATE                                                  (9600)
-#define UART_1_IBRD_80_MHZ_9600_BAUD                                       (520)
-#define UART_1_FBRD_80_MHZ_9600_BAUD                                        (53)
+#define UART_1_BAUD_RATE                                                (115200)
+#define UART_1_IBRD_80_MHZ_115200_BAUD                                      (43)
+#define UART_1_FBRD_80_MHZ_115200_BAUD                                      (26)
 
 
 
@@ -187,6 +187,18 @@ extern "C" {
 #define GPIO_SPI_0_SCLK_PIN                                      DL_GPIO_PIN_17
 #define GPIO_SPI_0_IOMUX_SCLK                                   (IOMUX_PINCM39)
 #define GPIO_SPI_0_IOMUX_SCLK_FUNC                   IOMUX_PINCM39_PF_SPI1_SCLK
+
+
+
+/* Defines for ADC12_0 */
+#define ADC12_0_INST                                                        ADC0
+#define ADC12_0_INST_IRQHandler                                  ADC0_IRQHandler
+#define ADC12_0_INST_INT_IRQN                                    (ADC0_INT_IRQn)
+#define ADC12_0_ADCMEM_ADC12_0                                DL_ADC12_MEM_IDX_0
+#define ADC12_0_ADCMEM_ADC12_0_REF               DL_ADC12_REFERENCE_VOLTAGE_VDDA
+#define ADC12_0_ADCMEM_ADC12_0_REF_VOLTAGE_V                                     3.3
+#define GPIO_ADC12_0_C0_PORT                                               GPIOA
+#define GPIO_ADC12_0_C0_PIN                                       DL_GPIO_PIN_27
 
 
 
@@ -282,6 +294,15 @@ extern "C" {
 /* Defines for HC595_STCP: GPIOA.14 with pinCMx 36 on package pin 7 */
 #define PORTA_HC595_STCP_PIN                                    (DL_GPIO_PIN_14)
 #define PORTA_HC595_STCP_IOMUX                                   (IOMUX_PINCM36)
+/* Defines for GW_ADDR0: GPIOA.24 with pinCMx 54 on package pin 25 */
+#define PORTA_GW_ADDR0_PIN                                      (DL_GPIO_PIN_24)
+#define PORTA_GW_ADDR0_IOMUX                                     (IOMUX_PINCM54)
+/* Defines for GW_ADDR1: GPIOA.30 with pinCMx 5 on package pin 37 */
+#define PORTA_GW_ADDR1_PIN                                      (DL_GPIO_PIN_30)
+#define PORTA_GW_ADDR1_IOMUX                                      (IOMUX_PINCM5)
+/* Defines for GW_ADDR2: GPIOA.29 with pinCMx 4 on package pin 36 */
+#define PORTA_GW_ADDR2_PIN                                      (DL_GPIO_PIN_29)
+#define PORTA_GW_ADDR2_IOMUX                                      (IOMUX_PINCM4)
 
 /* clang-format on */
 
@@ -295,6 +316,7 @@ void SYSCFG_DL_BEEP_PWM_init(void);
 void SYSCFG_DL_UART_0_init(void);
 void SYSCFG_DL_UART_1_init(void);
 void SYSCFG_DL_SPI_0_init(void);
+void SYSCFG_DL_ADC12_0_init(void);
 
 
 bool SYSCFG_DL_saveConfiguration(void);

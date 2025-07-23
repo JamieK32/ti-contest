@@ -9,14 +9,14 @@
 
 // 编译时检查
 #if (UNIT_TEST_MODE == 1)
-    #warning "Unit test mode is enabled!"
+
 #endif
 
 #define TASK_TYPE_24H    1
 #define TASK_TYPE_22C    2
 
 // 当前选择的任务
-#define CURRENT_TASK_TYPE TASK_TYPE_22C
+#define CURRENT_TASK_TYPE TASK_TYPE_24H
 
 // 根据任务类型包含对应配置
 #if (CURRENT_TASK_TYPE == TASK_TYPE_24H)

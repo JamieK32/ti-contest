@@ -61,6 +61,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_UART_0_init();
     SYSCFG_DL_UART_1_init();
     SYSCFG_DL_SPI_0_init();
+    SYSCFG_DL_ADC12_0_init();
     /* Ensure backup structures have no valid state */
 	gMotor_PWM1Backup.backupRdy 	= false;
 	gBEEP_PWMBackup.backupRdy 	= false;
@@ -107,6 +108,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_reset(UART_0_INST);
     DL_UART_Main_reset(UART_1_INST);
     DL_SPI_reset(SPI_0_INST);
+    DL_ADC12_reset(ADC12_0_INST);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
@@ -116,6 +118,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_UART_Main_enablePower(UART_0_INST);
     DL_UART_Main_enablePower(UART_1_INST);
     DL_SPI_enablePower(SPI_0_INST);
+    DL_ADC12_enablePower(ADC12_0_INST);
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
@@ -225,20 +228,32 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 
     DL_GPIO_initDigitalOutput(PORTA_HC595_STCP_IOMUX);
 
+    DL_GPIO_initDigitalOutput(PORTA_GW_ADDR0_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTA_GW_ADDR1_IOMUX);
+
+    DL_GPIO_initDigitalOutput(PORTA_GW_ADDR2_IOMUX);
+
     DL_GPIO_clearPins(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
 		PORTA_HC595_DS_PIN |
 		PORTA_HC595_SHCP_PIN |
-		PORTA_HC595_STCP_PIN);
+		PORTA_HC595_STCP_PIN |
+		PORTA_GW_ADDR0_PIN |
+		PORTA_GW_ADDR1_PIN |
+		PORTA_GW_ADDR2_PIN);
     DL_GPIO_enableOutput(PORTA_PORT, PORTA_SCL1_PIN |
 		PORTA_SDA1_PIN |
 		PORTA_SCL2_PIN |
 		PORTA_SDA2_PIN |
 		PORTA_HC595_DS_PIN |
 		PORTA_HC595_SHCP_PIN |
-		PORTA_HC595_STCP_PIN);
+		PORTA_HC595_STCP_PIN |
+		PORTA_GW_ADDR0_PIN |
+		PORTA_GW_ADDR1_PIN |
+		PORTA_GW_ADDR2_PIN);
     DL_GPIO_clearPins(PORTB_PORT, PORTB_LED_R_PIN |
 		PORTB_LED_G_PIN |
 		PORTB_LED_B_PIN |
@@ -424,7 +439,7 @@ static const DL_TimerG_ClockConfig gBEEP_PWMClockConfig = {
 static const DL_TimerG_PWMConfig gBEEP_PWMConfig = {
     .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
     .period = 1000,
-    .isTimerWithFourCC = true,
+    .isTimerWithFourCC = false,
     .startTimer = DL_TIMER_START,
 };
 
@@ -523,11 +538,11 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_1_init(void)
     DL_UART_Main_init(UART_1_INST, (DL_UART_Main_Config *) &gUART_1Config);
     /*
      * Configure baud rate by setting oversampling and baud rate divisors.
-     *  Target baud rate: 9600
-     *  Actual baud rate: 9600.1
+     *  Target baud rate: 115200
+     *  Actual baud rate: 115190.78
      */
     DL_UART_Main_setOversampling(UART_1_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(UART_1_INST, UART_1_IBRD_80_MHZ_9600_BAUD, UART_1_FBRD_80_MHZ_9600_BAUD);
+    DL_UART_Main_setBaudRateDivisor(UART_1_INST, UART_1_IBRD_80_MHZ_115200_BAUD, UART_1_FBRD_80_MHZ_115200_BAUD);
 
 
     /* Configure Interrupts */
@@ -574,5 +589,24 @@ SYSCONFIG_WEAK void SYSCFG_DL_SPI_0_init(void) {
 
     /* Enable module */
     DL_SPI_enable(SPI_0_INST);
+}
+
+/* ADC12_0 Initialization */
+static const DL_ADC12_ClockConfig gADC12_0ClockConfig = {
+    .clockSel       = DL_ADC12_CLOCK_SYSOSC,
+    .divideRatio    = DL_ADC12_CLOCK_DIVIDE_8,
+    .freqRange      = DL_ADC12_CLOCK_FREQ_RANGE_24_TO_32,
+};
+SYSCONFIG_WEAK void SYSCFG_DL_ADC12_0_init(void)
+{
+    DL_ADC12_setClockConfig(ADC12_0_INST, (DL_ADC12_ClockConfig *) &gADC12_0ClockConfig);
+    DL_ADC12_initSingleSample(ADC12_0_INST,
+        DL_ADC12_REPEAT_MODE_ENABLED, DL_ADC12_SAMPLING_SOURCE_AUTO, DL_ADC12_TRIG_SRC_SOFTWARE,
+        DL_ADC12_SAMP_CONV_RES_12_BIT, DL_ADC12_SAMP_CONV_DATA_FORMAT_UNSIGNED);
+    DL_ADC12_configConversionMem(ADC12_0_INST, ADC12_0_ADCMEM_ADC12_0,
+        DL_ADC12_INPUT_CHAN_0, DL_ADC12_REFERENCE_VOLTAGE_VDDA, DL_ADC12_SAMPLE_TIMER_SOURCE_SCOMP0, DL_ADC12_AVERAGING_MODE_DISABLED,
+        DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
+    DL_ADC12_setPowerDownMode(ADC12_0_INST,DL_ADC12_POWER_DOWN_MODE_MANUAL);
+    DL_ADC12_enableConversions(ADC12_0_INST);
 }
 

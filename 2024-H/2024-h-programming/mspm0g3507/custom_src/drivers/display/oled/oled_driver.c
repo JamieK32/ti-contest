@@ -9,9 +9,7 @@
 
 u8g2_t u8g2;
 
-#ifdef OLED_DRIVER_MODE_SPI
-
-
+#if OLED_DRIVER_MODE == OLED_DRIVER_MODE_SPI
 
 // SPI 模式的 OLED 初始化
 void oled_spi_hardware_init(void)
@@ -108,9 +106,7 @@ uint8_t u8g2_gpio_and_delay_mspm0(U8X8_UNUSED u8x8_t *u8x8,
 }
 
 
-#endif // OLED_DRIVER_MODE_SPI
-
-#ifdef OLED_DRIVER_MODE_I2C
+#elif OLED_DRIVER_MODE == OLED_DRIVER_MODE_I2C
 
 // I2C 模式的 OLED 初始化 (GPIO 配置)
 void oled_i2c_hardware_init(void)
@@ -195,12 +191,10 @@ uint8_t u8x8_gpio_and_delay_mspm0(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, vo
 void u8g2_Init(void)
 {
     // 使用条件编译选择 SPI 或 I2C 驱动
-#ifdef OLED_DRIVER_MODE_SPI
+#if OLED_DRIVER_MODE == OLED_DRIVER_MODE_SPI
     // 初始化 U8g2，使用 SPI 驱动
     u8g2_Setup_ssd1306_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_3wire_hw_spi, u8g2_gpio_and_delay_mspm0);
-#endif
-
-#ifdef OLED_DRIVER_MODE_I2C
+#elif OLED_DRIVER_MODE == OLED_DRIVER_MODE_I2C
     // 初始化 U8g2，使用 I2C 驱动
     u8g2_Setup_ssd1306_i2c_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_sw_i2c, u8x8_gpio_and_delay_mspm0);
 #endif

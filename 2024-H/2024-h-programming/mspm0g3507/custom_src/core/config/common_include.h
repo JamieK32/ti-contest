@@ -1,31 +1,106 @@
-// common.h
+// common.h - 分层架构头文件包含
 #ifndef COMMON_INCLUDE_H
 #define COMMON_INCLUDE_H
 
-#include <stdio.h>
-#include "ti_msp_dl_config.h"
-#include "oled_driver.h"
-#include "gray_detection.h"
-#include "motor_hardware.h"
-#include "encoder.h"
-#include "motor_user.h"
-#include "serialplot_protocol.h"
-#include "encoder_user.h"
-#include "tests.h"
-#include "beep.h"
-#include "rgb_led.h"
-#include "voice_light_alert.h"
-#include "periodic_event_task.h"
-#include "car_controller.h"
-#include "car_state_machine.h"
-#include "wit_jyxx.h"
-#include "car_debug.h"
-#include "mpuiic.h" 
-#include "inv_mpu.h"
-#include "ui.h"
-#include "systick.h"
-#include "bluetooth.h"
-#include "vl53l1_read.h"
-#include "task24h_config.h"
+//==============================================================================
+// 标准库层 (Standard Library Layer)
+//==============================================================================
+#include <stdio.h>                          // C标准输入输出库
 
-#endif // COMMON_H
+//==============================================================================
+// 硬件抽象层 (Hardware Abstraction Layer - HAL)
+//==============================================================================
+#include "ti_msp_dl_config.h"               // TI MSP430驱动库配置
+#include "systick.h"                        // 系统定时器
+#include "mpuiic.h"                         // MPU I2C通信接口
+#include "inv_mpu.h"                        // MPU陀螺仪/加速度计驱动
+
+//==============================================================================
+// 设备驱动层 (Device Driver Layer)
+//==============================================================================
+// 显示设备
+#include "oled_driver.h"                    // OLED显示屏驱动
+
+// 传感器设备
+#include "gray_detection.h"                 // 灰度传感器驱动
+#include "encoder.h"                        // 编码器硬件驱动
+#include "no_mcu_ganv.h"                    // 无MCU灰度传感器驱动
+#include "vl53l1_read.h"                    // VL53L1激光测距传感器
+#include "wit_jyxx.h"                       // 维特智能姿态传感器
+
+// 执行器设备
+#include "motor_hardware.h"                 // 电机硬件驱动层
+
+// 通信设备
+#include "bluetooth.h"                      // 蓝牙通信驱动
+
+// 音视觉设备
+#include "beep.h"                          // 蜂鸣器驱动
+#include "rgb_led.h"                       // RGB LED驱动
+
+//==============================================================================
+// 中间件层 (Middleware Layer)
+//==============================================================================
+#include "serialplot_protocol.h"           // 串口绘图通信协议
+#include "periodic_event_task.h"           // 周期性事件任务管理
+
+//==============================================================================
+// 应用组件层 (Application Component Layer)
+//==============================================================================
+// 传感器应用层
+#include "encoder_user.h"                   // 编码器用户接口层
+
+// 控制算法层
+#include "motor_user.h"                     // 电机用户控制接口
+
+// 功能组件
+#include "voice_light_alert.h"              // 语音灯光报警组件
+
+//==============================================================================
+// 业务逻辑层 (Business Logic Layer)
+//==============================================================================
+#include "car_controller.h"                 // 小车控制器
+#include "car_state_machine.h"              // 小车状态机
+
+//==============================================================================
+// 应用层 (Application Layer)
+//==============================================================================
+#include "ui.h"                            // 用户界面
+#include "tests.h"                         // 测试模块
+#include "car_debug.h"                     // 小车调试模块
+#include "task24h_config.h"                // 24小时任务配置
+
+#endif // COMMON_INCLUDE_H
+
+/*
+分层说明：
+==========
+
+1. 标准库层：
+   - 提供基础的C语言功能
+
+2. 硬件抽象层(HAL)：
+   - 提供对底层硬件的抽象接口
+   - 包含芯片配置、定时器、通信接口等
+
+3. 设备驱动层：
+   - 针对具体硬件设备的驱动程序
+   - 按功能分类：显示、传感器、执行器、通信、音视觉
+
+4. 中间件层：
+   - 提供通用的服务和协议
+   - 任务调度、通信协议等
+
+5. 应用组件层：
+   - 对驱动层的封装，提供更高级的接口
+   - 包含用户接口和功能组件
+
+6. 业务逻辑层：
+   - 实现具体的业务逻辑
+   - 小车控制和状态管理
+
+7. 应用层：
+   - 最顶层的应用程序
+   - 用户界面、测试、调试等
+
+*/

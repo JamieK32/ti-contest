@@ -575,7 +575,7 @@ static void i2c_write_byte(u8x8_t *u8x8, uint8_t b)
   i2c_read_bit(u8x8);
 }
 
-uint8_t u8x8_byte_hal_soft_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+uint8_t u8x8_byte_sw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
 {
   uint8_t *data;
 

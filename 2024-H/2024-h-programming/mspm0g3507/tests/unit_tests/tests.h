@@ -13,5 +13,6 @@ void mpu_test(void);
 void bluetooth_test(void);
 // vl53l1模块测试
 void vl53l1_test(void);
-
+// 感为循迹模块测试
+void no_mcu_ganv_test(void);
 #endif
