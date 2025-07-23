@@ -1,10 +1,1 @@
-stm32f1hal\cjson.o: ..\Custom\HardWare\cJSON.c
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\float.h
-stm32f1hal\cjson.o: ..\Custom\HardWare\cJSON.h
-stm32f1hal\cjson.o: C:\Users\kjmsd\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+stm32f1hal/cjson.o: ..\Custom\HardWare\cJSON.c ..\Custom\HardWare\cJSON.h
