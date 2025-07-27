@@ -132,7 +132,7 @@ ti-contest/
 
 1. **克隆仓库**
 ```bash
-git clone https://github.com/jamiek32/ti-contest.git
+git clone https://github.com/jamiek32/ti-contest
 cd ti-contest-2021-f/2021-f-Code/mspm0g3507
 ```
 
@@ -233,8 +233,9 @@ float get_yaw_angle(void);   // 获取偏航角
 
 ### 📊 支持题目
 - **2021年全国赛F题**: 智能送药小车 ⭐
-- **2022年全国赛C题**: 运动目标控制与跟踪
-- **2024年全国赛H题**: 移动机器人
+- **2022年全国赛C题**: 双车跟随系统 ⭐
+- **2023年全国赛E题**: 激光笔追踪系统 ⭐
+- **2024年全国赛H题**: 移动机器人 ⭐
 
 ### 🎯 竞赛题目覆盖
 
@@ -250,11 +251,11 @@ float get_yaw_angle(void);   // 获取偏航角
 我们欢迎任何形式的贡献！
 
 ### 🐛 问题反馈
-- 在 [Issues](https://github.com/yourusername/ti-contest-2021-f/issues) 中报告bug
+- 在 [Issues](https://github.com/JamieK32/ti-contest/issues) 中报告bug
 - 提供详细的复现步骤和环境信息
 
 ### 💡 功能请求
-- 在 [Discussions](https://github.com/yourusername/ti-contest-2021-f/discussions) 中讨论新功能
+- 在 [Discussions](https://github.com/JamieK32/ti-contest/discussions) 中讨论新功能
 - 描述使用场景和期望效果
 
 ### 🔧 代码贡献
