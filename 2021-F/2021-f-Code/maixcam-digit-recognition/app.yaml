@@ -1,0 +1,12 @@
+id: sgdijhhiu
+name: 循迹1号
+version: 1.0.0
+author: dds
+icon: app.png
+desc: sdcfa
+files:
+  - app.yaml
+  - digit_recognition.py
+  - main.py
+  - track.py
+  - uart.py
