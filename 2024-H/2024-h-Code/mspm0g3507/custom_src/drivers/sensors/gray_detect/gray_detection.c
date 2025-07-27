@@ -25,7 +25,7 @@ static soft_iic_info_struct gw_i2c = {
     .sdaPin = PORTA_SDA1_PIN,
     .sclIOMUX = PORTA_SCL1_IOMUX,
     .sdaIOMUX = PORTA_SDA1_IOMUX,
-    .delay_time = 40,
+    .delay_time = 45,
     .addr = GW_GRAY_ADDR_DEF,
 };
 #endif

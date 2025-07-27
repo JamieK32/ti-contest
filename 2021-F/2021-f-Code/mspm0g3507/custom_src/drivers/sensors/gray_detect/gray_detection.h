@@ -9,9 +9,9 @@
 #define TRACK_SENSOR_COUNT 8 // <--- 修改这里，支持 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
 
 //#define USE_PCA9555 			  // PCA9555 IO扩展芯片循迹板
-//#define USE_GW_GRAY 			  	// 感为传感器循迹板
+#define USE_GW_GRAY 			  	// 感为传感器循迹板
 //#define USE_GPIO						// IO口直接循迹
-#define USE_CAM								// 使用视觉循迹
+//#define USE_CAM								// 使用视觉循迹
 
 #ifdef USE_GW_GRAY
 

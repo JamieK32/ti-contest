@@ -5,9 +5,9 @@
 #define MAX_DISTANCE 						255
 #define DISTANCE_THRESHOLD_CM 	1
 #define ANGLE_THRESHOLD_DEG		  1
-#define TRACK_DEFAULT_SPEED 		45
+#define TRACK_DEFAULT_SPEED 		42
 #define DETECTED_WHITE_COUNT		2
-#define ARC_LENGTH 							120
+#define ARC_LENGTH 							123
 
 // 定义 encoder 结构体实例
 encoder_t encoder = {0};
