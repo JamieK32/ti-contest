@@ -2,7 +2,6 @@ from maix import camera, image, display, app
 from track import LineTracker
 from uart import CamComm
 from digit_recognition import ObjectDetector
-from collections import deque
 
 
 cam = camera.Camera(320, 240)
@@ -40,13 +39,15 @@ def detect_number(img):
     elif number.get_number() == first_digit:  #
         detect_count += 1
         none_detect_count = 0  # 修复7: 检测到目标数字时重置none计数
+    else:
+        none_detect_count += 1
     
     if detect_count >= 10:
         comm.send_command(number.get_position())
         detect_count = 0
         none_detect_count = 0  # 重置计数
         
-    if none_detect_count >= 10:
+    if none_detect_count >= 200:
         comm.send_command(0x03)
         detect_count = 0
         none_detect_count = 0  # 重置计数
@@ -57,16 +58,17 @@ commands = {
     "NUMBER": detect_number,
 }
 
+# 优化主循环中的重复执行逻辑
 while not app.need_exit():
     img = cam.read()
     result = comm.receive(timeout=100)
     
+    # 简化模式切换和执行
     if result and result in commands:
         mode = result
-        commands[result](img)
     
-    # 修复8: 添加持续执行当前模式
-    if mode and mode != "STOP":
+    # 执行当前模式（避免重复调用）
+    if mode and mode in commands:
         commands[mode](img)
     
     disp.show(img)

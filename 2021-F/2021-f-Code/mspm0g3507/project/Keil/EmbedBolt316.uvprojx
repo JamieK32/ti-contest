@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>MSPM0G3507</Device>
           <Vendor>Texas Instruments</Vendor>
-          <PackID>TexasInstruments.MSPM0G_DFP.1.2.1</PackID>
-          <PackURL>http://software-dl.ti.com/msp430/esd/MSPM0-CMSIS/MSPM0G/latest/exports/</PackURL>
+          <PackID>TexasInstruments.MSPM0G1X0X_G3X0X_DFP.1.3.1</PackID>
+          <PackURL>https://software-dl.ti.com/msp430/esd/MSPM0-CMSIS/MSPM0G1X0X_G3X0X/latest/exports/</PackURL>
           <Cpu>IRAM(0x20000000,0x00008000) IRAM2(0x20100000,0x00008000) IROM(0x00000000,0x00020000) IROM2(0x00400000,0x00020000) XRAM(0x20200000,0x00008000) XRAM2(0x20300000,0x00008000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
