@@ -70,7 +70,7 @@ void navigate_detour_left(float track_distance, float straight_distance) {
 /* 终点路径模式 */
 void navigate_to_final_position_via_right(void) {
     car_add_turn(-90);
-    car_add_track(80);
+    car_add_track(90);
     car_add_turn(-180);
     car_add_track(80);
     car_add_track(80);
@@ -80,7 +80,7 @@ void navigate_to_final_position_via_right(void) {
 
 void navigate_to_final_position_via_left(void) {
     car_add_turn(90);
-    car_add_track(80);
+    car_add_track(90);
     car_add_turn(-180);
     car_add_track(80);
     car_add_track(80);
@@ -134,7 +134,7 @@ void complete_remote_ward_path_right_final(void) {
     car_add_turn(180);
     car_add_straight(46);
     car_add_turn(0);
-    car_add_straight(46);
+    car_add_straight(50);
     navigate_to_final_position_via_right();
 }
 
@@ -143,7 +143,7 @@ void complete_remote_ward_path_left_final(void) {
     car_add_turn(0);
     car_add_straight(46);
     car_add_turn(180);
-    car_add_straight(46);
+    car_add_straight(50);
     navigate_to_final_position_via_right();
 }
 
@@ -152,7 +152,7 @@ void complete_remote_ward_path_left_alt_final(void) {
     car_add_turn(0);
     car_add_straight(46);
     car_add_turn(180);
-    car_add_straight(36);
+    car_add_straight(50);
     navigate_to_final_position_via_left();
 }
 
@@ -161,7 +161,7 @@ void complete_remote_ward_path_right_alt_final(void) {
     car_add_turn(180);
     car_add_straight(46);
     car_add_turn(0);
-    car_add_straight(46);
+    car_add_straight(50);
     navigate_to_final_position_via_left();
 }
 
