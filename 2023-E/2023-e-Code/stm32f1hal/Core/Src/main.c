@@ -31,6 +31,9 @@
 #include "openmv.h"
 #include "ServoPid.h"
 #include "uart_dma.h"
+#include "laser_draw.h"
+#include "Emm_V5_Receive.h"
+#include "svg_renderer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,6 +90,7 @@ void enable_task(const char* task_name, bool enable) {
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+// 全局变量
 /* USER CODE END 0 */
 
 /**
@@ -122,13 +126,31 @@ int main(void)
   MX_TIM2_Init();
   MX_USART1_UART_Init();
   MX_I2C1_Init();
+  MX_USART2_UART_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-	openmv_init();
-	UART_DMA_Init();
-	Servo_Init();
-	Servo_Reset();
-	servo_pid_init();
-	menu_init_and_create();
+	HAL_TIM_Base_Start_IT(&htim4);
+	LaserDraw_Init();
+	printf("SYSTEM STARTED\r\n");
+//	const char *data = "M2,2 L8,8";
+
+//DrawSVGPath(data, 50, 50, 100);
+	//HAL_Delay(2000); // 等待系统稳定
+	 GoHome();
+	// ResetMotorZeroPosition();
+    // 绘制你的SVG路径
+
+ //DrawRectangle(0, 0, 1000, 1000); // 1000步×1000步
+//DrawCircle(0, 0, 500);    // 在(-100,100)绘制半径50的圆
+//DrawTriangle(0 ,  0, 400);//
+DrawChineseBitmap(100, 100, 10);  // 在(100,100)位置，每像素5x5大小
+ //DrawRectangle(0,0,400,200);
+//DrawSineWave(100, 200,1000, 180, 2.0f, 0.0f, 100);            //正弦波
+
+//DrawSquareWave(100, 300, 2100, 140, 5.0f, 0.0f);         //方波
+ //DrawTriangleWave(0, 0, 1000, 50, 8.0f, 200);
+
+        
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -145,7 +167,6 @@ int main(void)
 			}
 		}
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

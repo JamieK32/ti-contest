@@ -1,4 +1,5 @@
-stm32f1hal/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
+stm32f1hal/laser_draw.o: ..\Custom\HardWare\laser_draw.c \
+  ..\Custom\HardWare\laser_draw.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
@@ -22,12 +23,5 @@ stm32f1hal/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h \
-  ..\Core\Inc\dma.h ..\Core\Inc\i2c.h ..\Core\Inc\tim.h \
-  ..\Core\Inc\usart.h ..\Core\Inc\gpio.h ..\Custom\Ui\ui.h \
-  ..\Custom\Ui\u8g2\u8g2.h ..\Custom\Ui\u8g2\u8x8.h \
-  ..\Custom\Ui\ui_button.h ..\Custom\Ui\multi_button.h \
-  ..\Custom\Ui\oled_driver.h ..\Custom\HardWare\Servo.h \
-  ..\Custom\HardWare\openmv.h ..\Custom\HardWare\ServoPid.h \
-  ..\Custom\HardWare\uart_dma.h ..\Custom\HardWare\laser_draw.h \
-  ..\Custom\HardWare\Emm_V5.h ..\Custom\HardWare\Emm_V5_Receive.h \
-  ..\Custom\HardWare\svg_renderer.h
+  ..\Custom\HardWare\Emm_V5.h ..\Core\Inc\usart.h ..\Core\Inc\main.h \
+  ..\Custom\HardWare\Emm_V5_Receive.h

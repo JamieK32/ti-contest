@@ -58,6 +58,18 @@ void view_var_task(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define EN2_Pin GPIO_PIN_6
+#define EN2_GPIO_Port GPIOA
+#define STEP2_Pin GPIO_PIN_7
+#define STEP2_GPIO_Port GPIOA
+#define DIR2_Pin GPIO_PIN_0
+#define DIR2_GPIO_Port GPIOB
+#define DIR1_Pin GPIO_PIN_4
+#define DIR1_GPIO_Port GPIOB
+#define STEP1_Pin GPIO_PIN_5
+#define STEP1_GPIO_Port GPIOB
+#define EN1_Pin GPIO_PIN_6
+#define EN1_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

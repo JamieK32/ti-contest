@@ -905,6 +905,31 @@
               <FileType>1</FileType>
               <FilePath>..\Custom\HardWare\uart_dma.c</FilePath>
             </File>
+            <File>
+              <FileName>Emm_V5_Receive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\Emm_V5_Receive.c</FilePath>
+            </File>
+            <File>
+              <FileName>Emm_V5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\Emm_V5.c</FilePath>
+            </File>
+            <File>
+              <FileName>stepper_motor_pulse.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\stepper_motor_pulse.c</FilePath>
+            </File>
+            <File>
+              <FileName>laser_draw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\laser_draw.c</FilePath>
+            </File>
+            <File>
+              <FileName>svg_renderer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Custom\HardWare\svg_renderer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
