@@ -4,7 +4,7 @@
 #include "stdint.h"
 
 // 编译时信息
-#define UNIT_TEST_MODE 1
+#define UNIT_TEST_MODE 0
 #define FIRMWARE_VERSION "v1.0.0"
 
 // 编译时检查
