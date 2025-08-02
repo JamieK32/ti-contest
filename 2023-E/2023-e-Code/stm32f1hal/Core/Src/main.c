@@ -130,27 +130,10 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim4);
-	LaserDraw_Init();
 	printf("SYSTEM STARTED\r\n");
-//	const char *data = "M2,2 L8,8";
-
-//DrawSVGPath(data, 50, 50, 100);
-	//HAL_Delay(2000); // 等待系统稳定
-	 GoHome();
-	// ResetMotorZeroPosition();
-    // 绘制你的SVG路径
-
- //DrawRectangle(0, 0, 1000, 1000); // 1000步×1000步
-//DrawCircle(0, 0, 500);    // 在(-100,100)绘制半径50的圆
-//DrawTriangle(0 ,  0, 400);//
-DrawChineseBitmap(100, 100, 10);  // 在(100,100)位置，每像素5x5大小
- //DrawRectangle(0,0,400,200);
-//DrawSineWave(100, 200,1000, 180, 2.0f, 0.0f, 100);            //正弦波
-
-//DrawSquareWave(100, 300, 2100, 140, 5.0f, 0.0f);         //方波
- //DrawTriangleWave(0, 0, 1000, 50, 8.0f, 200);
-
-        
+	UART_DMA_Init();
+	menu_init_and_create();
+  servo_pid_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

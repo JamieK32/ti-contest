@@ -163,7 +163,7 @@ void main_task_init(void)
 
 void test_task(void) 
 {	
-	vl53l1_test();
+	motor_test();
 }
 
 int main(void) 
