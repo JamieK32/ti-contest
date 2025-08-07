@@ -84,26 +84,22 @@
 
 ```mermaid
 graph TD
-    A[main.c] --> B("Task Logic<br/>`task_..._mission_table.c`");
-    B --> C{"Car State Machine<br/>`car_state_machine.c`"};
-    C --> D["Car Controller<br/>`car_controller.c`"];
-    B --> G["UI & Menu<br/>`ui.c`"];
-
+    A[main.c] --> B["Task Logic<br/>task_..._mission_table.c"];
+    B --> C["Car State Machine<br/>car_state_machine.c"];
+    C --> D["Car Controller<br/>car_controller.c"];
+    B --> G["UI & Menu<br/>ui.c"];
     D --> E["PID Control & Algorithms"];
-    D --> F["Sensor Fusion<br/>`FusionAhrs.c`"];
-
-    D --> H["Motor Driver<br/>`motor_user.c`"];
-    D --> I["Sensor Drivers<br/>`wit_jyxx.c`, `gray_detection.c`"];
-    G --> J["Display Driver<br/>`oled_driver.c`"];
-
-    H --> K[HAL: GPIO/PWM];
-    I --> L[HAL: I2C/UART/ADC];
-    J --> M[HAL: SPI];
-
-    K --> N[TI DriverLib];
+    D --> F["Sensor Fusion<br/>FusionAhrs.c"];
+    D --> H["Motor Driver<br/>motor_user.c"];
+    D --> I["Sensor Drivers<br/>wit_jyxx.c, gray_detection.c"];
+    G --> J["Display Driver<br/>oled_driver.c"];
+    H --> K["HAL: GPIO/PWM"];
+    I --> L["HAL: I2C/UART/ADC"];
+    J --> M["HAL: SPI"];
+    K --> N["TI DriverLib"];
     L --> N;
     M --> N;
-    N --> O[MSPM0G3507 Hardware];
+    N --> O["MSPM0G3507 Hardware"];
 ```
 
 ## 4. 使用说明（“如何运行项目”)
