@@ -317,7 +317,7 @@ void car_set_track_speed(float speed) {
 
 void car_set_base_speed(float speed) {
 	for (int i = 0; i < motor_count; i++) {
-		car.target_speed[i] = 0;
+		car.target_speed[i] = speed;
 	}
 }
 
