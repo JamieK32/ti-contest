@@ -1,4 +1,4 @@
-# 🚗 TI竞赛智能车系统 - 统一平台架构
+# 🚗 JLAC791xiaozhi
 
 > 🏆 基于TI MSPM0G3507微控制器的智能车竞赛统一平台，采用现代化软件架构，涵盖2021-2024年全国大学生电子设计竞赛完整解决方案
 
@@ -111,7 +111,7 @@
 ### 🏗️ 新版统一平台架构
 
 ```
-ti-contest/
+JLAC791xiaozhi/
 ├── 📦 platforms/                           # 统一开发平台
 │   └── ti-mspm0g3507/                      # TI MSPM0G3507平台
 │       ├── 💻 custom_src/                  # 平台源代码
@@ -223,8 +223,8 @@ ti-contest/
 
 1. **克隆仓库**
 ```bash
-git clone https://github.com/jamiek32/ti-contest
-cd ti-contest/platforms/ti-mspm0g3507
+git clone https://github.com/jamiek32/JLAC791xiaozhi
+cd JLAC791xiaozhi/platforms/ti-mspm0g3507
 ```
 
 2. **配置开发环境**
@@ -372,11 +372,11 @@ platforms/ti-mspm0g3507/tests/unit_tests/
 我们欢迎任何形式的贡献！
 
 ### 🐛 问题反馈
-- 在 [Issues](https://github.com/JamieK32/ti-contest/issues) 中报告bug
+- 在 [Issues](https://github.com/JamieK32/JLAC791xiaozhi/issues) 中报告bug
 - 提供详细的复现步骤和环境信息
 
 ### 💡 功能请求
-- 在 [Discussions](https://github.com/JamieK32/ti-contest/discussions) 中讨论新功能
+- 在 [Discussions](https://github.com/JamieK32/JLAC791xiaozhi/discussions) 中讨论新功能
 - 描述使用场景和期望效果
 
 ### 🔧 代码贡献
